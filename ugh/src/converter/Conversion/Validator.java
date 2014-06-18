@@ -60,7 +60,7 @@ public class Validator {
 		this.checkDocStructsOhneSeiten(logicalTop);
 		if (docStructsOhneSeiten.size() != 0) {
 			for (Iterator<DocStruct> iter = docStructsOhneSeiten.iterator(); iter.hasNext();) {
-				DocStruct ds = (DocStruct) iter.next();
+				DocStruct ds = iter.next();
 				myLogger.info("[" +id + "] Strukturelement ohne Seiten: " + ds.getType().getName());
 			}
 			ergebnis = false;
@@ -79,7 +79,7 @@ public class Validator {
 		}
 		if (seitenOhneDocstructs != null && seitenOhneDocstructs.size() != 0) {
 			for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
-				String seite = (String) iter.next();
+				String seite = iter.next();
 				myLogger.info("[" + id + "] " + "Seiten ohne Strukturelement: " + seite);
 			}
 			ergebnis = false;
@@ -92,7 +92,7 @@ public class Validator {
 		List<String> mandatoryList = checkMandatoryValues(dd.getLogicalDocStruct(), new ArrayList<String>());
 		if (mandatoryList.size() != 0) {
 			for (Iterator<String> iter = mandatoryList.iterator(); iter.hasNext();) {
-				String temp = (String) iter.next();
+				String temp = iter.next();
 				myLogger.info("[" + id + "] " + "Pflichtelement: " + temp);
 			}
 			ergebnis = false;
@@ -101,12 +101,12 @@ public class Validator {
 	}
 
 	private void checkDocStructsOhneSeiten(DocStruct inStruct) {
-		if (inStruct.getAllToReferences().size() == 0 && !inStruct.getType().isAnchor())
+		if (inStruct.getAllToReferences().size() == 0 && inStruct.getType().getAnchorClass() == null)
 			docStructsOhneSeiten.add(inStruct);
 		/* alle Kinder des aktuellen DocStructs durchlaufen */
 		if (inStruct.getAllChildren() != null) {
 			for (Iterator<DocStruct> iter = inStruct.getAllChildren().iterator(); iter.hasNext();) {
-				DocStruct child = (DocStruct) iter.next();
+				DocStruct child = iter.next();
 				checkDocStructsOhneSeiten(child);
 			}
 		}
@@ -121,7 +121,7 @@ public class Validator {
 
 		/* alle Seiten durchlaufen und pruefen ob References existieren */
 		for (Iterator<DocStruct> iter = boundbook.getAllChildren().iterator(); iter.hasNext();) {
-			DocStruct ds = (DocStruct) iter.next();
+			DocStruct ds = iter.next();
 			List<Reference> refs = ds.getAllFromReferences();
 			String physical = "";
 			String logical = "";
@@ -129,7 +129,7 @@ public class Validator {
 				// System.out.println("   >>> Keine Seiten: "
 				// + ((Metadata) ds.getAllMetadata().getFirst()).getValue());
 				for (Iterator<Metadata> iter2 = ds.getAllMetadata().iterator(); iter2.hasNext();) {
-					Metadata md = (Metadata) iter2.next();
+					Metadata md = iter2.next();
 					if (md.getType().getName().equals("logicalPageNumber"))
 						logical = " (" + md.getValue() + ")";
 					if (md.getType().getName().equals("physPageNumber"))
@@ -173,133 +173,4 @@ public class Validator {
 		}
 		return inList;
 	}
-
-
-//	/**
-//	 * Create Element From - fuer alle Strukturelemente ein bestimmtes Metadatum erzeugen, sofern dies an der jeweiligen Stelle erlaubt und noch nicht
-//	 * vorhanden ================================================================
-//	 */
-//	private void checkCreateElementFrom(ArrayList inFehlerList, ArrayList<MetadataType> inListOfFromMdts, DocStruct myStruct, MetadataType mdt, int id) {
-//
-//		/*
-//		 * -------------------------------- existiert das zu erzeugende Metadatum schon, dann ueberspringen, ansonsten alle Daten zusammensammeln und
-//		 * in das neue Element schreiben --------------------------------
-//		 */
-//		List createMetadaten = myStruct.getAllMetadataByType(mdt);
-//		if (createMetadaten.size() == 0) {
-//			try {
-//				Metadata createdElement = new Metadata(mdt);
-//				// createdElement.setType(mdt);
-//				StringBuffer myValue = new StringBuffer();
-//				/*
-//				 * alle anzufuegenden Metadaten durchlaufen und an das Element anhuengen
-//				 */
-//				for (MetadataType mdttemp : inListOfFromMdts) {
-//
-//					
-//					// MetadataType mdttemp = (MetadataType) iter.next();
-//
-//					// List fromElemente = myStruct.getAllMetadataByType(mdttemp);
-//					List<Person> fromElemente = myStruct.getAllPersons();
-//					if (fromElemente != null && fromElemente.size() > 0) {
-//						/*
-//						 * wenn Personen vorhanden sind (z.B. Illustrator), dann diese durchlaufen
-//						 */
-//						for (Person p : fromElemente) {
-//
-//							
-//							// Person p = (Person) iter2.next();
-//
-//							if (p.getRole() == null) {
-//								myLogger.info("[" + id + " " + myStruct.getType() + "] Person without role");
-//								break;
-//							} else {
-//								if (p.getRole().equals(mdttemp.getName())) {
-//									if (myValue.length() > 0)
-//										myValue.append("; ");
-//									myValue.append(p.getLastname());
-//									myValue.append(", ");
-//									myValue.append(p.getFirstname());
-//								}
-//							}
-//						}
-//					}
-//				}
-//
-//				if (myValue.length() > 0) {
-//					createdElement.setValue(myValue.toString());
-//				}
-//				myStruct.addMetadata(createdElement);
-//			} catch (DocStructHasNoTypeException e) {
-//				// e.printStackTrace();
-//			} catch (MetadataTypeNotAllowedException e) {
-//				// e.printStackTrace();
-//			}
-//
-//		}
-//
-//		/*
-//		 * -------------------------------- alle Kinder durchlaufen --------------------------------
-//		 */
-//		List children = myStruct.getAllChildren();
-//		if (children != null && children.size() > 0)
-//			for (Iterator iter = children.iterator(); iter.hasNext();) {
-//				checkCreateElementFrom(inFehlerList, inListOfFromMdts, (DocStruct) iter.next(), mdt, id);
-//			}
-//	}
-
-	/**
-	 * Metadatum soll mit bestimmten String beginnen oder enden ================================================================
-	 */
-//	private void checkStartsEndsWith(List inFehlerList, String prop_startswith, String prop_endswith, DocStruct myStruct, MetadataType mdt) {
-//		/* startswith oder endswith */
-//		List alleMetadaten = myStruct.getAllMetadataByType(mdt);
-//		if (alleMetadaten != null && alleMetadaten.size() > 0)
-//			for (Iterator iter = alleMetadaten.iterator(); iter.hasNext();) {
-//				Metadata md = (Metadata) iter.next();
-//
-//				/* pruefen, ob es mit korrekten Werten beginnt */
-//				if (prop_startswith != null) {
-//					boolean isOk = false;
-//					StringTokenizer tokenizer = new StringTokenizer(prop_startswith, "|");
-//					while (tokenizer.hasMoreTokens()) {
-//						String tok = tokenizer.nextToken();
-//						if (md.getValue() != null && md.getValue().startsWith(tok))
-//							isOk = true;
-//					}
-//					if (!isOk && !autoSave)
-//						inFehlerList.add(md.getType().getName() + " with value " + md.getValue() + " does not start with " + prop_startswith);
-//					if (!isOk && autoSave)
-//						md.setValue(new StringTokenizer(prop_startswith, "|").nextToken() + md.getValue());
-//				}
-//				/* pruefen, ob es mit korrekten Werten endet */
-//				if (prop_endswith != null) {
-//					boolean isOk = false;
-//					StringTokenizer tokenizer = new StringTokenizer(prop_endswith, "|");
-//					while (tokenizer.hasMoreTokens()) {
-//						String tok = tokenizer.nextToken();
-//						if (md.getValue() != null && md.getValue().endsWith(tok))
-//							isOk = true;
-//					}
-//					if (!isOk && !autoSave) {
-//						inFehlerList.add(md.getType().getName() + " with value " + md.getValue() + " does not end with " + prop_endswith);
-//					}
-//					if (!isOk && autoSave) {
-//						md.setValue(md.getValue() + new StringTokenizer(prop_endswith, "|").nextToken());
-//					}
-//				}
-//			}
-//	}
-//
-//	/**
-//	 * automatisch speichern lassen, wenn Aenderungen noetig waren ================================================================
-//	 */
-//	public boolean isAutoSave() {
-//		return autoSave;
-//	}
-//
-//	public void setAutoSave(boolean autoSave) {
-//		this.autoSave = autoSave;
-//	}
-
 }

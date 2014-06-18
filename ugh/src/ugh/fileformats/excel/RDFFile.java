@@ -89,7 +89,8 @@ import ugh.exceptions.WriteException;
  * 
  * @author Markus Enders
  * @author Robert Sehr
- * @version 2010-05-05
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-18
  * @since 2004-05-21
  * 
  *        TODOLOG
@@ -106,6 +107,8 @@ import ugh.exceptions.WriteException;
  *        class itself, so we maybe should leave it at is is!)
  * 
  *        CHANGELOG
+ *        
+ *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *        05.05.2010 --- Funk --- Just trying to solve some person and metadata
  *        reading bugs (see recent SLUB mails and DPD-408).
@@ -188,7 +191,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	// Imageset.
 	private ugh.dl.FileSet								myImageset;
 	// General preferences.
-	private ugh.dl.Prefs								myPreferences;
+	private final ugh.dl.Prefs								myPreferences;
 
 //	private final boolean								exportable					= true;
 //	private final boolean								importable					= true;
@@ -197,8 +200,8 @@ public class RDFFile implements ugh.dl.Fileformat {
 	// Hashtables are used for matching the internal Name of metadata and
 	// docstructs to the name used in the rdf-xml file.
 	// The contents is read from the preferences in readPrefs method.
-	private Hashtable<String, MatchingMetadataObject>	rdfNamesMD;
-	private Hashtable<String, MatchingMetadataObject>	rdfNamesDS;
+	private final Hashtable<String, MatchingMetadataObject>	rdfNamesMD;
+	private final Hashtable<String, MatchingMetadataObject>	rdfNamesDS;
 
 	private static final String							HIDDEN_METADATA_CHAR		= "_";
 
@@ -241,6 +244,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#read(java.lang.String)
 	 */
+	@Override
 	public boolean read(String filename) throws ReadException {
 
 		Document document;
@@ -383,6 +387,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#update(java.lang.String)
 	 */
+	@Override
 	@Deprecated
 	public boolean update(String filename) {
 		return false;
@@ -395,6 +400,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
+	@Override
 	public DigitalDocument getDigitalDocument() {
 		return this.mydoc;
 	}
@@ -432,6 +438,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
+	@Override
 	@Deprecated
 	public boolean write(String filename) throws WriteException {
 
@@ -953,9 +960,9 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 		// Write pagenumbers / references to start and endpage only if the
 		// current DocStruct is NOT an anchor.
-		if (inDocStruct.getType().isAnchor() && inDocStruct.getParent() == null) {
-			LOGGER.debug("Is anchor, do not write RefIMageSetRange "
-					+ inDocStruct.getType().isAnchor());
+		if (inDocStruct.getType().getAnchorClass() != null && inDocStruct.getParent() == null) {
+			LOGGER.debug("Is anchor, do not write RefImageSetRange "
+					+ inDocStruct.getType().getAnchorClass());
 		} else {
 			writeRefImageSetRange(inDocStruct, docStructElement);
 		}
@@ -1507,7 +1514,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 			// Iterate over metadata to find the ListType from a metadata.
 			Iterator<Metadata> it4 = (Iterator<Metadata>) mds.iterator();
 			while (it4.hasNext()) {
-				Metadata md = (Metadata) it4.next();
+				Metadata md = it4.next();
 				// Get internal metadata name.
 				String mdtname = md.getType().getName();
 				MatchingMetadataObject mmo = getMMOByName(mdtname);
@@ -1529,7 +1536,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 			Iterator<Metadata> it3 = (Iterator<Metadata>) mds.iterator();
 			// Iterate over the lists metadata.
 			while (it3.hasNext()) {
-				Metadata md = (Metadata) it3.next();
+				Metadata md = it3.next();
 				Element liElement = domdoc.createElement("RDF:Li");
 				seqElement.appendChild(liElement);
 
@@ -2208,6 +2215,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
+	@Override
 	public boolean setDigitalDocument(DigitalDocument inDoc) {
 		this.mydoc = inDoc;
 		return true;
@@ -3142,11 +3150,11 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 **************************************************************************/
 	class MatchingMetadataObject {
 
-		private String			rdfName			= null;
-		private String			rdfList			= null;
-		private String			rdfListType		= null;
-		private String			internalName	= null;
-		private List<String[]>	allFilterRules	= new LinkedList<String[]>();
+		private String					rdfName			= null;
+		private String					rdfList			= null;
+		private String					rdfListType		= null;
+		private String					internalName	= null;
+		private final List<String[]>	allFilterRules	= new LinkedList<String[]>();
 
 		/***************************************************************************
 		 * @return Returns the rdfListType.

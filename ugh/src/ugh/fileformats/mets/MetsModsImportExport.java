@@ -82,11 +82,14 @@ import ugh.exceptions.WriteException;
 /*******************************************************************************
  * @author Stefan Funk
  * @author Robert Sehr
- * @version 2013-05-08
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-18
  * @since 2009-05-09
  * 
  * 
  *        CHANGELOG
+ *        
+ *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *        05.05.2010 --- Funk --- Added displayName check at displayName creation time. --- Added some DPD-407 debugging outputs (commented out).
  * 
@@ -325,7 +328,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     DocStructType parentDst = parentStruct.getType();
 
                     // Check, if the parent is an anchor.
-                    if (parentDst.isAnchor() && this.xPathAnchorReference != null) {
+					if (parentDst.getAnchorClass() != null && this.xPathAnchorReference != null) {
 
                         // Get identifier(s) of parent.
                         MetadataType identifierType = this.myPreferences.getMetadataTypeByName(this.anchorIdentifierMetadataType);
@@ -954,7 +957,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * @see ugh.fileformats.mets.MetsMods#checkForAnchorReference(java.lang.String, java.lang.String)
      */
     @Override
-    protected DocStruct checkForAnchorReference(String inMods, String filename) throws ReadException {
+	protected DocStruct checkForAnchorReference(String inMods, String filename, String topAnchorClassName)
+			throws ReadException {
 
         ModsDocument modsDocument;
         DocStruct anchorDocStruct = null;
@@ -994,7 +998,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     LOGGER.debug("Anchor's identifier: " + identifierOfAnchor);
 
                     // Try to read anchor from separate file.
-                    String anchorfilename = buildAnchorFilename(filename);
+					String anchorfilename = buildAnchorFilename(filename, topAnchorClassName);
                     if (!new File(anchorfilename).exists()) {
                         // File does not exists: no anchor available.
                         return null;
@@ -1183,7 +1187,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * @see ugh.fileformats.mets.MetsMods#writeLogDivs(org.w3c.dom.Node, ugh.dl.DocStruct, boolean)
      */
     @Override
-    protected Element writeLogDivs(Node parentNode, DocStruct inStruct, boolean isAnchorFile) throws WriteException, PreferencesException {
+	protected Element writeLogDivs(Node parentNode, DocStruct inStruct, String anchorClass) throws WriteException,
+			PreferencesException {
 
         // Write div element.
         Document domDoc = parentNode.getOwnerDocument();
@@ -1239,7 +1244,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
 
         // Set the DMDIDs.
-        int dmdid = writeLogDmd(this.metsNode, inStruct, isAnchorFile);
+		int dmdid = writeLogDmd(this.metsNode, inStruct, anchorClass);
         if (dmdid >= 0) {
             // Just set DMDID attribute, if there is a metadata set.
             String dmdidString = DMDLOG_PREFIX + new DecimalFormat(DECIMAL_FORMAT).format(dmdid);
@@ -1254,9 +1259,10 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         } else {
             // Set the ADMID, depends if the current element is an anchor or not.
-            if ((isAnchorFile && inStruct.getType().isAnchor())
-                    || (!isAnchorFile && inStruct.getParent() != null && inStruct.getParent().getType().isAnchor())
-                    || (!isAnchorFile && !inStruct.getType().isAnchor() && inStruct.getParent() == null)) {
+			if ((anchorClass != null && anchorClass.equals(inStruct.getType().getAnchorClass()))
+					|| (inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null && !inStruct
+							.getParent().getType().getAnchorClass().equals(anchorClass))
+					|| (anchorClass == null && inStruct.getType().getAnchorClass() == null && inStruct.getParent() == null)) {
                 div.setAttribute(METS_ADMID_STRING, AMD_PREFIX);
             }
         }
@@ -1267,7 +1273,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
         String ordernumber = "";
         // current element is anchor file
-        if (inStruct.getType().isAnchor()) {
+		if (inStruct.getType().getAnchorClass() != null) {
             if (inStruct.getAllChildren() != null && inStruct.getAllChildren().size() > 0) {
                 DocStruct child = inStruct.getAllChildren().get(0);
                 if (child.getAllMetadata() != null) {
@@ -1280,7 +1286,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
         // current element is first child of an anchor file
-        else if (!inStruct.getType().isAnchor() && inStruct.getParent() != null && inStruct.getParent().getType().isAnchor()) {
+		else if (inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null
+				&& !inStruct.getParent().getType().getAnchorClass().equals(inStruct.getType().getAnchorClass())) {
             if (inStruct.getAllMetadata() != null) {
                 for (Metadata md : inStruct.getAllMetadata()) {
                     if (md.getType().getName().equals(RULESET_ORDER_NAME)) {
@@ -1290,7 +1297,9 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
 
-        if (!isAnchorFile && !inStruct.getType().isAnchor() && inStruct.getParent() != null && inStruct.getParent().getType().isAnchor()) {
+		if (inStruct.getType().getAnchorClass().equals(anchorClass) && inStruct.getParent() != null
+				&& inStruct.getParent().getType().getAnchorClass() != null
+				&& !inStruct.getParent().getType().getAnchorClass().equals(inStruct.getType().getAnchorClass())) {
             if (ordernumber != null && ordernumber.length() > 0) {
                 div.setAttribute(METS_ORDER_STRING, ordernumber);
             }
@@ -1299,7 +1308,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         // Write the MPTR element if a non-anchor file is written AND element is
         // defined as an anchor in the prefs --> METS pointer in e.g.
         // "periodical volume".
-        if (!isAnchorFile && inStruct.getType().isAnchor()) {
+		if (anchorClass == null && inStruct.getType().getAnchorClass() != null) {
             if (this.mptrUrl.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the parent/anchor DocStruct is defined! Referencing will NOT work!");
             }
@@ -1310,7 +1319,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
         // Write the MPTR element if an anchor file is written AND parent
         // element is an anchor --> METS pointer in e.g. "periodical".
-        if (isAnchorFile && !inStruct.getType().isAnchor()) {
+		if (anchorClass != null && inStruct.getType().getAnchorClass() == null) {
             if (this.mptrUrlAnchor.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the child DocStructs is defined! Referencing will NOT work!");
             }
@@ -1326,7 +1335,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         List<DocStruct> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
-                if (writeLogDivs(div, child, isAnchorFile) == null) {
+				if (writeLogDivs(div, child, anchorClass) == null) {
                     // Error occured while writing div for child.
                     return null;
                 }
@@ -2093,7 +2102,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
     }
 
-    protected void readMetadataGroupPrefs(Node inNode) throws PreferencesException {
+    @Override
+	protected void readMetadataGroupPrefs(Node inNode) throws PreferencesException {
         String internalName = null;
 
         NodeList childlist = inNode.getChildNodes();

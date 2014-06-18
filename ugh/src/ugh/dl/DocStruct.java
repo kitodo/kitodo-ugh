@@ -26,10 +26,12 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
@@ -68,10 +70,13 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
- * @version 2013-05-08
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-18
  * @see DigitalDocument
  * 
  *      TODOLOG
+ *      
+ *      TODO Remove databaseid and unreachable code
  * 
  *      TODO Remove all the boolean results that always are TRUE!!
  * 
@@ -82,6 +87,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
  * 
  *      CHANGELOG
+ *      
+ *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *      05.05.2010 --- Funk --- Minor changes.
  * 
@@ -171,9 +178,9 @@ public class DocStruct implements Serializable {
     private DocStruct parent;
     // All references to other DocStrct instances (containing References
     // objects).
-    private List<Reference> docStructRefsTo = new LinkedList<Reference>();
+    private final List<Reference> docStructRefsTo = new LinkedList<Reference>();
     // All references from another DocStruct to this one.
-    private List<Reference> docStructRefsFrom = new LinkedList<Reference>();
+    private final List<Reference> docStructRefsFrom = new LinkedList<Reference>();
     // Type of this instance.
     private DocStructType type;
     // Local identifier of this docstruct.
@@ -181,10 +188,8 @@ public class DocStruct implements Serializable {
     // Digital document, to which this DocStruct belongs.
     private DigitalDocument digdoc;
     // ID in database table (4 byte long).
-    private long databaseid = 0;
+    private final long databaseid = 0;
     private Object origObject = null;
-    // Information, if database instance is the same than this one.
-    private boolean updated = false;
     private boolean logical = false;
     private boolean physical = false;
     // String containing an identifier or a URL to the anchor.
@@ -289,6 +294,24 @@ public class DocStruct implements Serializable {
 
         return this.children;
     }
+
+    /**
+	 * Returns all real successors, i.e. all child nodes that are of a different
+	 * or no anchor class at all, of an instance as a flat list.
+	 * 
+	 * @return List containing DocStruct instances; if this instance has no
+	 *         children, an empty list is returned.
+	 */
+	public List<DocStruct> getAllRealSuccessors() {
+		LinkedList<DocStruct> result = new LinkedList<DocStruct>();
+		if (children != null)
+			for (DocStruct child : children)
+				if (type.getAnchorClass().equals(child.getType().getAnchorClass()))
+					result.addAll(child.getAllRealSuccessors());
+				else
+					result.add(child);
+		return result;
+	}
 
     /***************************************************************************
      * @deprecated
@@ -470,12 +493,15 @@ public class DocStruct implements Serializable {
      * </p>
      * 
      * @param cpmetadata copies Metadata if set to true
-     * @param recursive copies all children as well, if set to true
+	 * @param recursive
+	 *            if true, copies all children as well; if null, copies all
+	 *            children which are of the same anchor class; if false, doesn’t
+	 *            copy any children
      * @return a new DocStruct instance
      * @throws TypeNotAllowedForParentException
      * @throws MetadataTypeNotAllowedException
      **************************************************************************/
-    public DocStruct copy(boolean cpmetadata, boolean recursive) {
+	public DocStruct copy(boolean cpmetadata, Boolean recursive) {
 
         DocStruct newStruct = null;
         try {
@@ -625,15 +651,18 @@ public class DocStruct implements Serializable {
         }
 
         // Iterate over all children, if recursive set to true.
-        if (recursive && this.getAllChildren() != null) {
+		if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
             for (DocStruct child : this.getAllChildren()) {
-                DocStruct copiedChild = child.copy(cpmetadata, recursive);
-                try {
-                    newStruct.addChild(copiedChild);
-                } catch (TypeNotAllowedAsChildException e) {
-                    String message = "This " + e.getClass().getName() + " should not have been occured!";
-                    LOGGER.error(message, e);
-                }
+				if ((recursive == null && type != null && type.getAnchorClass() != null && child.getType() != null && type
+						.getAnchorClass().equals(child.getType().getAnchorClass())) || recursive == true) {
+					DocStruct copiedChild = child.copy(cpmetadata, recursive);
+					try {
+						newStruct.addChild(copiedChild);
+					} catch (TypeNotAllowedAsChildException e) {
+						String message = "This " + e.getClass().getName() + " should not have been occured!";
+						LOGGER.error(message, e);
+					}
+				}
             }
         }
 
@@ -1076,8 +1105,6 @@ public class DocStruct implements Serializable {
         ref.setType(theType);
         this.docStructRefsTo.add(ref);
         inDocStruct.docStructRefsFrom.add(ref);
-        this.updated = true;
-
         return ref;
     }
 
@@ -1107,8 +1134,6 @@ public class DocStruct implements Serializable {
         ref.setType(theType);
         this.docStructRefsFrom.add(ref);
         inDocStruct.docStructRefsTo.add(ref);
-        this.updated = true;
-
         return ref;
     }
 
@@ -1138,7 +1163,7 @@ public class DocStruct implements Serializable {
             }
         }
 
-        return (this.updated = true);
+        return true;
     }
 
     /**************************************************************************
@@ -1167,7 +1192,7 @@ public class DocStruct implements Serializable {
             }
         }
 
-        return (this.updated = true);
+        return true;
     }
 
     /***************************************************************************
@@ -2276,6 +2301,36 @@ public class DocStruct implements Serializable {
         // Child wasn't added.
         return false;
     }
+
+	/**
+	 * Adds a DocStruct object to a child of this instance, where is the
+	 * position to add it. The new child will automatically become the last
+	 * child in the list. When adding a DocStruct, configuration is checked,
+	 * wether a DocStruct of this type can be added. If not, it is not added and
+	 * false is returned. The parent of this child is set automatically.
+	 * 
+	 * @param where
+	 *            where to add the DocStruct
+	 * @param inchild
+	 *            DocStruct to be added
+	 * @return true, if child was added; otherwise false
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
+	public boolean addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
+		if (where == null || inchild == null || inchild.getType() == null) {
+			LOGGER.warn("DocStruct or DocStructType is null");
+			return false;
+		}
+
+		// get next position of index
+		int next = where.indexOf(44) + 1;
+
+		// insert child
+		return next != 0 ? addChild(where.substring(next), inchild) : children.get(Integer.parseInt(where)).addChild(
+				inchild);
+	}
 
     /***************************************************************************
      * <p>
@@ -3470,7 +3525,8 @@ public class DocStruct implements Serializable {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        @Override
+		public int compare(Object o1, Object o2) {
 
             Metadata m1 = (Metadata) o1;
             Metadata m2 = (Metadata) o2;
@@ -3498,7 +3554,8 @@ public class DocStruct implements Serializable {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        @Override
+		public int compare(Object o1, Object o2) {
 
             MetadataGroup m1 = (MetadataGroup) o1;
             MetadataGroup m2 = (MetadataGroup) o2;
@@ -3570,4 +3627,98 @@ public class DocStruct implements Serializable {
         }
     }
 
+	/**
+	 * Returns the index of the first occurrence of the specified element in
+	 * this DocStruct, or throws exceptions. More formally, returns the lowest
+	 * index of the DocStruct in this DocStruct. If there is no such index, a
+	 * NoSuchElementException will be thrown.
+	 * 
+	 * @param d
+	 *            DocStruct to search for
+	 * @return the index of the first occurrence of the specified DocStruct in
+	 *         this DocStruct, separated by comma, or "−1" if this DocStruct
+	 *         does not contain the element
+	 * @throws NoSuchElementException
+	 *             if this DocStruct does not contain the DocStruct
+	 */
+	public String indexOf(DocStruct d) throws NoSuchElementException {
+		if (children != null)
+			for (int i = 0; i < children.size(); i++) {
+				DocStruct child = children.get(i);
+				if (child.equals(d))
+					return Integer.toString(i);
+				try {
+					return i + ',' + child.indexOf(d);
+				} catch (NoSuchElementException go_on) {
+				}
+			}
+		throw new NoSuchElementException("No " + d + " in " + this);
+	}
+
+	/**
+	 * Retrieves the name of the anchor structure, if any, or null otherwise.
+	 * Anchors are a special type of document structure, which group other
+	 * structure entities together, but have no own content. Imagine a
+	 * periodical as such an anchor. The periodical itself is a virtual
+	 * structure entity without any own content, but groups all years of
+	 * appearance together. Years may be anchors again for volumes, etc.
+	 * 
+	 * @return String, which is null, if it cannot be used as an anchor
+	 */
+	public String getAnchorClass() {
+		if (type == null)
+			return null;
+		return type.getAnchorClass();
+	}
+
+	/**
+	 * The function getAllAnchorClasses() traverses the structure tree and
+	 * returns an ordered list of all anchor classes that are used by this
+	 * structure.
+	 * 
+	 * @return a list of all used anchors
+	 */
+	public List<String> getAllAnchorClasses() {
+		LinkedList<String> result = new LinkedList<String>();
+		addAnchorClassesRecursively(result);
+		return result;
+	}
+
+	/**
+	 * The function addAnchorClassesRecursively() recursively adds all anchor
+	 * classes that are used by this logical structure to a given queue.
+	 */
+	private void addAnchorClassesRecursively(Deque<String> classes) {
+		if (getAnchorClass() == null)
+			return;
+		if (classes.size() == 0 || !classes.getLast().equals(getAnchorClass()))
+			classes.add(getAnchorClass());
+		if (children != null)
+			for (DocStruct child : children)
+				child.addAnchorClassesRecursively(classes);
+	}
+
+	/**
+	 * The function getChild() returns a child element from this structural
+	 * entity by numeric reference
+	 * 
+	 * @param reference
+	 *            reference to the child entity to get
+	 * @return child entity, if found
+	 * @throws IndexOutOfBoundsException
+	 *             if the child indicated cannot be reached
+	 */
+	public DocStruct getChild(String reference) {
+		DocStruct result = this;
+		int fieldSeparator;
+		while ((fieldSeparator = reference.indexOf(',')) > -1) {
+			try {
+				result = result.getAllChildren().get(Integer.parseInt(reference.substring(0, fieldSeparator)));
+			} catch (NullPointerException nupox) {
+				throw new IndexOutOfBoundsException(nupox.getMessage());
+			}
+			reference = reference.length() >= fieldSeparator + 1 ? reference.substring(fieldSeparator + 1) : null;
+		}
+		return result;
+	}
 }
