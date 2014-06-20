@@ -71,7 +71,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
- * @version 2014-06-18
+ * @version 2014-06-20
  * @see DigitalDocument
  * 
  *      TODOLOG
@@ -87,6 +87,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
  * 
  *      CHANGELOG
+ *      
+ *      20.06.2014 --- Ronge --- Add some methods for easier use
  *      
  *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
@@ -3720,5 +3722,95 @@ public class DocStruct implements Serializable {
 			reference = reference.length() >= fieldSeparator + 1 ? reference.substring(fieldSeparator + 1) : null;
 		}
 		return result;
+	}
+
+	/**
+	 * The function addMetadata() adds a meta data field with the given name to
+	 * this DocStruct and sets it to the given value.
+	 * 
+	 * @param fieldName
+	 *            name of the meta data field to add
+	 * @param value
+	 *            value to set the field to
+	 * @return the object, to be able to write several statements in-line
+	 * @throws MetadataTypeNotAllowedException
+	 *             if no corresponding MetadataType object is returned by
+	 *             getAddableMetadataTypes()
+	 */
+	public DocStruct addMetadata(String fieldName, String value) throws MetadataTypeNotAllowedException {
+		boolean success = false;
+		for (MetadataType fieldType : type.getAllMetadataTypes()) {
+			if (fieldType.getName().equals(fieldName)) {
+				Metadata field = new Metadata(fieldType);
+				field.setValue(value);
+				addMetadata(field);
+				success = true;
+				break;
+			}
+		}
+		if (!success)
+			throw new MetadataTypeNotAllowedException("Couldn’t add " + fieldName + " to " + type.getName()
+					+ ": No corresponding MetadataType object in result of DocStruc.getAllMetadataTypes().");
+		return this;
+	}
+
+	/**
+	 * The function createChild() creates a child DocStruct below a DocStruct.
+	 * This is a convenience function to add a DocStruct by its type name
+	 * string.
+	 * 
+	 * @param type
+	 *            structural type of the child to create
+	 * @param fieldNames
+	 *            list of meta data fields to create in the child (may be empty)
+	 * @param value
+	 *            value to set the meta data fields to
+	 * @param act
+	 *            act to create the child in
+	 * @param ruleset
+	 *            rule set the act is based on
+	 * @return the child created
+	 * @throws TypeNotAllowedForParentException
+	 *             is thrown, if this DocStruct is not allowed for a parent
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
+	public DocStruct createChild(String type, Prefs ruleset) throws TypeNotAllowedForParentException,
+			TypeNotAllowedAsChildException {
+		DocStruct result = digdoc.createDocStruct(ruleset.getDocStrctTypeByName(type));
+		addChild(result);
+		return result;
+	}
+
+	/**
+	 * The function getChild() returns a child of a DocStruct, identified by its
+	 * type and an identifier in a meta data field of choice. More formally,
+	 * returns the first child matching the given conditions and does not work
+	 * recursively. If no matching child is found, throws
+	 * NoSuchElementException.
+	 * 
+	 * TODO move this function into ugh.dl.DocStruct class
+	 * 
+	 * @param obj
+	 *            object this function works on
+	 * @param type
+	 *            structural type of the child to locate
+	 * @param identifierField
+	 *            meta data field that holds the identifer to locate the child
+	 * @param identifier
+	 *            identifier of the child to locate
+	 * @return the child, if found
+	 * @throws NoSuchElementException
+	 *             if no matching child is found
+	 */
+	public DocStruct getChild(String type, String identifierField, String identifier) throws NoSuchElementException {
+		for (DocStruct child : getAllChildrenByTypeAndMetadataType(type, identifierField))
+			for (Metadata metadataElement : child.getAllMetadata())
+				if (metadataElement.getType().getName().equals(identifierField)
+						&& metadataElement.getValue().equals(identifier))
+					return child;
+		throw new NoSuchElementException("No child " + type + " with " + identifierField + " = " + identifier + " in "
+				+ this + '.');
 	}
 }
