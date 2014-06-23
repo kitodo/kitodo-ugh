@@ -83,11 +83,13 @@ import ugh.exceptions.WriteException;
  * @author Stefan Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
- * @version 2014-06-18
+ * @version 2014-06-23
  * @since 2009-05-09
  * 
  * 
  *        CHANGELOG
+ *        
+ *        23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
  *        
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
@@ -178,6 +180,31 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
     /***************************************************************************
      * STATIC FINALS
      **************************************************************************/
+
+	/**
+	 * For each meta data element of this type that is associated with a
+	 * DocStruct element of the logical structure tree of a digital document, a
+	 * METS pointer element will be created during export.
+	 */
+	public static final String CREATE_MPTR_ELEMENT_TYPE = "MetsPointerURL";
+
+	/**
+	 * If there is a meta data element of this type associated with a DocStruct
+	 * element of the logical structure tree of a digital document, a LABEL
+	 * attribute will be attached to the logical div element during export which
+	 * will have assigned the value assigned to the last meta data element of
+	 * this type associated with the DocStruct element.
+	 */
+	public static final String CREATE_LABEL_ATTRIBUTE_TYPE = MetsMods.METS_PREFS_LABEL_METADATA_STRING;
+
+	/**
+	 * If there is a meta data element of this type associated with a DocStruct
+	 * element of the logical structure tree of a digital document, an
+	 * ORDERLABEL attribute will be attached to the logical div element during
+	 * export which will have assigned the value assigned to the last meta data
+	 * element of this type associated with the DocStruct element.
+	 */
+	public static final String CREATE_ORDERLABEL_ATTRIBUTE_TYPE = MetsMods.METS_PREFS_ORDERLABEL_METADATA_STRING;
 
     protected static final String METS_PREFS_XPATH_STRING = "XPath";
     protected static final String METS_PREFS_WRITEXPATH_STRING = "WriteXPath";
@@ -1220,11 +1247,14 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
 
         String label = "";
+		String orderlabel = "";
 
         if (inStruct.getAllMetadata() != null) {
             for (Metadata md : inStruct.getAllMetadata()) {
                 if (md.getType().getName().equals(METS_PREFS_LABEL_METADATA_STRING)) {
                     label = md.getValue();
+				} else if (md.getType().getName().equals(METS_PREFS_ORDERLABEL_METADATA_STRING)) {
+					orderlabel = md.getValue();
                 } else if (md.getType().getName().equals(METS_URN_NAME)) {
                     div.setAttribute(METS_CONTENTIDS_STRING, md.getValue());
                 }
@@ -1233,6 +1263,9 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         if (label != null && !label.equals("")) {
             div.setAttribute(METS_LABEL_STRING, label);
         }
+		if (orderlabel != null && !orderlabel.equals("")) {
+			div.setAttribute(METS_ORDERLABEL_STRING, orderlabel);
+		}
 
         // Set identifier for this docStruct.
         inStruct.setIdentifier(idlog);
@@ -1330,6 +1363,16 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             // Write mptr element.
             div.appendChild(mptr);
         }
+
+		// Create METS pointer element if requested through meta data element
+		// METADATA_TYPE_CREATE_MPTR
+		List<Metadata> metsPointerURLs = inStruct.getMetadataByType(CREATE_MPTR_ELEMENT_TYPE);
+		for (Metadata url : metsPointerURLs) {
+			Element metsPointer = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_MPTR_STRING);
+			metsPointer.setAttribute(METS_LOCTYPE_STRING, "URL");
+			createDomAttributeNS(metsPointer, this.xlinkNamespacePrefix, METS_HREF_STRING, url.getValue());
+			div.appendChild(metsPointer);
+		}
 
         // Get all children and write their divs.
         List<DocStruct> allChildren = inStruct.getAllChildren();

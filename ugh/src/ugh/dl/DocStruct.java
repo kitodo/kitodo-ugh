@@ -71,7 +71,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
- * @version 2014-06-20
+ * @version 2014-06-23
  * @see DigitalDocument
  * 
  *      TODOLOG
@@ -87,6 +87,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
  * 
  *      CHANGELOG
+ *      
+ *      23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
  *      
  *      20.06.2014 --- Ronge --- Add some methods for easier use
  *      
@@ -3790,10 +3792,6 @@ public class DocStruct implements Serializable {
 	 * recursively. If no matching child is found, throws
 	 * NoSuchElementException.
 	 * 
-	 * TODO move this function into ugh.dl.DocStruct class
-	 * 
-	 * @param obj
-	 *            object this function works on
 	 * @param type
 	 *            structural type of the child to locate
 	 * @param identifierField
@@ -3812,5 +3810,23 @@ public class DocStruct implements Serializable {
 					return child;
 		throw new NoSuchElementException("No child " + type + " with " + identifierField + " = " + identifier + " in "
 				+ this + '.');
+	}
+
+	/**
+	 * The function getMetadataByType() returns a list of all meta data elements
+	 * that are associated with this element and of a given type.
+	 * 
+	 * @param typeName
+	 *            name of the type of meta data to look for
+	 * @return a list of all meta data elements of that type
+	 */
+	public List<Metadata> getMetadataByType(String typeName) {
+		LinkedList<Metadata> result = new LinkedList<Metadata>();
+		if (allMetadata != null)
+			for (Metadata metadata : allMetadata) {
+				if (metadata.getType().getName().equals(typeName))
+					result.add(metadata);
+			}
+		return result;
 	}
 }

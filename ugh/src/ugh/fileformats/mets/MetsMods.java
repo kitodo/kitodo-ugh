@@ -125,7 +125,7 @@ import ugh.exceptions.WriteException;
  * @author Stefan Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
- * @version 2014-06-18
+ * @version 2014-06-23
  * @since 2008-05-09
  * 
  *        TODOLOG
@@ -141,6 +141,8 @@ import ugh.exceptions.WriteException;
  *        TODO Maybe read the content files while reading the DocStructs and then use the MetsHelper to retrieve things!
  * 
  *        CHANGELOG
+ *        
+ *        23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
  *        
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
@@ -422,6 +424,9 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     // This is the metadata the StructMap LOGICAL labels are creared from.
     protected static final String METS_PREFS_LABEL_METADATA_STRING = "TitleDocMain";
+
+	// This is the metadata the StructMap LOGICAL orderlabels are creared from.
+	protected static final String METS_PREFS_ORDERLABEL_METADATA_STRING = "TitleDocMainSort";
 
     // Some METS string finals.
     protected static final String METS_METS_STRING = "mets";
