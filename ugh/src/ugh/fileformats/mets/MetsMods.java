@@ -142,8 +142,8 @@ import ugh.exceptions.WriteException;
  * 
  *        CHANGELOG
  *        
- *        23.06.2014 --- Ronge --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on export & add getter
- *        for meta data
+ *        23.06.2014 --- Ronge --- Rename sort title accordingly --- Make read & write functions work with multiple anchor files --- Create
+ *        ORDERLABEL attribute on export & add getter for meta data
  *        
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
@@ -427,7 +427,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     protected static final String METS_PREFS_LABEL_METADATA_STRING = "TitleDocMain";
 
 	// This is the metadata the StructMap LOGICAL orderlabels are creared from.
-	protected static final String METS_PREFS_ORDERLABEL_METADATA_STRING = "TitleDocMainSort";
+	protected static final String METS_PREFS_ORDERLABEL_METADATA_STRING = "TitleDocMainShort";
 
     // Some METS string finals.
     protected static final String METS_METS_STRING = "mets";
