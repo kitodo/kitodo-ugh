@@ -142,7 +142,8 @@ import ugh.exceptions.WriteException;
  * 
  *        CHANGELOG
  *        
- *        23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
+ *        23.06.2014 --- Ronge --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on export & add getter
+ *        for meta data
  *        
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
@@ -752,7 +753,11 @@ public class MetsMods implements ugh.dl.Fileformat {
             String message = "Wrong XPath expression!";
             LOGGER.error(message, e);
             throw new ReadException(message, e);
-        }
+        } catch (PreferencesException e) {
+        	String message = "This " + e.getClass().getName() + " should not have been occured!";
+            LOGGER.error(message, e);
+            throw new ReadException(message, e);
+		}
 
         // Map logical and physical Document Structures.
         mapLogAndPhysDocStruct(metsElement);
@@ -841,7 +846,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         DocStruct uppermostStruct = this.getDigitalDocument().getLogicalDocStruct();
         DocStructType uppermostType = uppermostStruct.getType();
 
-		if (uppermostType.getAnchorClass() != null) {
+		for (String anchorClass : uppermostStruct.getAllAnchorClasses()) {
             // The uppermost structure is an anchor; so we need to split the
 			// document and create two or more different METS/MODS files: One for
 			// each anchor class and one for the rest.
@@ -849,28 +854,9 @@ public class MetsMods implements ugh.dl.Fileformat {
 			DigitalDocument anchorDocument = new DigitalDocument();
 
 			// Copy metadata and all children belonging to the same anchor class.
-			DocStruct newStruct = uppermostStruct.copy(true, null);
-
             // Copy here the children from the next level only for MPTRs
-            // from zvdd-dfgviewer-v2 without metadata.
-            if (uppermostStruct.getAllChildren() == null) {
-                String message = "Top DocStruct '" + uppermostType.getName() + "' is anchor struct, but has no children!";
-                LOGGER.error(message);
-                throw new PreferencesException(message);
-            }
-
-			for (DocStruct d : uppermostStruct.getAllRealSuccessors()) {
-                DocStruct c = null;
-                try {
-                    c = d.copy(true, false);
-                    // Add the child to the new DocStruct.
-					newStruct.addChild(uppermostStruct.indexOf(d), c);
-                } catch (TypeNotAllowedAsChildException e) {
-                    String message = "DocStruct '" + c.getType().getName() + "' is not allowed as child of DocStruct '" + d.getType().getName() + "'";
-                    LOGGER.error(message, e);
-                    throw new PreferencesException(message, e);
-                }
-            }
+			// without metadata.
+			DocStruct newStruct = uppermostStruct.copyTruncated(anchorClass);
 
             // New struct is top document.
             anchorDocument.setLogicalDocStruct(newStruct);
@@ -878,7 +864,13 @@ public class MetsMods implements ugh.dl.Fileformat {
             // Get child of top document; there should only be a single child.
 			List<DocStruct> children = uppermostStruct.getAllRealSuccessors();
 
-            if (children != null && children.size() > 1) {
+			if (children.size() == 0) {
+				String message = "DocStruct '" + uppermostType.getName() + "' is anchor struct, but has no children!";
+				LOGGER.error(message);
+				throw new PreferencesException(message);
+			}
+
+			if (children.size() > 1) {
                 // Error; there must only be a single top-document under the
                 // anchor.
                 this.digdoc = myDigDoc;
@@ -890,7 +882,10 @@ public class MetsMods implements ugh.dl.Fileformat {
             if (children != null) {
                 topDocument = this.digdoc;
             }
-        } else {
+
+			anchorDocuments.add(anchorDocument);
+		}
+		if (anchorDocuments.size() == 0) {
             // Simply write the normal DigitalDocument.
             topDocument = this.digdoc;
         }
@@ -1346,9 +1341,13 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @throws InstantiationException
      * @throws ClassNotFoundException
      * @throws XPathExpressionException
+	 * @throws PreferencesException
+	 *             if an anchor class name is encountered a second time after
+	 *             having been descending right into a hierarchy to be
+	 *             maintained in another anchor class already
      **************************************************************************/
     private void readLogDocStruct(Mets inMetsElement, String theFilename) throws ReadException, ClassNotFoundException, InstantiationException,
-            IllegalAccessException, XPathExpressionException {
+            IllegalAccessException, XPathExpressionException, PreferencesException {
 
         LOGGER.info("Reading Logical DocStruct...");
 
@@ -1469,7 +1468,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                     if (newanchor != null) {
                     	
                     	// We have to process multiple anchor files now
-                    	List<String> anchorClasses = newDocStruct.getAllAnchorClasses();
+                    	List<String> anchorClasses = new ArrayList<String>(newDocStruct.getAllAnchorClasses());
 						String child = null;
 						for (int i = 0; i < anchorClasses.size(); i++) {
                         if(i == 0){

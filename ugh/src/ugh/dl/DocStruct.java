@@ -25,10 +25,11 @@ package ugh.dl;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -41,8 +42,10 @@ import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.IncompletePersonObjectException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 
 /*******************************************************************************
  * <p>
@@ -88,7 +91,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * 
  *      CHANGELOG
  *      
- *      23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
+ *      23.06.2014 --- Ronge --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on export & add getter
+ *      for meta data
  *      
  *      20.06.2014 --- Ronge --- Add some methods for easier use
  *      
@@ -672,6 +676,153 @@ public class DocStruct implements Serializable {
 
         return newStruct;
     }
+
+	/**
+	 * The function copyTruncated() returns a partial copy the structural tree
+	 * with all structural elements down to one level below the given anchor
+	 * class and meta data attached only to elements of the given anchor class.
+	 * 
+	 * @param anchorClass
+	 *            anchor class below which the copy shall be truncated
+	 * @return a paritial copy of the structure tree
+	 */
+	public DocStruct copyTruncated(String anchorClass) {
+		return copyTruncated(anchorClass, parent);
+	}
+
+	/**
+	 * The function copyTruncated() returns a partial copy the structural tree
+	 * with all structural elements down to one level below the given anchor
+	 * class and meta data attached only to elements of the given anchor class.
+	 * 
+	 * @param anchorClass
+	 *            anchor class below which the copy shall be truncated
+	 * @param parent
+	 *            parent class of the copy to create
+	 * @return a paritial copy of the structure tree
+	 */
+	private DocStruct copyTruncated(String anchorClass, DocStruct parent) {
+
+		try {
+			DocStruct newStruct = new DocStruct(type);
+			newStruct.parent = parent;
+			newStruct.logical = this.logical;
+
+			if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
+				if (allMetadata != null) {
+					for (Metadata md : allMetadata) {
+						Metadata mdnew = new Metadata(md.getType());
+						mdnew.setValue(md.getValue());
+						if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
+							mdnew.setValueQualifier(md.getValueQualifier(), md.getValueQualifierType());
+						}
+						if (md.getAuthorityID() != null && md.getAuthorityValue() != null
+								&& md.getAuthorityURI() != null) {
+							mdnew.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+						}
+						newStruct.addMetadata(mdnew);
+					}
+				}
+
+				if (allMetadataGroups != null) {
+					for (MetadataGroup md : this.getAllMetadataGroups()) {
+						MetadataGroup mdnew = new MetadataGroup(md.getType());
+						mdnew.setDocStruct(newStruct);
+						List<Metadata> newmdlist = new LinkedList<Metadata>();
+						List<Person> newPersonList = new LinkedList<Person>();
+						for (Metadata meta : md.getMetadataList()) {
+							Metadata newMeta = new Metadata(meta.getType());
+							newMeta.setValue(meta.getValue());
+							if (meta.getValueQualifier() != null && meta.getValueQualifierType() != null) {
+								newMeta.setValueQualifier(meta.getValueQualifier(), meta.getValueQualifierType());
+							}
+							if (meta.getAuthorityID() != null && meta.getAuthorityValue() != null
+									&& meta.getAuthorityURI() != null) {
+								newMeta.setAutorityFile(meta.getAuthorityID(), meta.getAuthorityURI(),
+										meta.getAuthorityValue());
+							}
+							newmdlist.add(newMeta);
+						}
+
+						for (Person ps : md.getPersonList()) {
+							Person newps = new Person(ps.getType());
+							if (ps.getLastname() != null) {
+								newps.setLastname(ps.getLastname());
+							}
+							if (ps.getFirstname() != null) {
+								newps.setFirstname(ps.getFirstname());
+							}
+							if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
+									&& ps.getAuthorityValue() != null) {
+								newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+							}
+							if (ps.getInstitution() != null) {
+								newps.setInstitution(ps.getInstitution());
+							}
+							if (ps.getAffiliation() != null) {
+								newps.setAffiliation(ps.getAffiliation());
+							}
+							if (ps.getRole() != null) {
+								newps.setRole(ps.getRole());
+							}
+							newPersonList.add(newps);
+						}
+						mdnew.setMetadataList(newmdlist);
+						mdnew.setPersonList(newPersonList);
+						newStruct.addMetadataGroup(mdnew);
+
+						mdnew.setMetadataList(newmdlist);
+						newStruct.addMetadataGroup(mdnew);
+
+					}
+				}
+
+				// Copy the persons.
+				if (this.getAllPersons() != null) {
+					for (Person ps : this.getAllPersons()) {
+
+						Person newps = new Person(ps.getType());
+						if (ps.getLastname() != null) {
+							newps.setLastname(ps.getLastname());
+						}
+						if (ps.getFirstname() != null) {
+							newps.setFirstname(ps.getFirstname());
+						}
+
+						if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
+								&& ps.getAuthorityValue() != null) {
+							newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+						}
+
+						if (ps.getInstitution() != null) {
+							newps.setInstitution(ps.getInstitution());
+						}
+						if (ps.getAffiliation() != null) {
+							newps.setAffiliation(ps.getAffiliation());
+						}
+						if (ps.getRole() != null) {
+							newps.setRole(ps.getRole());
+						}
+						newStruct.addPerson(newps);
+
+					}
+				}
+			}
+
+			if (children != null
+					&& (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
+							.getAnchorClass().equals(anchorClass))) {
+				for (DocStruct child : this.getAllChildren()) {
+					DocStruct copiedChild = child.copyTruncated(anchorClass, parent);
+					newStruct.addChild(copiedChild);
+				}
+			}
+
+			return newStruct;
+		} catch (UGHException thisShouldNeverHappen) {
+			throw new RuntimeException(thisShouldNeverHappen.getMessage(), thisShouldNeverHappen);
+		}
+	}
 
     /***************************************************************************
      * <p>
@@ -3680,26 +3831,44 @@ public class DocStruct implements Serializable {
 	 * returns an ordered list of all anchor classes that are used by this
 	 * structure.
 	 * 
-	 * @return a list of all used anchors
+	 * @return an ordered collection of all used anchors
+	 * @throws PreferencesException
+	 *             if an anchor class name is encountered a second time after
+	 *             having been descending right into a hierarchy to be
+	 *             maintained in another anchor class already
 	 */
-	public List<String> getAllAnchorClasses() {
-		LinkedList<String> result = new LinkedList<String>();
-		addAnchorClassesRecursively(result);
+	public Collection<String> getAllAnchorClasses() throws PreferencesException {
+		LinkedHashSet<String> result = new LinkedHashSet<String>();
+		addAnchorClassesRecursively(null, result);
 		return result;
 	}
 
 	/**
 	 * The function addAnchorClassesRecursively() recursively adds all anchor
 	 * classes that are used by this logical structure to a given queue.
+	 * 
+	 * @throws PreferencesException
+	 *             if an anchor class name is encountered a second time after
+	 *             having been descending right into a hierarchy to be
+	 *             maintained in another anchor class already
 	 */
-	private void addAnchorClassesRecursively(Deque<String> classes) {
-		if (getAnchorClass() == null)
+	private void addAnchorClassesRecursively(String parentClass, LinkedHashSet<String> result)
+			throws PreferencesException {
+		String anchorClass = getAnchorClass();
+		if (anchorClass == null)
 			return;
-		if (classes.size() == 0 || !classes.getLast().equals(getAnchorClass()))
-			classes.add(getAnchorClass());
+		if (!anchorClass.equals(parentClass) & !result.add(anchorClass))
+			throw new PreferencesException(
+					"All levels of the logical document structure that belong to the same anchor file must immediately"
+							+ " follow each other as children. The given logical document structure in combination "
+							+ "with the anchor names configured would result in an interruption of the elements being "
+							+ "stored in the " + anchorClass + " anchor by elements to be stored in the " + parentClass
+							+ " anchor (and maybe others, in which a reoccurrence of the " + anchorClass
+							+ " anchor was first noticed in transition descending from DocStrctType "
+							+ parent.getType().getName() + " to " + type.getName() + ") which isn’t possible.");
 		if (children != null)
 			for (DocStruct child : children)
-				child.addAnchorClassesRecursively(classes);
+				child.addAnchorClassesRecursively(anchorClass, result);
 	}
 
 	/**
