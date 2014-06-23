@@ -91,8 +91,8 @@ import ugh.exceptions.UGHException;
  * 
  *      CHANGELOG
  *      
- *      23.06.2014 --- Ronge --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on export & add getter
- *      for meta data
+ *      23.06.2014 --- Ronge --- Fixed an NPE --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on
+ *      export & add getter for meta data
  *      
  *      20.06.2014 --- Ronge --- Add some methods for easier use
  *      
@@ -658,21 +658,22 @@ public class DocStruct implements Serializable {
             }
         }
 
-        // Iterate over all children, if recursive set to true.
+		// Iterate over all children, if recursive set to true.
 		if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
-            for (DocStruct child : this.getAllChildren()) {
-				if ((recursive == null && type != null && type.getAnchorClass() != null && child.getType() != null && type
-						.getAnchorClass().equals(child.getType().getAnchorClass())) || recursive == true) {
-					DocStruct copiedChild = child.copy(cpmetadata, recursive);
-					try {
-						newStruct.addChild(copiedChild);
-					} catch (TypeNotAllowedAsChildException e) {
-						String message = "This " + e.getClass().getName() + " should not have been occured!";
-						LOGGER.error(message, e);
-					}
+			for (DocStruct child : this.getAllChildren()) {
+				if (recursive == null
+						&& (type == null || type.getAnchorClass() == null || child.getType() == null || !type
+								.getAnchorClass().equals(child.getType().getAnchorClass())))
+					continue;
+				DocStruct copiedChild = child.copy(cpmetadata, recursive);
+				try {
+					newStruct.addChild(copiedChild);
+				} catch (TypeNotAllowedAsChildException e) {
+					String message = "This " + e.getClass().getName() + " should not have been occured!";
+					LOGGER.error(message, e);
 				}
-            }
-        }
+			}
+		}
 
         return newStruct;
     }
