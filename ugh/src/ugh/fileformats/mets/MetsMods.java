@@ -142,6 +142,8 @@ import ugh.exceptions.WriteException;
  * 
  *        CHANGELOG
  *        
+ *        24.06.2014 --- Ronge --- Use appropriate anchor class
+ *        
  *        23.06.2014 --- Ronge --- Rename sort title accordingly --- Make read & write functions work with multiple anchor files --- Create
  *        ORDERLABEL attribute on export & add getter for meta data
  *        
@@ -893,14 +895,16 @@ public class MetsMods implements ugh.dl.Fileformat {
         boolean success = true;
 		if (anchorDocuments.size() != 0) {
 			// First write the anchors
+			Iterator<String> anchorClasses = uppermostStruct.getAllAnchorClasses().iterator();
 			for (DigitalDocument anchorDocument : anchorDocuments) {
 				this.digdoc = anchorDocument;
-				String anchorfilename = buildAnchorFilename(filename, anchorDocument.getAnchorClass());
+				String anchorClass = anchorClasses.next();
+				String anchorfilename = buildAnchorFilename(filename, anchorClass);
 
 				LOGGER.info("Writing anchor file '" + anchorfilename + "' from DocStruct '"
 						+ this.digdoc.getLogicalDocStruct().getType().getName() + "'");
 
-				success = writeMetsMods(anchorfilename, DO_NOT_VALIDATE, anchorDocument.getAnchorClass());
+				success = writeMetsMods(anchorfilename, DO_NOT_VALIDATE, anchorClass);
 
 				LOGGER.info("Anchor file written");
 			}
