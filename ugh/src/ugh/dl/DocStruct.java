@@ -92,7 +92,8 @@ import ugh.exceptions.UGHException;
  * 
  *      CHANGELOG
  *      
- *      25.06.2014 --- Ronge --- Recursive implementation of getChild() --- Get all childs' MODS sections --- Override toString() for DocStruct
+ *      25.06.2014 --- Ronge --- Get reading of logical structure to work --- Recursive implementation of getChild() --- Get all childs' MODS
+ *      sections --- Override toString() for DocStruct
  *      
  *      23.06.2014 --- Ronge --- Fixed an NPE --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on
  *      export & add getter for meta data
@@ -2515,7 +2516,7 @@ public class DocStruct implements Serializable {
 		// get next position of index
 		int next = where.indexOf(44) + 1;
 
-		return next != 0 ? children.get(Integer.parseInt(where.substring(0, next))).addChild(where.substring(next),
+		return next != 0 ? children.get(Integer.parseInt(where.substring(0, next - 1))).addChild(where.substring(next),
 				inchild) : addChild(Integer.valueOf(where), inchild);
 	}
 
@@ -3835,7 +3836,7 @@ public class DocStruct implements Serializable {
 				if (child.equals(d))
 					return Integer.toString(i);
 				try {
-					return i + ',' + child.indexOf(d);
+					return Integer.toString(i) + ',' + child.indexOf(d);
 				} catch (NoSuchElementException go_on) {
 				}
 			}

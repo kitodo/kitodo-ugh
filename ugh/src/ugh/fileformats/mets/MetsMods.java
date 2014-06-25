@@ -143,7 +143,7 @@ import ugh.exceptions.WriteException;
  * 
  *        CHANGELOG
  *        
- *        25.06.2014 --- Ronge --- Get all childs' MODS sections
+ *        25.06.2014 --- Ronge --- Get reading of logical structure to work --- Get all childs' MODS sections
  *        
  *        24.06.2014 --- Ronge --- Make reading work --- Use appropriate anchor class
  *        
@@ -1523,10 +1523,12 @@ public class MetsMods implements ugh.dl.Fileformat {
 							String child = newDocStruct.indexOf(elements.next());
 							DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
 							origen.addChild(child, copier.copy(true, null));
+							docStructList = newDocStruct.getChild(child).getAllRealSuccessors();
 						}
-					} else
+					} else {
 						origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
-					docStructList = newDocStruct.getAllRealSuccessors();
+						docStructList = newDocStruct.getAllRealSuccessors();
+					}
 				}
 				for (DocStruct firstStruct : docStructList) {
 					String child = newDocStruct.indexOf(firstStruct);
