@@ -143,6 +143,8 @@ import ugh.exceptions.WriteException;
  * 
  *        CHANGELOG
  *        
+ *        25.06.2014 --- Ronge --- Get all childs' MODS sections
+ *        
  *        24.06.2014 --- Ronge --- Make reading work --- Use appropriate anchor class
  *        
  *        23.06.2014 --- Ronge --- Rename sort title accordingly --- Make read & write functions work with multiple anchor files --- Create
@@ -1511,25 +1513,26 @@ public class MetsMods implements ugh.dl.Fileformat {
 			// If things are more complex, get all childs' MODS sections.
 			else if (newDocStruct.getType().getAnchorClass() != null && !recursive) try {
 				DocStruct origen = null;
-				String child = null;
+				List<DocStruct> docStructList = null;
 				for (String allAnchorClasses : newDocStruct.getAllAnchorClasses()) {
-					List<DocStruct> docStructList = child == null ? newDocStruct.getAllRealSuccessors()
-							: newDocStruct.getChild(child).getAllRealSuccessors();
-					DocStruct first = docStructList.iterator().next();
 					MetsMods metsMods = new MetsMods(myPreferences, buildAnchorFilename(theFilename,
 							allAnchorClasses), true);
-					child = child == null ? newDocStruct.indexOf(first) : child + ',' + newDocStruct.indexOf(first);
-					if (origen == null) {
+					if (docStructList != null) {
+						Iterator<DocStruct> elements = docStructList.iterator();
+						while (elements.hasNext()) {
+							String child = newDocStruct.indexOf(elements.next());
+							DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
+							origen.addChild(child, copier.copy(true, null));
+						}
+					} else
 						origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
-					} else {
-						DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
-						origen.addChild(child, copier.copy(true, null));
-					}
+					docStructList = newDocStruct.getAllRealSuccessors();
 				}
-				List<DocStruct> successors = newDocStruct.getChild(child).getAllRealSuccessors();
-				child += ',' + newDocStruct.indexOf(successors.iterator().next());
-				origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
-				
+				for (DocStruct firstStruct : docStructList) {
+					String child = newDocStruct.indexOf(firstStruct);
+					origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
+				}
+
 				// when done, write the origen document back
 				this.getDigitalDocument().setLogicalDocStruct(origen);
 			} catch (UGHException caught) {

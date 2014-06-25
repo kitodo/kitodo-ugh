@@ -92,7 +92,7 @@ import ugh.exceptions.UGHException;
  * 
  *      CHANGELOG
  *      
- *      25.06.2014 --- Ronge --- Override toString() for DocStruct
+ *      25.06.2014 --- Ronge --- Get all childs' MODS sections --- Override toString() for DocStruct
  *      
  *      23.06.2014 --- Ronge --- Fixed an NPE --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on
  *      export & add getter for meta data
@@ -2409,15 +2409,38 @@ public class DocStruct implements Serializable {
     /***************************************************************************
      * <p>
      * Adds a DocStruct object as a child to this instance. The new child will automatically become the last child in the list. When adding a
-     * DocStruct, configuration is checked, wether a DocStruct of this type can be added. If not, it is not added and false is returned. The parent of
+     * DocStruct, configuration is checked, wether a DocStruct of this type can be added. If not, a TypeNotAllowedAsChildException is thrown. The parent of
      * this child (this instance) is set automatically.
      * </p>
      * 
      * @param inchild DocStruct to be added
-     * @return true, if child was added; otherwise false
+     * @return wether inchild isn’t null and its type isn’t null
      * @throws TypeNotAllowedAsChildException if a child should be added, but it's DocStruct type isn't member of this instance's DocStruct type
      **************************************************************************/
     public boolean addChild(DocStruct inchild) throws TypeNotAllowedAsChildException {
+    	return addChild((Integer) null, inchild);
+    }
+
+	/**
+	 * Adds a DocStruct object as a child to this instance. The new child will
+	 * become the element at the specified position in the child list while the
+	 * element currently at that position (if any) and any subsequent elements
+	 * are shifted to the right (so that one gets added to their indices), or
+	 * the last child in the list if index is null. When adding a DocStruct,
+	 * configuration is checked, wether a DocStruct of this type can be added.
+	 * If not, a TypeNotAllowedAsChildException is thrown. The parent of this
+	 * child (this instance) is set automatically.
+	 * 
+	 * @param index
+	 *            index at which the child is to be inserted
+	 * @param inchild
+	 *            DocStruct to be added
+	 * @return wether inchild isn’t null and its type isn’t null
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
+    public boolean addChild(Integer index, DocStruct inchild) throws TypeNotAllowedAsChildException {
 
         if (inchild == null || inchild.getType() == null) {
             LOGGER.warn("DocStruct or DocStructType is null");
@@ -2455,14 +2478,16 @@ public class DocStruct implements Serializable {
             inchild.setPhysical(true);
         }
 
-        // Add child to end of List.
-        inchild.setParent(this);
-        if (this.children.add(inchild)) {
-            return true;
-        }
+		inchild.setParent(this);
 
-        // Child wasn't added.
-        return false;
+		if (index == null)
+			// Add child to end of List.
+			children.add(inchild);
+		else
+			children.add(index.intValue(), inchild);
+
+		// Child was added.
+		return true;
     }
 
 	/**
@@ -2490,9 +2515,8 @@ public class DocStruct implements Serializable {
 		// get next position of index
 		int next = where.indexOf(44) + 1;
 
-		// insert child
-		return next != 0 ? addChild(where.substring(next), inchild) : children.get(Integer.parseInt(where)).addChild(
-				inchild);
+		return next != 0 ? children.get(Integer.parseInt(where.substring(0, next))).addChild(where.substring(next),
+				inchild) : addChild(Integer.valueOf(where), inchild);
 	}
 
     /***************************************************************************
@@ -4021,19 +4045,23 @@ public class DocStruct implements Serializable {
 	 */
 	@Override
 	public String toString() {
+		final int EM_DASH = 0x2014;
+		final int EMPTY = 0x2205;
 		final int HORIZONTAL_ELLIPSIS = 0x2026;
 		final short MAX_CHARS = 12;
 
 		StringBuilder result = new StringBuilder();
 		if (type == null)
-			result.append("type=null");
+			result.appendCodePoint(EMPTY);
 		else if (type.getName() == null)
-			result.append("name=null");
+			result.appendCodePoint(EM_DASH);
 		else
 			result.append(type.getName());
-		result.append(" (");
+		if(type != null)
+			result.append(' ');
+		result.append('(');
 		if (allMetadata == null)
-			result.append("allMetadata=null");
+			result.appendCodePoint(EM_DASH);
 		else {
 			String out = null;
 			Iterator<String> iter = IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING.iterator();
@@ -4048,13 +4076,14 @@ public class DocStruct implements Serializable {
 			} else if (out != null)
 				result.append(out);
 			else {
-				result.append("allMetadata: ");
+				result.append("\u2026 ");
 				result.append(allMetadata.size());
+				result.append(" \u2026");
 			}
 		}
 		result.append(')');
 		if(children == null)
-			result.append("[null]");
+			result.append("[\u2014]");
 		else
 			result.append(children.toString());
 		return result.toString();
