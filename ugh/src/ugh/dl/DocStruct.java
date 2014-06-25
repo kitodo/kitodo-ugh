@@ -25,6 +25,7 @@ package ugh.dl;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -90,6 +91,8 @@ import ugh.exceptions.UGHException;
  *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
  * 
  *      CHANGELOG
+ *      
+ *      25.06.2014 --- Ronge --- Override toString() for DocStruct
  *      
  *      23.06.2014 --- Ronge --- Fixed an NPE --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on
  *      export & add getter for meta data
@@ -165,6 +168,10 @@ public class DocStruct implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
     private static final String HIDDEN_METADATA_CHAR = "_";
+    
+	private static final List<String> IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING = Arrays.asList(
+		new String[] { "TitleDocMain", "CatalogIDDigital", "TitleDocMainShort", "MetsPointerURL" }
+	);
 
     // List containing all Metadata instances.
     private List<Metadata> allMetadata;
@@ -3998,5 +4005,58 @@ public class DocStruct implements Serializable {
 					result.add(metadata);
 			}
 		return result;
+	}
+
+	/**
+	 * The function toString() returns a concise but informative representation
+	 * of this DocStruct that is easy for a person to read.
+	 * 
+	 * The toString method for class DocStruct returns a string consisting of
+	 * the type name of which the DocStruct is an instance, an (optionally
+	 * truncated) identifier, if one is found, and the children of the
+	 * DocStruct, if any.
+	 * 
+	 * @return a string representation of the DocStruct
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		final int HORIZONTAL_ELLIPSIS = 0x2026;
+		final short MAX_CHARS = 12;
+
+		StringBuilder result = new StringBuilder();
+		if (type == null)
+			result.append("type=null");
+		else if (type.getName() == null)
+			result.append("name=null");
+		else
+			result.append(type.getName());
+		result.append(" (");
+		if (allMetadata == null)
+			result.append("allMetadata=null");
+		else {
+			String out = null;
+			Iterator<String> iter = IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING.iterator();
+			while (out == null && iter.hasNext()) {
+				Iterator<Metadata> mdIter = getMetadataByType(iter.next()).iterator();
+				while (mdIter.hasNext() && out == null)
+					out = mdIter.next().getValue();
+			}
+			if (out != null && out.length() > MAX_CHARS) {
+				result.append(out.substring(0, MAX_CHARS - 1));
+				result.appendCodePoint(HORIZONTAL_ELLIPSIS);
+			} else if (out != null)
+				result.append(out);
+			else {
+				result.append("allMetadata: ");
+				result.append(allMetadata.size());
+			}
+		}
+		result.append(')');
+		if(children == null)
+			result.append("[null]");
+		else
+			result.append(children.toString());
+		return result.toString();
 	}
 }
