@@ -92,7 +92,7 @@ import ugh.exceptions.UGHException;
  * 
  *      CHANGELOG
  *      
- *      25.06.2014 --- Ronge --- Get all childs' MODS sections --- Override toString() for DocStruct
+ *      25.06.2014 --- Ronge --- Recursive implementation of getChild() --- Get all childs' MODS sections --- Override toString() for DocStruct
  *      
  *      23.06.2014 --- Ronge --- Fixed an NPE --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on
  *      export & add getter for meta data
@@ -3905,7 +3905,7 @@ public class DocStruct implements Serializable {
 
 	/**
 	 * The function getChild() returns a child element from this structural
-	 * entity by numeric reference
+	 * entity by numeric reference.
 	 * 
 	 * @param reference
 	 *            reference to the child entity to get
@@ -3914,17 +3914,12 @@ public class DocStruct implements Serializable {
 	 *             if the child indicated cannot be reached
 	 */
 	public DocStruct getChild(String reference) {
-		DocStruct result = this;
 		int fieldSeparator;
-		while ((fieldSeparator = reference.indexOf(',')) > -1) {
-			try {
-				result = result.getAllChildren().get(Integer.parseInt(reference.substring(0, fieldSeparator)));
-			} catch (NullPointerException nupox) {
-				throw new IndexOutOfBoundsException(nupox.getMessage());
-			}
-			reference = reference.length() >= fieldSeparator + 1 ? reference.substring(fieldSeparator + 1) : null;
-		}
-		return result;
+		if ((fieldSeparator = reference.indexOf(',')) > -1) {
+			int index = Integer.parseInt(reference.substring(0, fieldSeparator));
+			return children.get(index).getChild(reference.substring(fieldSeparator + 1));
+		} else
+			return children.get(Integer.parseInt(reference));
 	}
 
 	/**
