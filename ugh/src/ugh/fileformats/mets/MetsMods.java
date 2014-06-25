@@ -143,7 +143,8 @@ import ugh.exceptions.WriteException;
  * 
  *        CHANGELOG
  *        
- *        25.06.2014 --- Ronge --- Get reading of logical structure to work --- Get all childs' MODS sections
+ *        25.06.2014 --- Ronge --- Check if an anchorIdentifier was written only for traditional hierarchy --- Get reading of logical structure to
+ *        work --- Get all childs' MODS sections
  *        
  *        24.06.2014 --- Ronge --- Make reading work --- Use appropriate anchor class
  *        
@@ -4344,6 +4345,7 @@ public class MetsMods implements ugh.dl.Fileformat {
             // Check if an anchorIdentifier metadata type was written, if
 			// parentStruct was a anchor, but inStruct is not.
 			if (parentStruct != null && parentStruct.getType().getAnchorClass() != null
+					&& parentStruct.getParent() == null
 					&& inStruct.getType().getAnchorClass() == null && !gotAnchorIdentifierType) {
                 WriteException we =
                         new WriteException("Unable to write MODS section! No metadata of type '" + this.anchorIdentifierMetadataType
