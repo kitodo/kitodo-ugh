@@ -27,7 +27,8 @@ import ugh.dl.MetadataType;
 
 /*******************************************************************************
  * @author Markus Enders
- * @version 2010-01-22
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-26
  * @since 2005-03-09
  ******************************************************************************/
 
@@ -86,6 +87,10 @@ public class MetadataTypeNotAllowedException extends UGHException {
 	public String getMessage() {
 
 		String result;
+
+		if (this.metadataType == null && this.docStructType == null && super.getMessage() != null) {
+			return super.getMessage();
+		}
 
 		if (this.metadataType == null && this.docStructType == null) {
 			return "Metadata not allowed! MetadataType and DocStructType unknown";

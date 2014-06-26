@@ -48,6 +48,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
+import ugh.fileformats.mets.MetsModsImportExport;
 
 /*******************************************************************************
  * <p>
@@ -93,7 +94,7 @@ import ugh.exceptions.UGHException;
  * 
  *      CHANGELOG
  *      
- *      26.06.2014 --- Ronge --- Pass DigitalDocument as parameter --- Fix NullPointerException
+ *      26.06.2014 --- Ronge --- Get anchor classes & get only real successors --- Pass DigitalDocument as parameter --- Fix NullPointerException
  *      
  *      25.06.2014 --- Ronge --- Get reading of logical structure to work --- Recursive implementation of getChild() --- Get all childs' MODS
  *      sections --- Override toString() for DocStruct
@@ -314,9 +315,10 @@ public class DocStruct implements Serializable {
         return this.children;
     }
 
-    /**
+	/**
 	 * Returns all real successors, i.e. all child nodes that are of a different
-	 * or no anchor class at all, of an instance as a flat list.
+	 * or no anchor class at all, of an instance as a flat list. Doesn’t return
+	 * unreal successors; that are those who are nothing but METS pointers.
 	 * 
 	 * @return List containing DocStruct instances; if this instance has no
 	 *         children, an empty list is returned.
@@ -327,7 +329,7 @@ public class DocStruct implements Serializable {
 			for (DocStruct child : children)
 				if (type.getAnchorClass().equals(child.getType().getAnchorClass()))
 					result.addAll(child.getAllRealSuccessors());
-				else
+				else if (!child.hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE))
 					result.add(child);
 		return result;
 	}
@@ -432,14 +434,14 @@ public class DocStruct implements Serializable {
                     mdTypeTestPassed = false;
                     if (theMDTypeName.equals("*")) {
                         mdTypeTestPassed = true;
+                        break;
                     } else {
                         MetadataType mdtype = md.getType();
                         String mdtypename = mdtype.getName();
 
                         if (mdtypename != null && mdtypename.equals(theMDTypeName)) {
                             mdTypeTestPassed = true;
-                        } else {
-                            mdTypeTestPassed = false;
+                            break;
                         }
                     }
                 }
@@ -3875,36 +3877,47 @@ public class DocStruct implements Serializable {
 	 */
 	public Collection<String> getAllAnchorClasses() throws PreferencesException {
 		LinkedHashSet<String> result = new LinkedHashSet<String>();
-		addAnchorClassesRecursively(null, result);
-		return result;
-	}
-
-	/**
-	 * The function addAnchorClassesRecursively() recursively adds all anchor
-	 * classes that are used by this logical structure to a given queue.
-	 * 
-	 * @throws PreferencesException
-	 *             if an anchor class name is encountered a second time after
-	 *             having been descending right into a hierarchy to be
-	 *             maintained in another anchor class already
-	 */
-	private void addAnchorClassesRecursively(String parentClass, LinkedHashSet<String> result)
-			throws PreferencesException {
 		String anchorClass = getAnchorClass();
-		if (anchorClass == null)
-			return;
-		if (!anchorClass.equals(parentClass) & !result.add(anchorClass))
-			throw new PreferencesException(
-					"All levels of the logical document structure that belong to the same anchor file must immediately"
-							+ " follow each other as children. The given logical document structure in combination "
-							+ "with the anchor names configured would result in an interruption of the elements being "
-							+ "stored in the " + anchorClass + " anchor by elements to be stored in the " + parentClass
-							+ " anchor (and maybe others, in which a reoccurrence of the " + anchorClass
-							+ " anchor was first noticed in transition descending from DocStrctType "
-							+ parent.getType().getName() + " to " + type.getName() + ") which isn’t possible.");
-		if (children != null)
-			for (DocStruct child : children)
-				child.addAnchorClassesRecursively(anchorClass, result);
+		if (anchorClass != null) {
+			result.add(anchorClass);
+			List<DocStruct> docStructs = getAllRealSuccessors();
+			do {
+				anchorClass = null;
+				List<DocStruct> nextLevel = new LinkedList<DocStruct>();
+				for (DocStruct docStruct : docStructs) {
+					String ancora = docStruct.getAnchorClass();
+					if (ancora != null) {
+						if (anchorClass == null) {
+							anchorClass = ancora;
+						} else if (!anchorClass.equals(ancora)) {
+							throw new PreferencesException(
+									"All real successors of an anchor class that are of an anchor class themselves "
+											+ "must belong to the same anchor class. The given logical document "
+											+ "structure in combination with the anchor names configured would result "
+											+ "in the hierarchical level " + docStruct.getParent().getType().getName()
+											+ "\u200A\u2014\u200Abelonging to the anchor class "
+											+ docStruct.getParent().getType().getAnchorClass() + "\u200A\u2014\u200Ato"
+											+ " have children which belong to the different anchor classes "
+											+ anchorClass + " and " + ancora + ", which is not supported.");
+						}
+						nextLevel.addAll(docStruct.getAllRealSuccessors());
+					}
+				}
+				if(anchorClass != null && !result.add(anchorClass)) {
+					String last = "";
+					for (String entry : result)
+						last = entry;
+					throw new PreferencesException(
+							"All levels of the logical document structure that belong to the same anchor file must "
+									+ "immediately  follow each other as children. The given logical document "
+									+ "structure in combination with the anchor names configured would result in an "
+									+ "interruption of the elements being stored in the " + anchorClass + " anchor by "
+									+ "elements to be stored in the " + last + " anchor,  which isn’t possible.");
+				}
+				docStructs = nextLevel;
+			} while (docStructs.size() > 0);
+		}
+		return result;
 	}
 
 	/**

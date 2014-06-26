@@ -83,11 +83,13 @@ import ugh.exceptions.WriteException;
  * @author Stefan Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
- * @version 2014-06-23
+ * @version 2014-06-26
  * @since 2009-05-09
  * 
  * 
  *        CHANGELOG
+ *        
+ *        26.06.2014 --- Ronge --- Get anchor classes & get only real successors
  *        
  *        23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
  *        
@@ -1330,9 +1332,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
 
-		if (inStruct.getType().getAnchorClass().equals(anchorClass) && inStruct.getParent() != null
-				&& inStruct.getParent().getType().getAnchorClass() != null
-				&& !inStruct.getParent().getType().getAnchorClass().equals(inStruct.getType().getAnchorClass())) {
+		if (anchorClass == null && inStruct.getType().getAnchorClass() == null && inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null) {
             if (ordernumber != null && ordernumber.length() > 0) {
                 div.setAttribute(METS_ORDER_STRING, ordernumber);
             }
