@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -91,6 +92,8 @@ import ugh.exceptions.UGHException;
  *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
  * 
  *      CHANGELOG
+ *      
+ *      26.06.2014 --- Ronge --- Fix NullPointerException
  *      
  *      25.06.2014 --- Ronge --- Get reading of logical structure to work --- Recursive implementation of getChild() --- Get all childs' MODS
  *      sections --- Override toString() for DocStruct
@@ -4000,7 +4003,10 @@ public class DocStruct implements Serializable {
 	 *             if no matching child is found
 	 */
 	public DocStruct getChild(String type, String identifierField, String identifier) throws NoSuchElementException {
-		for (DocStruct child : getAllChildrenByTypeAndMetadataType(type, identifierField))
+		List<DocStruct> children = getAllChildrenByTypeAndMetadataType(type, identifierField);
+		if (children == null)
+			children = Collections.emptyList();
+		for (DocStruct child : children)
 			for (Metadata metadataElement : child.getAllMetadata())
 				if (metadataElement.getType().getName().equals(identifierField)
 						&& metadataElement.getValue().equals(identifier))
