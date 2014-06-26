@@ -76,7 +76,7 @@ import ugh.exceptions.UGHException;
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
- * @version 2014-06-23
+ * @version 2014-06-26
  * @see DigitalDocument
  * 
  *      TODOLOG
@@ -93,7 +93,7 @@ import ugh.exceptions.UGHException;
  * 
  *      CHANGELOG
  *      
- *      26.06.2014 --- Ronge --- Fix NullPointerException
+ *      26.06.2014 --- Ronge --- Pass DigitalDocument as parameter --- Fix NullPointerException
  *      
  *      25.06.2014 --- Ronge --- Get reading of logical structure to work --- Recursive implementation of getChild() --- Get all childs' MODS
  *      sections --- Override toString() for DocStruct
@@ -3963,11 +3963,7 @@ public class DocStruct implements Serializable {
 	 * 
 	 * @param type
 	 *            structural type of the child to create
-	 * @param fieldNames
-	 *            list of meta data fields to create in the child (may be empty)
-	 * @param value
-	 *            value to set the meta data fields to
-	 * @param act
+	 * @param caudexDigitalis
 	 *            act to create the child in
 	 * @param ruleset
 	 *            rule set the act is based on
@@ -3978,9 +3974,9 @@ public class DocStruct implements Serializable {
 	 *             if a child should be added, but it's DocStruct type isn't
 	 *             member of this instance's DocStruct type
 	 */
-	public DocStruct createChild(String type, Prefs ruleset) throws TypeNotAllowedForParentException,
-			TypeNotAllowedAsChildException {
-		DocStruct result = digdoc.createDocStruct(ruleset.getDocStrctTypeByName(type));
+	public DocStruct createChild(String type, DigitalDocument caudexDigitalis, Prefs ruleset)
+			throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
+		DocStruct result = caudexDigitalis.createDocStruct(ruleset.getDocStrctTypeByName(type));
 		addChild(result);
 		return result;
 	}
