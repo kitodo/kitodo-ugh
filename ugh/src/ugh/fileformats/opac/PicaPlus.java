@@ -25,9 +25,11 @@ package ugh.fileformats.opac;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -48,6 +50,8 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -73,13 +77,16 @@ import ugh.exceptions.WriteException;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
- * @version 2010-02-15
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-09-19
  * 
  *          TODOLOG
  * 
  * 			 TODO add NormMetadata
  * 
  *          CHANGELOG
+ * 
+ *          19.09.2014 --- Ronge --- Add import into metadata groups
  * 
  *          15.02.2010 --- Funk --- Logging version information now.
  * 
@@ -124,6 +131,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	private static final String			PREFS_DOCSTRUCT_STRING			= "DocStruct";
 	private static final String			PREFS_PERSON_STRING				= "Person";
 	private static final String			PREFS_PICAPLUSGROUP_STRING		= "PicaPlusGroup";
+	private static final String         PREFS_METADATAGROUP_STRING      = "MetadataGroup";
 	private static final String			PREFS_GROUPNAME_STRING			= "Groupname";
 	private static final String			PREFS_DELIMETER_STRING			= "Delimiter";
 	private static final String			PREFS_PICAMAINTAG_STRING		= "PicaMainTag";
@@ -154,13 +162,15 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	private ugh.dl.DigitalDocument		mydoc							= new DigitalDocument();
 
 	// General preferences.
-	private ugh.dl.Prefs				myPreferences;
+	private final ugh.dl.Prefs				myPreferences;
 
 	// Contains all PicaPlusGroups.
-	private Set<MatchingMetadataGroup>	allGroups						= new HashSet<MatchingMetadataGroup>();
+	private final Set<MatchingMetadataGroup>	allGroups						= new HashSet<MatchingMetadataGroup>();
 
 	// Contains all rules for metadata matching.
-	private Set<MatchingMetadataObject>	mmoList							= new HashSet<MatchingMetadataObject>();
+	private final Set<MatchingMetadataObject>	mmoList							= new HashSet<MatchingMetadataObject>();
+
+	private final Map<String, String> metadataGroups = new HashMap<String,String>(); 
 
 	/***************************************************************************
 	 * @param inPrefs
@@ -216,6 +226,9 @@ public class PicaPlus implements ugh.dl.Fileformat {
 				} else if (n.getNodeName().equalsIgnoreCase(
 						PREFS_PICAPLUSGROUP_STRING)) {
 					readPicaGroup(n);
+				} else if (n.getNodeName().equalsIgnoreCase(
+						PREFS_METADATAGROUP_STRING)) {
+					readMetadataGroup(n);
 				}
 
 				if (mmo != null) {
@@ -227,6 +240,39 @@ public class PicaPlus implements ugh.dl.Fileformat {
 		}
 
 		LOGGER.info("Reading picaplus prefs complete");
+	}
+
+	/**
+	 * Reads a MetadataGroup mapping and writes it in the global variable
+	 * metadataGroups. A metadata group mapping is defined in a
+	 * {@code <MetadataGroup>} tag which must contain the two tags
+	 * {@code <Name>} and {@code <picaMainTag>}. In this case, all contents
+	 * found in the given pica main tag will be grouped as a metadata group with
+	 * the given name. The metadata and person elements that shall go into the
+	 * group must independently have been defined.
+	 * 
+	 * @param node
+	 *            rule set node to parse
+	 */
+	private void readMetadataGroup(Node node) {
+		String resultPicaMainTag = null;
+		String resultMetadataGroupType = null;
+
+		NodeList children = node.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node child = children.item(i);
+			if (child.getNodeType() == ELEMENT_NODE) {
+				if (child.getNodeName().equalsIgnoreCase(PREFS_NAME_STRING)) {
+					resultMetadataGroupType = readTextNode(child);
+				}else if (child.getNodeName().equalsIgnoreCase(PREFS_PICAMAINTAG_STRING)) {
+					resultPicaMainTag = readTextNode(child);
+				}
+			}
+		}
+
+		if (resultPicaMainTag != null && resultMetadataGroupType != null) {
+			metadataGroups.put(resultPicaMainTag, resultMetadataGroupType);
+		}
 	}
 
 	/***************************************************************************
@@ -477,6 +523,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
+	@Override
 	public DigitalDocument getDigitalDocument() throws PreferencesException {
 		return this.mydoc;
 	}
@@ -486,6 +533,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
+	@Override
 	public boolean setDigitalDocument(DigitalDocument inDoc) {
 		this.mydoc = inDoc;
 		return false;
@@ -572,6 +620,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * Read XMLfile.
 	 * </p>
 	 **************************************************************************/
+	@Override
 	public boolean read(String filename) throws ReadException {
 
 		// DOM Document.
@@ -699,6 +748,8 @@ public class PicaPlus implements ugh.dl.Fileformat {
 		LinkedList<Metadata> allMDs = new LinkedList<Metadata>();
 		// Contains all persons.
 		LinkedList<Person> allPer = new LinkedList<Person>();
+		// Contains all metadata groups.
+		LinkedList<MetadataGroup> allGroups = new LinkedList<MetadataGroup>();
 
 		DocStruct ds = null;
 		Metadata md = null;
@@ -736,6 +787,12 @@ public class PicaPlus implements ugh.dl.Fileformat {
 							per = (Person) pprObject;
 							allPer.add(per);
 							LOGGER.debug("Person '" + per.getType().getName()
+									+ "' found");
+						} else if (pprObject != null
+								&& pprObject.getClass() == ugh.dl.MetadataGroup.class) {
+							MetadataGroup group = (MetadataGroup) pprObject;
+							allGroups.add(group);
+							LOGGER.debug("MetadataGroup '" + group.getType().getName()
 									+ "' found");
 						}
 					}
@@ -820,6 +877,16 @@ public class PicaPlus implements ugh.dl.Fileformat {
 					String message = "Ignoring IncompletePersonObjectException at OPAC import!";
 					LOGGER.warn(message, e);
 				}
+			}
+		}
+
+		// Add metadata groups to DocStruct.
+		for (MetadataGroup group : allGroups) {
+			try {
+				ds.addMetadataGroup(group);
+			} catch (MetadataTypeNotAllowedException e) {
+				String message = "Ignoring MetadataTypeNotAllowedException at OPAC import!";
+				LOGGER.warn(message, e);
 			}
 		}
 
@@ -1183,11 +1250,27 @@ public class PicaPlus implements ugh.dl.Fileformat {
 			result.add(md);
 		}
 
-		// Return NULL is set is empty.
+		// Return NULL if set is empty.
 		if (result.isEmpty()) {
 			return null;
 		}
 
+		// Combine result elements to a metadata group, if requested
+		if (metadataGroups.containsKey(fieldAttribute)) {
+			MetadataGroupType type = myPreferences.getMetadataGroupTypeByName(metadataGroups.get(fieldAttribute));
+			MetadataGroup createdGroup = new MetadataGroup(type);
+			for (Serializable content : result) {
+				if (content instanceof Person) {
+					createdGroup.addPerson((Person) content);
+				} else if (content instanceof Metadata) {
+					createdGroup.addMetadata((Metadata) content);
+				} else {
+					LOGGER.warn("Can't add a " + content.getClass().getSimpleName() + " to a MetadataGroup.");
+				}
+			}
+			result = new HashSet<Serializable>();
+			result.add(createdGroup);
+		}
 		return result;
 	}
 
@@ -1256,6 +1339,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#update(java.lang.String)
 	 */
+	@Override
 	public boolean update(String filename) {
 		return false;
 	}
@@ -1265,6 +1349,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
+	@Override
 	public boolean write(String theFilename) throws WriteException {
 		return false;
 	}
