@@ -82,11 +82,18 @@ import ugh.exceptions.WriteException;
 /*******************************************************************************
  * @author Stefan Funk
  * @author Robert Sehr
- * @version 2013-05-08
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-26
  * @since 2009-05-09
  * 
  * 
  *        CHANGELOG
+ *        
+ *        26.06.2014 --- Ronge --- Get anchor classes & get only real successors
+ *        
+ *        23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
+ *        
+ *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *        05.05.2010 --- Funk --- Added displayName check at displayName creation time. --- Added some DPD-407 debugging outputs (commented out).
  * 
@@ -175,6 +182,31 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
     /***************************************************************************
      * STATIC FINALS
      **************************************************************************/
+
+	/**
+	 * For each meta data element of this type that is associated with a
+	 * DocStruct element of the logical structure tree of a digital document, a
+	 * METS pointer element will be created during export.
+	 */
+	public static final String CREATE_MPTR_ELEMENT_TYPE = "MetsPointerURL";
+
+	/**
+	 * If there is a meta data element of this type associated with a DocStruct
+	 * element of the logical structure tree of a digital document, a LABEL
+	 * attribute will be attached to the logical div element during export which
+	 * will have assigned the value assigned to the last meta data element of
+	 * this type associated with the DocStruct element.
+	 */
+	public static final String CREATE_LABEL_ATTRIBUTE_TYPE = MetsMods.METS_PREFS_LABEL_METADATA_STRING;
+
+	/**
+	 * If there is a meta data element of this type associated with a DocStruct
+	 * element of the logical structure tree of a digital document, an
+	 * ORDERLABEL attribute will be attached to the logical div element during
+	 * export which will have assigned the value assigned to the last meta data
+	 * element of this type associated with the DocStruct element.
+	 */
+	public static final String CREATE_ORDERLABEL_ATTRIBUTE_TYPE = MetsMods.METS_PREFS_ORDERLABEL_METADATA_STRING;
 
     protected static final String METS_PREFS_XPATH_STRING = "XPath";
     protected static final String METS_PREFS_WRITEXPATH_STRING = "WriteXPath";
@@ -325,7 +357,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     DocStructType parentDst = parentStruct.getType();
 
                     // Check, if the parent is an anchor.
-                    if (parentDst.isAnchor() && this.xPathAnchorReference != null) {
+					if (parentDst.getAnchorClass() != null && this.xPathAnchorReference != null) {
 
                         // Get identifier(s) of parent.
                         MetadataType identifierType = this.myPreferences.getMetadataTypeByName(this.anchorIdentifierMetadataType);
@@ -954,7 +986,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * @see ugh.fileformats.mets.MetsMods#checkForAnchorReference(java.lang.String, java.lang.String)
      */
     @Override
-    protected DocStruct checkForAnchorReference(String inMods, String filename) throws ReadException {
+	protected DocStruct checkForAnchorReference(String inMods, String filename, String topAnchorClassName)
+			throws ReadException {
 
         ModsDocument modsDocument;
         DocStruct anchorDocStruct = null;
@@ -994,7 +1027,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     LOGGER.debug("Anchor's identifier: " + identifierOfAnchor);
 
                     // Try to read anchor from separate file.
-                    String anchorfilename = buildAnchorFilename(filename);
+					String anchorfilename = buildAnchorFilename(filename, topAnchorClassName);
                     if (!new File(anchorfilename).exists()) {
                         // File does not exists: no anchor available.
                         return null;
@@ -1183,7 +1216,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * @see ugh.fileformats.mets.MetsMods#writeLogDivs(org.w3c.dom.Node, ugh.dl.DocStruct, boolean)
      */
     @Override
-    protected Element writeLogDivs(Node parentNode, DocStruct inStruct, boolean isAnchorFile) throws WriteException, PreferencesException {
+	protected Element writeLogDivs(Node parentNode, DocStruct inStruct, String anchorClass) throws WriteException,
+			PreferencesException {
 
         // Write div element.
         Document domDoc = parentNode.getOwnerDocument();
@@ -1215,11 +1249,14 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
 
         String label = "";
+		String orderlabel = "";
 
         if (inStruct.getAllMetadata() != null) {
             for (Metadata md : inStruct.getAllMetadata()) {
                 if (md.getType().getName().equals(METS_PREFS_LABEL_METADATA_STRING)) {
                     label = md.getValue();
+				} else if (md.getType().getName().equals(METS_PREFS_ORDERLABEL_METADATA_STRING)) {
+					orderlabel = md.getValue();
                 } else if (md.getType().getName().equals(METS_URN_NAME)) {
                     div.setAttribute(METS_CONTENTIDS_STRING, md.getValue());
                 }
@@ -1228,6 +1265,9 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         if (label != null && !label.equals("")) {
             div.setAttribute(METS_LABEL_STRING, label);
         }
+		if (orderlabel != null && !orderlabel.equals("")) {
+			div.setAttribute(METS_ORDERLABEL_STRING, orderlabel);
+		}
 
         // Set identifier for this docStruct.
         inStruct.setIdentifier(idlog);
@@ -1239,7 +1279,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
 
         // Set the DMDIDs.
-        int dmdid = writeLogDmd(this.metsNode, inStruct, isAnchorFile);
+		int dmdid = writeLogDmd(this.metsNode, inStruct, anchorClass);
         if (dmdid >= 0) {
             // Just set DMDID attribute, if there is a metadata set.
             String dmdidString = DMDLOG_PREFIX + new DecimalFormat(DECIMAL_FORMAT).format(dmdid);
@@ -1254,9 +1294,10 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         } else {
             // Set the ADMID, depends if the current element is an anchor or not.
-            if ((isAnchorFile && inStruct.getType().isAnchor())
-                    || (!isAnchorFile && inStruct.getParent() != null && inStruct.getParent().getType().isAnchor())
-                    || (!isAnchorFile && !inStruct.getType().isAnchor() && inStruct.getParent() == null)) {
+			if ((anchorClass != null && anchorClass.equals(inStruct.getType().getAnchorClass()))
+					|| (inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null && !inStruct
+							.getParent().getType().getAnchorClass().equals(anchorClass))
+					|| (anchorClass == null && inStruct.getType().getAnchorClass() == null && inStruct.getParent() == null)) {
                 div.setAttribute(METS_ADMID_STRING, AMD_PREFIX);
             }
         }
@@ -1267,7 +1308,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
         String ordernumber = "";
         // current element is anchor file
-        if (inStruct.getType().isAnchor()) {
+		if (inStruct.getType().getAnchorClass() != null) {
             if (inStruct.getAllChildren() != null && inStruct.getAllChildren().size() > 0) {
                 DocStruct child = inStruct.getAllChildren().get(0);
                 if (child.getAllMetadata() != null) {
@@ -1280,7 +1321,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
         // current element is first child of an anchor file
-        else if (!inStruct.getType().isAnchor() && inStruct.getParent() != null && inStruct.getParent().getType().isAnchor()) {
+		else if (inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null
+				&& !inStruct.getParent().getType().getAnchorClass().equals(inStruct.getType().getAnchorClass())) {
             if (inStruct.getAllMetadata() != null) {
                 for (Metadata md : inStruct.getAllMetadata()) {
                     if (md.getType().getName().equals(RULESET_ORDER_NAME)) {
@@ -1290,7 +1332,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
 
-        if (!isAnchorFile && !inStruct.getType().isAnchor() && inStruct.getParent() != null && inStruct.getParent().getType().isAnchor()) {
+		if (anchorClass == null && inStruct.getType().getAnchorClass() == null && inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null) {
             if (ordernumber != null && ordernumber.length() > 0) {
                 div.setAttribute(METS_ORDER_STRING, ordernumber);
             }
@@ -1299,7 +1341,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         // Write the MPTR element if a non-anchor file is written AND element is
         // defined as an anchor in the prefs --> METS pointer in e.g.
         // "periodical volume".
-        if (!isAnchorFile && inStruct.getType().isAnchor()) {
+		if (anchorClass == null && inStruct.getType().getAnchorClass() != null) {
             if (this.mptrUrl.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the parent/anchor DocStruct is defined! Referencing will NOT work!");
             }
@@ -1310,7 +1352,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
         // Write the MPTR element if an anchor file is written AND parent
         // element is an anchor --> METS pointer in e.g. "periodical".
-        if (isAnchorFile && !inStruct.getType().isAnchor()) {
+		if (anchorClass != null && inStruct.getType().getAnchorClass() == null) {
             if (this.mptrUrlAnchor.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the child DocStructs is defined! Referencing will NOT work!");
             }
@@ -1322,11 +1364,21 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             div.appendChild(mptr);
         }
 
+		// Create METS pointer element if requested through meta data element
+		// METADATA_TYPE_CREATE_MPTR
+		List<Metadata> metsPointerURLs = inStruct.getMetadataByType(CREATE_MPTR_ELEMENT_TYPE);
+		for (Metadata url : metsPointerURLs) {
+			Element metsPointer = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_MPTR_STRING);
+			metsPointer.setAttribute(METS_LOCTYPE_STRING, "URL");
+			createDomAttributeNS(metsPointer, this.xlinkNamespacePrefix, METS_HREF_STRING, url.getValue());
+			div.appendChild(metsPointer);
+		}
+
         // Get all children and write their divs.
         List<DocStruct> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
-                if (writeLogDivs(div, child, isAnchorFile) == null) {
+				if (writeLogDivs(div, child, anchorClass) == null) {
                     // Error occured while writing div for child.
                     return null;
                 }
@@ -2093,7 +2145,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
     }
 
-    protected void readMetadataGroupPrefs(Node inNode) throws PreferencesException {
+    @Override
+	protected void readMetadataGroupPrefs(Node inNode) throws PreferencesException {
         String internalName = null;
 
         NodeList childlist = inNode.getChildNodes();

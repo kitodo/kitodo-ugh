@@ -25,11 +25,16 @@ package ugh.dl;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
@@ -39,8 +44,11 @@ import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.IncompletePersonObjectException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
+import ugh.fileformats.mets.MetsModsImportExport;
 
 /*******************************************************************************
  * <p>
@@ -68,10 +76,13 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
- * @version 2013-05-08
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-26
  * @see DigitalDocument
  * 
  *      TODOLOG
+ *      
+ *      TODO Remove databaseid and unreachable code
  * 
  *      TODO Remove all the boolean results that always are TRUE!!
  * 
@@ -82,6 +93,18 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
  * 
  *      CHANGELOG
+ *      
+ *      26.06.2014 --- Ronge --- Get anchor classes & get only real successors --- Pass DigitalDocument as parameter --- Fix NullPointerException
+ *      
+ *      25.06.2014 --- Ronge --- Get reading of logical structure to work --- Recursive implementation of getChild() --- Get all childs' MODS
+ *      sections --- Override toString() for DocStruct
+ *      
+ *      23.06.2014 --- Ronge --- Fixed an NPE --- Make read & write functions work with multiple anchor files --- Create ORDERLABEL attribute on
+ *      export & add getter for meta data
+ *      
+ *      20.06.2014 --- Ronge --- Add some methods for easier use
+ *      
+ *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *      05.05.2010 --- Funk --- Minor changes.
  * 
@@ -150,6 +173,10 @@ public class DocStruct implements Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
     private static final String HIDDEN_METADATA_CHAR = "_";
+    
+	private static final List<String> IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING = Arrays.asList(
+		new String[] { "TitleDocMain", "CatalogIDDigital", "TitleDocMainShort", "MetsPointerURL" }
+	);
 
     // List containing all Metadata instances.
     private List<Metadata> allMetadata;
@@ -171,9 +198,9 @@ public class DocStruct implements Serializable {
     private DocStruct parent;
     // All references to other DocStrct instances (containing References
     // objects).
-    private List<Reference> docStructRefsTo = new LinkedList<Reference>();
+    private final List<Reference> docStructRefsTo = new LinkedList<Reference>();
     // All references from another DocStruct to this one.
-    private List<Reference> docStructRefsFrom = new LinkedList<Reference>();
+    private final List<Reference> docStructRefsFrom = new LinkedList<Reference>();
     // Type of this instance.
     private DocStructType type;
     // Local identifier of this docstruct.
@@ -181,10 +208,8 @@ public class DocStruct implements Serializable {
     // Digital document, to which this DocStruct belongs.
     private DigitalDocument digdoc;
     // ID in database table (4 byte long).
-    private long databaseid = 0;
+    private final long databaseid = 0;
     private Object origObject = null;
-    // Information, if database instance is the same than this one.
-    private boolean updated = false;
     private boolean logical = false;
     private boolean physical = false;
     // String containing an identifier or a URL to the anchor.
@@ -290,6 +315,25 @@ public class DocStruct implements Serializable {
         return this.children;
     }
 
+	/**
+	 * Returns all real successors, i.e. all child nodes that are of a different
+	 * or no anchor class at all, of an instance as a flat list. Doesn’t return
+	 * unreal successors; that are those who are nothing but METS pointers.
+	 * 
+	 * @return List containing DocStruct instances; if this instance has no
+	 *         children, an empty list is returned.
+	 */
+	public List<DocStruct> getAllRealSuccessors() {
+		LinkedList<DocStruct> result = new LinkedList<DocStruct>();
+		if (children != null)
+			for (DocStruct child : children)
+				if (type.getAnchorClass().equals(child.getType().getAnchorClass()))
+					result.addAll(child.getAllRealSuccessors());
+				else if (!child.hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE))
+					result.add(child);
+		return result;
+	}
+
     /***************************************************************************
      * @deprecated
      * @return
@@ -390,14 +434,14 @@ public class DocStruct implements Serializable {
                     mdTypeTestPassed = false;
                     if (theMDTypeName.equals("*")) {
                         mdTypeTestPassed = true;
+                        break;
                     } else {
                         MetadataType mdtype = md.getType();
                         String mdtypename = mdtype.getName();
 
                         if (mdtypename != null && mdtypename.equals(theMDTypeName)) {
                             mdTypeTestPassed = true;
-                        } else {
-                            mdTypeTestPassed = false;
+                            break;
                         }
                     }
                 }
@@ -470,12 +514,15 @@ public class DocStruct implements Serializable {
      * </p>
      * 
      * @param cpmetadata copies Metadata if set to true
-     * @param recursive copies all children as well, if set to true
+	 * @param recursive
+	 *            if true, copies all children as well; if null, copies all
+	 *            children which are of the same anchor class; if false, doesn’t
+	 *            copy any children
      * @return a new DocStruct instance
      * @throws TypeNotAllowedForParentException
      * @throws MetadataTypeNotAllowedException
      **************************************************************************/
-    public DocStruct copy(boolean cpmetadata, boolean recursive) {
+	public DocStruct copy(boolean cpmetadata, Boolean recursive) {
 
         DocStruct newStruct = null;
         try {
@@ -624,21 +671,172 @@ public class DocStruct implements Serializable {
             }
         }
 
-        // Iterate over all children, if recursive set to true.
-        if (recursive && this.getAllChildren() != null) {
-            for (DocStruct child : this.getAllChildren()) {
-                DocStruct copiedChild = child.copy(cpmetadata, recursive);
-                try {
-                    newStruct.addChild(copiedChild);
-                } catch (TypeNotAllowedAsChildException e) {
-                    String message = "This " + e.getClass().getName() + " should not have been occured!";
-                    LOGGER.error(message, e);
-                }
-            }
-        }
+		// Iterate over all children, if recursive set to true.
+		if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
+			for (DocStruct child : this.getAllChildren()) {
+				if (recursive == null
+						&& (type == null || type.getAnchorClass() == null || child.getType() == null || !type
+								.getAnchorClass().equals(child.getType().getAnchorClass())))
+					continue;
+				DocStruct copiedChild = child.copy(cpmetadata, recursive);
+				try {
+					newStruct.addChild(copiedChild);
+				} catch (TypeNotAllowedAsChildException e) {
+					String message = "This " + e.getClass().getName() + " should not have been occured!";
+					LOGGER.error(message, e);
+				}
+			}
+		}
 
         return newStruct;
     }
+
+	/**
+	 * The function copyTruncated() returns a partial copy the structural tree
+	 * with all structural elements down to one level below the given anchor
+	 * class and meta data attached only to elements of the given anchor class.
+	 * 
+	 * @param anchorClass
+	 *            anchor class below which the copy shall be truncated
+	 * @return a paritial copy of the structure tree
+	 */
+	public DocStruct copyTruncated(String anchorClass) {
+		return copyTruncated(anchorClass, parent);
+	}
+
+	/**
+	 * The function copyTruncated() returns a partial copy the structural tree
+	 * with all structural elements down to one level below the given anchor
+	 * class and meta data attached only to elements of the given anchor class.
+	 * 
+	 * @param anchorClass
+	 *            anchor class below which the copy shall be truncated
+	 * @param parent
+	 *            parent class of the copy to create
+	 * @return a paritial copy of the structure tree
+	 */
+	private DocStruct copyTruncated(String anchorClass, DocStruct parent) {
+
+		try {
+			DocStruct newStruct = new DocStruct(type);
+			newStruct.parent = parent;
+			newStruct.logical = this.logical;
+
+			if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
+				if (allMetadata != null) {
+					for (Metadata md : allMetadata) {
+						Metadata mdnew = new Metadata(md.getType());
+						mdnew.setValue(md.getValue());
+						if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
+							mdnew.setValueQualifier(md.getValueQualifier(), md.getValueQualifierType());
+						}
+						if (md.getAuthorityID() != null && md.getAuthorityValue() != null
+								&& md.getAuthorityURI() != null) {
+							mdnew.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+						}
+						newStruct.addMetadata(mdnew);
+					}
+				}
+
+				if (allMetadataGroups != null) {
+					for (MetadataGroup md : this.getAllMetadataGroups()) {
+						MetadataGroup mdnew = new MetadataGroup(md.getType());
+						mdnew.setDocStruct(newStruct);
+						List<Metadata> newmdlist = new LinkedList<Metadata>();
+						List<Person> newPersonList = new LinkedList<Person>();
+						for (Metadata meta : md.getMetadataList()) {
+							Metadata newMeta = new Metadata(meta.getType());
+							newMeta.setValue(meta.getValue());
+							if (meta.getValueQualifier() != null && meta.getValueQualifierType() != null) {
+								newMeta.setValueQualifier(meta.getValueQualifier(), meta.getValueQualifierType());
+							}
+							if (meta.getAuthorityID() != null && meta.getAuthorityValue() != null
+									&& meta.getAuthorityURI() != null) {
+								newMeta.setAutorityFile(meta.getAuthorityID(), meta.getAuthorityURI(),
+										meta.getAuthorityValue());
+							}
+							newmdlist.add(newMeta);
+						}
+
+						for (Person ps : md.getPersonList()) {
+							Person newps = new Person(ps.getType());
+							if (ps.getLastname() != null) {
+								newps.setLastname(ps.getLastname());
+							}
+							if (ps.getFirstname() != null) {
+								newps.setFirstname(ps.getFirstname());
+							}
+							if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
+									&& ps.getAuthorityValue() != null) {
+								newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+							}
+							if (ps.getInstitution() != null) {
+								newps.setInstitution(ps.getInstitution());
+							}
+							if (ps.getAffiliation() != null) {
+								newps.setAffiliation(ps.getAffiliation());
+							}
+							if (ps.getRole() != null) {
+								newps.setRole(ps.getRole());
+							}
+							newPersonList.add(newps);
+						}
+						mdnew.setMetadataList(newmdlist);
+						mdnew.setPersonList(newPersonList);
+						newStruct.addMetadataGroup(mdnew);
+
+						mdnew.setMetadataList(newmdlist);
+						newStruct.addMetadataGroup(mdnew);
+
+					}
+				}
+
+				// Copy the persons.
+				if (this.getAllPersons() != null) {
+					for (Person ps : this.getAllPersons()) {
+
+						Person newps = new Person(ps.getType());
+						if (ps.getLastname() != null) {
+							newps.setLastname(ps.getLastname());
+						}
+						if (ps.getFirstname() != null) {
+							newps.setFirstname(ps.getFirstname());
+						}
+
+						if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
+								&& ps.getAuthorityValue() != null) {
+							newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+						}
+
+						if (ps.getInstitution() != null) {
+							newps.setInstitution(ps.getInstitution());
+						}
+						if (ps.getAffiliation() != null) {
+							newps.setAffiliation(ps.getAffiliation());
+						}
+						if (ps.getRole() != null) {
+							newps.setRole(ps.getRole());
+						}
+						newStruct.addPerson(newps);
+
+					}
+				}
+			}
+
+			if (children != null
+					&& (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
+							.getAnchorClass().equals(anchorClass))) {
+				for (DocStruct child : this.getAllChildren()) {
+					DocStruct copiedChild = child.copyTruncated(anchorClass, parent);
+					newStruct.addChild(copiedChild);
+				}
+			}
+
+			return newStruct;
+		} catch (UGHException thisShouldNeverHappen) {
+			throw new RuntimeException(thisShouldNeverHappen.getMessage(), thisShouldNeverHappen);
+		}
+	}
 
     /***************************************************************************
      * <p>
@@ -1076,8 +1274,6 @@ public class DocStruct implements Serializable {
         ref.setType(theType);
         this.docStructRefsTo.add(ref);
         inDocStruct.docStructRefsFrom.add(ref);
-        this.updated = true;
-
         return ref;
     }
 
@@ -1107,8 +1303,6 @@ public class DocStruct implements Serializable {
         ref.setType(theType);
         this.docStructRefsFrom.add(ref);
         inDocStruct.docStructRefsTo.add(ref);
-        this.updated = true;
-
         return ref;
     }
 
@@ -1138,7 +1332,7 @@ public class DocStruct implements Serializable {
             }
         }
 
-        return (this.updated = true);
+        return true;
     }
 
     /**************************************************************************
@@ -1167,7 +1361,7 @@ public class DocStruct implements Serializable {
             }
         }
 
-        return (this.updated = true);
+        return true;
     }
 
     /***************************************************************************
@@ -2221,15 +2415,38 @@ public class DocStruct implements Serializable {
     /***************************************************************************
      * <p>
      * Adds a DocStruct object as a child to this instance. The new child will automatically become the last child in the list. When adding a
-     * DocStruct, configuration is checked, wether a DocStruct of this type can be added. If not, it is not added and false is returned. The parent of
+     * DocStruct, configuration is checked, wether a DocStruct of this type can be added. If not, a TypeNotAllowedAsChildException is thrown. The parent of
      * this child (this instance) is set automatically.
      * </p>
      * 
      * @param inchild DocStruct to be added
-     * @return true, if child was added; otherwise false
+     * @return wether inchild isn’t null and its type isn’t null
      * @throws TypeNotAllowedAsChildException if a child should be added, but it's DocStruct type isn't member of this instance's DocStruct type
      **************************************************************************/
     public boolean addChild(DocStruct inchild) throws TypeNotAllowedAsChildException {
+    	return addChild((Integer) null, inchild);
+    }
+
+	/**
+	 * Adds a DocStruct object as a child to this instance. The new child will
+	 * become the element at the specified position in the child list while the
+	 * element currently at that position (if any) and any subsequent elements
+	 * are shifted to the right (so that one gets added to their indices), or
+	 * the last child in the list if index is null. When adding a DocStruct,
+	 * configuration is checked, wether a DocStruct of this type can be added.
+	 * If not, a TypeNotAllowedAsChildException is thrown. The parent of this
+	 * child (this instance) is set automatically.
+	 * 
+	 * @param index
+	 *            index at which the child is to be inserted
+	 * @param inchild
+	 *            DocStruct to be added
+	 * @return wether inchild isn’t null and its type isn’t null
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
+    public boolean addChild(Integer index, DocStruct inchild) throws TypeNotAllowedAsChildException {
 
         if (inchild == null || inchild.getType() == null) {
             LOGGER.warn("DocStruct or DocStructType is null");
@@ -2267,15 +2484,46 @@ public class DocStruct implements Serializable {
             inchild.setPhysical(true);
         }
 
-        // Add child to end of List.
-        inchild.setParent(this);
-        if (this.children.add(inchild)) {
-            return true;
-        }
+		inchild.setParent(this);
 
-        // Child wasn't added.
-        return false;
+		if (index == null)
+			// Add child to end of List.
+			children.add(inchild);
+		else
+			children.add(index.intValue(), inchild);
+
+		// Child was added.
+		return true;
     }
+
+	/**
+	 * Adds a DocStruct object to a child of this instance, where is the
+	 * position to add it. The new child will automatically become the last
+	 * child in the list. When adding a DocStruct, configuration is checked,
+	 * wether a DocStruct of this type can be added. If not, it is not added and
+	 * false is returned. The parent of this child is set automatically.
+	 * 
+	 * @param where
+	 *            where to add the DocStruct
+	 * @param inchild
+	 *            DocStruct to be added
+	 * @return true, if child was added; otherwise false
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
+	public boolean addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
+		if (where == null || inchild == null || inchild.getType() == null) {
+			LOGGER.warn("DocStruct or DocStructType is null");
+			return false;
+		}
+
+		// get next position of index
+		int next = where.indexOf(44) + 1;
+
+		return next != 0 ? children.get(Integer.parseInt(where.substring(0, next - 1))).addChild(where.substring(next),
+				inchild) : addChild(Integer.valueOf(where), inchild);
+	}
 
     /***************************************************************************
      * <p>
@@ -3470,7 +3718,8 @@ public class DocStruct implements Serializable {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        @Override
+		public int compare(Object o1, Object o2) {
 
             Metadata m1 = (Metadata) o1;
             Metadata m2 = (Metadata) o2;
@@ -3498,7 +3747,8 @@ public class DocStruct implements Serializable {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        @Override
+		public int compare(Object o1, Object o2) {
 
             MetadataGroup m1 = (MetadataGroup) o1;
             MetadataGroup m2 = (MetadataGroup) o2;
@@ -3570,4 +3820,283 @@ public class DocStruct implements Serializable {
         }
     }
 
+	/**
+	 * Returns the index of the first occurrence of the specified element in
+	 * this DocStruct, or throws exceptions. More formally, returns the lowest
+	 * index of the DocStruct in this DocStruct. If there is no such index, a
+	 * NoSuchElementException will be thrown.
+	 * 
+	 * @param d
+	 *            DocStruct to search for
+	 * @return the index of the first occurrence of the specified DocStruct in
+	 *         this DocStruct, separated by comma, or "−1" if this DocStruct
+	 *         does not contain the element
+	 * @throws NoSuchElementException
+	 *             if this DocStruct does not contain the DocStruct
+	 */
+	public String indexOf(DocStruct d) throws NoSuchElementException {
+		if (children != null)
+			for (int i = 0; i < children.size(); i++) {
+				DocStruct child = children.get(i);
+				if (child.equals(d))
+					return Integer.toString(i);
+				try {
+					return Integer.toString(i) + ',' + child.indexOf(d);
+				} catch (NoSuchElementException go_on) {
+				}
+			}
+		throw new NoSuchElementException("No " + d + " in " + this);
+	}
+
+	/**
+	 * Retrieves the name of the anchor structure, if any, or null otherwise.
+	 * Anchors are a special type of document structure, which group other
+	 * structure entities together, but have no own content. Imagine a
+	 * periodical as such an anchor. The periodical itself is a virtual
+	 * structure entity without any own content, but groups all years of
+	 * appearance together. Years may be anchors again for volumes, etc.
+	 * 
+	 * @return String, which is null, if it cannot be used as an anchor
+	 */
+	public String getAnchorClass() {
+		if (type == null)
+			return null;
+		return type.getAnchorClass();
+	}
+
+	/**
+	 * The function getAllAnchorClasses() traverses the structure tree and
+	 * returns an ordered list of all anchor classes that are used by this
+	 * structure.
+	 * 
+	 * @return an ordered collection of all used anchors
+	 * @throws PreferencesException
+	 *             if an anchor class name is encountered a second time after
+	 *             having been descending right into a hierarchy to be
+	 *             maintained in another anchor class already
+	 */
+	public Collection<String> getAllAnchorClasses() throws PreferencesException {
+		LinkedHashSet<String> result = new LinkedHashSet<String>();
+		String anchorClass = getAnchorClass();
+		if (anchorClass != null) {
+			result.add(anchorClass);
+			List<DocStruct> docStructs = getAllRealSuccessors();
+			do {
+				anchorClass = null;
+				List<DocStruct> nextLevel = new LinkedList<DocStruct>();
+				for (DocStruct docStruct : docStructs) {
+					String ancora = docStruct.getAnchorClass();
+					if (ancora != null) {
+						if (anchorClass == null) {
+							anchorClass = ancora;
+						} else if (!anchorClass.equals(ancora)) {
+							throw new PreferencesException(
+									"All real successors of an anchor class that are of an anchor class themselves "
+											+ "must belong to the same anchor class. The given logical document "
+											+ "structure in combination with the anchor names configured would result "
+											+ "in the hierarchical level " + docStruct.getParent().getType().getName()
+											+ "\u200A\u2014\u200Abelonging to the anchor class "
+											+ docStruct.getParent().getType().getAnchorClass() + "\u200A\u2014\u200Ato"
+											+ " have children which belong to the different anchor classes "
+											+ anchorClass + " and " + ancora + ", which is not supported.");
+						}
+						nextLevel.addAll(docStruct.getAllRealSuccessors());
+					}
+				}
+				if(anchorClass != null && !result.add(anchorClass)) {
+					String last = "";
+					for (String entry : result)
+						last = entry;
+					throw new PreferencesException(
+							"All levels of the logical document structure that belong to the same anchor file must "
+									+ "immediately  follow each other as children. The given logical document "
+									+ "structure in combination with the anchor names configured would result in an "
+									+ "interruption of the elements being stored in the " + anchorClass + " anchor by "
+									+ "elements to be stored in the " + last + " anchor,  which isn’t possible.");
+				}
+				docStructs = nextLevel;
+			} while (docStructs.size() > 0);
+		}
+		return result;
+	}
+
+	/**
+	 * The function getChild() returns a child element from this structural
+	 * entity by numeric reference.
+	 * 
+	 * @param reference
+	 *            reference to the child entity to get
+	 * @return child entity, if found
+	 * @throws IndexOutOfBoundsException
+	 *             if the child indicated cannot be reached
+	 */
+	public DocStruct getChild(String reference) {
+		int fieldSeparator;
+		if ((fieldSeparator = reference.indexOf(',')) > -1) {
+			int index = Integer.parseInt(reference.substring(0, fieldSeparator));
+			return children.get(index).getChild(reference.substring(fieldSeparator + 1));
+		} else
+			return children.get(Integer.parseInt(reference));
+	}
+
+	/**
+	 * The function addMetadata() adds a meta data field with the given name to
+	 * this DocStruct and sets it to the given value.
+	 * 
+	 * @param fieldName
+	 *            name of the meta data field to add
+	 * @param value
+	 *            value to set the field to
+	 * @return the object, to be able to write several statements in-line
+	 * @throws MetadataTypeNotAllowedException
+	 *             if no corresponding MetadataType object is returned by
+	 *             getAddableMetadataTypes()
+	 */
+	public DocStruct addMetadata(String fieldName, String value) throws MetadataTypeNotAllowedException {
+		boolean success = false;
+		for (MetadataType fieldType : type.getAllMetadataTypes()) {
+			if (fieldType.getName().equals(fieldName)) {
+				Metadata field = new Metadata(fieldType);
+				field.setValue(value);
+				addMetadata(field);
+				success = true;
+				break;
+			}
+		}
+		if (!success)
+			throw new MetadataTypeNotAllowedException("Couldn’t add " + fieldName + " to " + type.getName()
+					+ ": No corresponding MetadataType object in result of DocStruc.getAllMetadataTypes().");
+		return this;
+	}
+
+	/**
+	 * The function createChild() creates a child DocStruct below a DocStruct.
+	 * This is a convenience function to add a DocStruct by its type name
+	 * string.
+	 * 
+	 * @param type
+	 *            structural type of the child to create
+	 * @param caudexDigitalis
+	 *            act to create the child in
+	 * @param ruleset
+	 *            rule set the act is based on
+	 * @return the child created
+	 * @throws TypeNotAllowedForParentException
+	 *             is thrown, if this DocStruct is not allowed for a parent
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
+	public DocStruct createChild(String type, DigitalDocument caudexDigitalis, Prefs ruleset)
+			throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
+		DocStruct result = caudexDigitalis.createDocStruct(ruleset.getDocStrctTypeByName(type));
+		addChild(result);
+		return result;
+	}
+
+	/**
+	 * The function getChild() returns a child of a DocStruct, identified by its
+	 * type and an identifier in a meta data field of choice. More formally,
+	 * returns the first child matching the given conditions and does not work
+	 * recursively. If no matching child is found, throws
+	 * NoSuchElementException.
+	 * 
+	 * @param type
+	 *            structural type of the child to locate
+	 * @param identifierField
+	 *            meta data field that holds the identifer to locate the child
+	 * @param identifier
+	 *            identifier of the child to locate
+	 * @return the child, if found
+	 * @throws NoSuchElementException
+	 *             if no matching child is found
+	 */
+	public DocStruct getChild(String type, String identifierField, String identifier) throws NoSuchElementException {
+		List<DocStruct> children = getAllChildrenByTypeAndMetadataType(type, identifierField);
+		if (children == null)
+			children = Collections.emptyList();
+		for (DocStruct child : children)
+			for (Metadata metadataElement : child.getAllMetadata())
+				if (metadataElement.getType().getName().equals(identifierField)
+						&& metadataElement.getValue().equals(identifier))
+					return child;
+		throw new NoSuchElementException("No child " + type + " with " + identifierField + " = " + identifier + " in "
+				+ this + '.');
+	}
+
+	/**
+	 * The function getMetadataByType() returns a list of all meta data elements
+	 * that are associated with this element and of a given type.
+	 * 
+	 * @param typeName
+	 *            name of the type of meta data to look for
+	 * @return a list of all meta data elements of that type
+	 */
+	public List<Metadata> getMetadataByType(String typeName) {
+		LinkedList<Metadata> result = new LinkedList<Metadata>();
+		if (allMetadata != null)
+			for (Metadata metadata : allMetadata) {
+				if (metadata.getType().getName().equals(typeName))
+					result.add(metadata);
+			}
+		return result;
+	}
+
+	/**
+	 * The function toString() returns a concise but informative representation
+	 * of this DocStruct that is easy for a person to read.
+	 * 
+	 * The toString method for class DocStruct returns a string consisting of
+	 * the type name of which the DocStruct is an instance, an (optionally
+	 * truncated) identifier, if one is found, and the children of the
+	 * DocStruct, if any.
+	 * 
+	 * @return a string representation of the DocStruct
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		final int EM_DASH = 0x2014;
+		final int EMPTY = 0x2205;
+		final int HORIZONTAL_ELLIPSIS = 0x2026;
+		final short MAX_CHARS = 12;
+
+		StringBuilder result = new StringBuilder();
+		if (type == null)
+			result.appendCodePoint(EMPTY);
+		else if (type.getName() == null)
+			result.appendCodePoint(EM_DASH);
+		else
+			result.append(type.getName());
+		if(type != null)
+			result.append(' ');
+		result.append('(');
+		if (allMetadata == null)
+			result.appendCodePoint(EM_DASH);
+		else {
+			String out = null;
+			Iterator<String> iter = IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING.iterator();
+			while (out == null && iter.hasNext()) {
+				Iterator<Metadata> mdIter = getMetadataByType(iter.next()).iterator();
+				while (mdIter.hasNext() && out == null)
+					out = mdIter.next().getValue();
+			}
+			if (out != null && out.length() > MAX_CHARS) {
+				result.append(out.substring(0, MAX_CHARS - 1));
+				result.appendCodePoint(HORIZONTAL_ELLIPSIS);
+			} else if (out != null)
+				result.append(out);
+			else {
+				result.append("\u2026 ");
+				result.append(allMetadata.size());
+				result.append(" \u2026");
+			}
+		}
+		result.append(')');
+		if(children == null)
+			result.append("[\u2014]");
+		else
+			result.append(children.toString());
+		return result.toString();
+	}
 }

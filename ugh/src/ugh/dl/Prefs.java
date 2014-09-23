@@ -55,7 +55,8 @@ import ugh.exceptions.PreferencesException;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
- * @version 2013-05-08
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-18
  * @since 2004-05-21
  * 
  *        TODOLOG
@@ -63,6 +64,8 @@ import ugh.exceptions.PreferencesException;
  *        TODO Remove the "p004" error codes? Where do they come from anyway??
  * 
  *        CHANGELOG
+ *        
+ *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *        13.02.2010 --- Funk --- Refactored some conditionals and loops.
  * 
@@ -90,8 +93,8 @@ public class Prefs implements Serializable {
 
     private List<DocStructType> allDocStrctTypes;
     private List<MetadataType> allMetadataTypes;
-    private List<MetadataGroupType> allMetadataGroupTypes;
-    private Hashtable<String, Node> allFormats;
+    private final List<MetadataGroupType> allMetadataGroupTypes;
+    private final Hashtable<String, Node> allFormats;
 
     public static final short ELEMENT_NODE = 1;
 
@@ -306,8 +309,8 @@ public class Prefs implements Serializable {
         if (attrnodes != null) {
             // Check if it's an anchor.
             Node typenode = attrnodes.item(0);
-            if (typenode != null && typenode.getNodeName().equals("anchor") && typenode.getNodeValue().equalsIgnoreCase("true")) {
-                currentDocStrctType.isAnchor(true);
+			if (typenode != null && typenode.getNodeName().equals("anchor")) {
+				currentDocStrctType.setAnchorClass(typenode.getNodeValue());
             }
         }
 
@@ -806,7 +809,7 @@ public class Prefs implements Serializable {
             // Iterate...
             for (DocStructType dst : allTypes) {
                 // ...and add to result list if anchor DocStruct.
-                if (dst.isAnchor()) {
+				if (dst.getAnchorClass() != null) {
                     result.add(dst);
                 }
             }

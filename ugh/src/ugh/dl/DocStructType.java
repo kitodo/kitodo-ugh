@@ -39,10 +39,13 @@ import java.util.Map;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
- * @version 2013-05-08
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-18
  * @see DocStruct#setType
  * 
  *      CHANGELOG
+ *      
+ *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *      13.02.2010 --- Funk --- Refcatored some overloaded methods, and set some methods deprecated.
  * 
@@ -64,11 +67,16 @@ public class DocStructType implements Serializable {
 
     private static final long serialVersionUID = -3819246407494198735L;
 
-    private static final String LINE = "--------------------" + "--------------------" + "--------------------" + "--------------------";
-
     private String name;
-    // Set to true if DocStructType can be anchor.
-    private boolean isanchor = false;
+
+	/**
+	 * The field anchorClass may name an anchor (abstract super structure) class
+	 * that logical structure instances of this type belong to. There may be
+	 * multiple classes and several DocStructTypes may belong to one class. In
+	 * this case, they must share the same anchorClass value. If the anchorClass
+	 * is null, this DocStructType is a common element, not an anchor.
+	 */
+	private String anchorClass = null;
     // Preferences, which created this instance.
     private boolean hasfileset = true;
     private boolean topmost = false;
@@ -86,7 +94,7 @@ public class DocStructType implements Serializable {
     // be children of this one here.
     protected List<String> allChildrenTypes;
 
-    private List allMetadataGroups;
+    private final List allMetadataGroups;
 
     /***************************************************************************
      * <p>
@@ -162,24 +170,6 @@ public class DocStructType implements Serializable {
     }
 
     /***************************************************************************
-     * @deprecated
-     * @return the isanchor
-     **************************************************************************/
-    @Deprecated
-    public boolean isIsanchor() {
-        return this.isanchor;
-    }
-
-    /***************************************************************************
-     * @param isanchor the isanchor to set
-     * @deprecated
-     **************************************************************************/
-    @Deprecated
-    public void setIsanchor(boolean isanchor) {
-        this.isanchor = isanchor;
-    }
-
-    /***************************************************************************
      * @return the topmost
      **************************************************************************/
     public boolean isTopmost() {
@@ -200,21 +190,22 @@ public class DocStructType implements Serializable {
      * 
      * @param inBool
      **************************************************************************/
-    public void isAnchor(boolean inBool) {
-        this.isanchor = inBool;
+	public void setAnchorClass(String anchorClass) {
+		this.anchorClass = anchorClass;
     }
 
     /***************************************************************************
-     * <p>
-     * Retrieves information, wether this type is an anchor or not. An anchor is a special type of document structure, which groups other structure
-     * entities togehter, but has no own content. E.h. a periodical as such can be an anchor. The perodical itself is a virtual structure entity
-     * without any own content, but groups all volumes together.
-     * </p>
-     * 
-     * @return boolean, which is set to true, if it can be used as an anchor
-     **************************************************************************/
-    public boolean isAnchor() {
-        return this.isanchor;
+	 * Retrieves the name of the anchor structure, if any, or null otherwise.
+	 * Anchors ar a special type of document structure, which group other
+	 * structure entities together, but have no own content. E.h. a periodical
+	 * as such can be an anchor. The periodical itself is a virtual structure
+	 * entity without any own content, but groups all years of appearance
+	 * together. Years may be anchors again for volumes, etc.
+	 * 
+	 * @return String, which is null, if it cannot be used as an anchor
+	 **************************************************************************/
+	public String getAnchorClass() {
+		return anchorClass;
     }
 
     /***************************************************************************
@@ -714,40 +705,9 @@ public class DocStructType implements Serializable {
      * 
      * @see java.lang.Object#toString()
      */
-    public String toString() {
-
+    @Override
+	public String toString() {
         return getName();
-
-        //		String result = LINE + "\nDocStructType " + this.getName() + "\n"
-        //				+ LINE + "\n";
-        //
-        //		// All languages.
-        //		result += "\tLANGUAGES\n";
-        //
-        //		StringBuffer resultBuffer = new StringBuffer();
-        //		for (String lan : this.allLanguages.values()) {
-        //			resultBuffer.append("\t\t" + lan + "\n");
-        //		}
-        //		result += resultBuffer;
-        //
-        //		// All children types.
-        //		result += "\tALLOWED CHILD TYPES\n";
-        //
-        //		for (String child : this.allChildrenTypes) {
-        //			result += "\t\t" + child + "\n";
-        //		}
-        //
-        //		// All metadata.
-        //		result += "\tMETADATA\n";
-        //
-        //		for (Object ob : this.allMetadataTypes) {
-        //			DocStructType.MetadataTypeForDocStructType meta = (DocStructType.MetadataTypeForDocStructType) ob;
-        //			System.out.println("\t\t" + meta.getMetadataType().getName()
-        //					+ "/de:" + meta.getMetadataType().getLanguage("de") + "("
-        //					+ meta.getNumber() + ")");
-        //		}
-        //
-        //		return result;
     }
 
     /***************************************************************************
@@ -825,19 +785,6 @@ public class DocStructType implements Serializable {
 
         return out;
     }
-
-//    /**************************************************************************
-//     * <p>
-//     * Deprecated method, please use getAllDefaultDisplayMetadataTypes() in the future.
-//     * </p>
-//     * 
-//     * @deprecated
-//     * @return
-//     **************************************************************************/
-//    @Deprecated
-//    public List<MetadataGroup> getAllDefaultGroupTypes() {
-//        return getAllDefaultDisplayMetadataGroups();
-//    }
 
     /***************************************************************************
      * <p>

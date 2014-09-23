@@ -55,7 +55,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * </p>
  * 
  * @author Markus Enders
- * @version 2010-01-22
+ * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @version 2014-06-18
  * @since 2002
  * @deprecated
  * 
@@ -68,6 +69,8 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  *             TODO Calculate image path (from PPN, TIFF Header, volume number)
  * 
  *             CHANGELOG
+ *             
+ *             18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
  * 
  *             22.01.2010 --- Funk --- Minor improvements due to findbugs.
  * 
@@ -103,11 +106,11 @@ public class Excelfile implements ugh.dl.Fileformat {
 	// All PaginationSequences instances.
 	private List<PaginationSequence>					allPaginations;
 	// All Documentstures.
-	private List<DocStruct>								allDocStruct	= new LinkedList<DocStruct>();
+	private final List<DocStruct>						allDocStruct	= new LinkedList<DocStruct>();
 
 	// Cell coordinates of allDocStruct.
-	private List<String>								allStructRow	= new LinkedList<String>();
-	private List<String>								allStructSheets	= new LinkedList<String>();
+	private final List<String>							allStructRow	= new LinkedList<String>();
+	private final List<String>							allStructSheets	= new LinkedList<String>();
 
 	// Hashtables are used for matching the internal Name of metadata and
 	// docstructs to the name used in the Excel sheet. The contents is read from
@@ -183,6 +186,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * 
 	 * @param filename
 	 **************************************************************************/
+	@Override
 	public boolean update(String filename) {
 		// Get metadata on topmost level - this one is in the
 		// Bibliographic-table.
@@ -385,6 +389,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
+	@Override
 	public boolean write(String inFile) {
 		return false;
 	}
@@ -394,6 +399,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
+	@Override
 	public DigitalDocument getDigitalDocument() {
 		return this.mydoc;
 	}
@@ -403,6 +409,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
+	@Override
 	public boolean setDigitalDocument(DigitalDocument inDoc) {
 		this.mydoc = inDoc;
 		return true;
@@ -413,6 +420,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * 
 	 * @see ugh.dl.Fileformat#read(java.lang.String)
 	 */
+	@Override
 	public boolean read(String filename) {
 		// Excelsheet for bibliographic information.
 		org.apache.poi.hssf.usermodel.HSSFSheet bibSheet;
@@ -1240,7 +1248,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 		}
 
 		DocStructType parentType = parent.getType();
-		if (parentType.isAnchor()) {
+		if (parentType.getAnchorClass() != null) {
 			// It's an anchor (e.g. a periodical...) so we cannot add any
 			// children to this but we must get the next structure entity
 			// (child) - e.g. the volume.
@@ -1782,7 +1790,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 				}
 
 				DocStructType parentType = parent.getType();
-				if (parentType.isAnchor()) {
+				if (parentType.getAnchorClass() != null) {
 					// It's an anchor (e.g. a periodical...) so we cannot add
 					// any children to this but we must get the next structure
 					// entity (child) - e.g. the volume.
@@ -1865,7 +1873,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 		}
 
 		DocStructType parentType = parent.getType();
-		if (parentType.isAnchor()) {
+		if (parentType.getAnchorClass() != null) {
 			// It's an anchor (e.g. a periodical...) so we cannot add any
 			// children to this but we must get the next structure entity
 			// (child) - e.g. the volume.
