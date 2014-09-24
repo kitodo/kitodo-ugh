@@ -1512,35 +1512,37 @@ public class MetsMods implements ugh.dl.Fileformat {
             }
             
 			// If things are more complex, get all childs' MODS sections.
-			else if (newDocStruct.getType().getAnchorClass() != null && !recursive) try {
-				DocStruct origen = null;
-				List<DocStruct> docStructList = null;
-				for (String allAnchorClasses : newDocStruct.getAllAnchorClasses()) {
-					MetsMods metsMods = new MetsMods(myPreferences, buildAnchorFilename(theFilename,
-							allAnchorClasses), true);
-					if (docStructList != null) {
-						Iterator<DocStruct> elements = docStructList.iterator();
-						while (elements.hasNext()) {
-							String child = newDocStruct.indexOf(elements.next());
-							DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
-							origen.addChild(child, copier.copy(true, null));
-							docStructList = newDocStruct.getChild(child).getAllRealSuccessors();
+			else if (newDocStruct.getType().getAnchorClass() != null && !recursive) {
+				try {
+					DocStruct origen = null;
+					List<DocStruct> docStructList = null;
+					for (String allAnchorClasses : newDocStruct.getAllAnchorClasses()) {
+						MetsMods metsMods = new MetsMods(myPreferences, buildAnchorFilename(theFilename,
+								allAnchorClasses), true);
+						if (docStructList != null) {
+							Iterator<DocStruct> elements = docStructList.iterator();
+							while (elements.hasNext()) {
+								String child = newDocStruct.indexOf(elements.next());
+								DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
+								origen.addChild(child, copier.copy(true, null));
+								docStructList = newDocStruct.getChild(child).getAllRealSuccessors();
+							}
+						} else {
+							origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
+							docStructList = newDocStruct.getAllRealSuccessors();
 						}
-					} else {
-						origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
-						docStructList = newDocStruct.getAllRealSuccessors();
 					}
-				}
-				for (DocStruct firstStruct : docStructList) {
-					String child = newDocStruct.indexOf(firstStruct);
-					origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
-				}
+					for (DocStruct firstStruct : docStructList) {
+						String child = newDocStruct.indexOf(firstStruct);
+						origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
+					}
 
-				// when done, write the origen document back
-				this.getDigitalDocument().setLogicalDocStruct(origen);
-			} catch (UGHException caught) {
-				throw caught instanceof ReadException ? (ReadException) caught : new ReadException(
-						caught.getMessage(), caught);
+					// when done, write the origen document back
+					this.getDigitalDocument().setLogicalDocStruct(origen);
+				} catch (UGHException caught) {
+					throw caught instanceof ReadException ? (ReadException) caught : new ReadException(
+							caught.getMessage(), caught);
+				}
 			}
             
         } else {
@@ -3195,6 +3197,10 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             }
 
+        	if(!theFilegroup.isOrdinary() && !cf.isRepresentative()) {
+				continue;
+			}
+            
             // Use the content file's ID if local filegroup is written, append
             // the filegroup's name if not.
             if (!theFilegroup.getName().equals(METS_FILEGROUP_LOCAL_STRING)) {
@@ -3419,6 +3425,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         for (ContentFile cf : contentFiles) {
             // Pass each file group.
             for (VirtualFileGroup vFileGroup : this.digdoc.getFileSet().getVirtualFileGroups()) {
+                if(vFileGroup.isOrdinary()){
                 // Write XML elements (METS:fptr).
                 Element fptr = createDomElementNS(theDocument, this.metsNamespacePrefix, METS_FPTR_STRING);
                 String id = cf.getIdentifier();
@@ -3431,6 +3438,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
                 LOGGER.trace("File '" + cf.getLocation() + "' written in file group " + vFileGroup.getName() + " for DocStruct '"
                         + theStruct.getType().getName() + "'!");
+                }
             }
         }
     }

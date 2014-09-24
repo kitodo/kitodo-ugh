@@ -54,6 +54,7 @@ public class VirtualFileGroup implements Serializable {
 	private String				mimetype			= "";
 	private String				fileSuffix			= "";
 	private String				idSuffix			= "";
+	private boolean				ordinary			= true;
 
 	/***************************************************************************
 	 * Default constructor.
@@ -149,6 +150,20 @@ public class VirtualFileGroup implements Serializable {
 	 **************************************************************************/
 	public void setIdSuffix(String idSuffix) {
 		this.idSuffix = idSuffix;
+	}
+
+	/***************************************************************************
+	 * @return
+	 **************************************************************************/
+	public boolean isOrdinary() {
+		return ordinary;
+	}
+
+	/***************************************************************************
+	 * @param ordinary
+	 **************************************************************************/
+	public void setOrdinary(boolean ordinary) {
+		this.ordinary = ordinary;
 	}
 
 }
