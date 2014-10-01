@@ -539,6 +539,7 @@ public class DocStruct implements Serializable {
 
         // Copy the link to the parent.
         newStruct.setParent(this.getParent());
+        newStruct.origObject = this.origObject;
         if (this.logical) {
             newStruct.logical = this.logical;
         }
