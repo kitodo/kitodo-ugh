@@ -54,12 +54,15 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
@@ -515,6 +518,16 @@ public class MetsMods implements ugh.dl.Fileformat {
     protected static final String PHYS_PREFIX = "PHYS_";
     protected static final String DMDPHYS_PREFIX = "DMDPHYS_";
     protected static final String ANCHOR_XML_FILE_SUFFIX_STRING = "_anchor";
+
+	/**
+	 * Character used inside the MetsMods class to separate multiple anchor
+	 * URLs. Must be a character that cannot be part of an URL (that would have
+	 * been encoded, if it was, respectively) and that has no special meaning in
+	 * a Java regular expression. The variable must be a String so that we can
+	 * pass it to {@link java.lang.String#split(String)}.
+	 */
+	private static final String URL_SEPARATOR = "\u00BB";
+
     private boolean writeLocalFilegroup = true;
 
     /***************************************************************************
@@ -3507,19 +3520,20 @@ public class MetsMods implements ugh.dl.Fileformat {
         Element mptr = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_MPTR_STRING);
         mptr.setAttribute(METS_LOCTYPE_STRING, "URL");
 
-		// Write the MPTR element if a the element is
-		// of a different anchor class in the prefs than the one of the written file --> upwards pointer
-		if (inStruct.getType().getAnchorClass() != null && !inStruct.getType().getAnchorClass().equals(anchorClass)) {
-            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, this.mptrUrl);
+		// Write an "upwards" MPTR pointing to the only or a higher anchor file
+        // if the current docStruct is of a different anchor class than the
+        // anchor class of the file thas is currently written, but at least one
+        // child is of that class.
+        if (inStruct.mustWriteUpwardsMptrIn(anchorClass)){
+            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getUpwardsMptrFor(inStruct, anchorClass));
             div.appendChild(mptr);
         }
 
-		// Write the MPTR element if the parent
-		// element is of a different anchor class --> downwards pointer
-		if (inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null
-				&& !inStruct.getParent().getType().getAnchorClass().equals(anchorClass)) {
-            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, this.mptrUrlAnchor);
-            // Write mptr element.
+		// Write a "downwards" MPTR pointing to the only or a higher anchor
+        // file if if the parent docStruct is of the the anchor class of the
+        // file thas is currently written, but this docStruct isn’t.
+		if (inStruct.mustWriteDownwardsMptrIn(anchorClass)) {
+            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getDownwardsMptrFor(inStruct, anchorClass));
             div.appendChild(mptr);
         }
 
@@ -5080,7 +5094,11 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @param mptrUrl
      **************************************************************************/
     public void setMptrUrl(String mptrUrl) {
-        this.mptrUrl = mptrUrl;
+		if (mptrUrl == null || this.mptrUrl == null || this.mptrUrl.length() == 0) {
+			this.mptrUrl = mptrUrl;
+		} else {
+			this.mptrUrl += URL_SEPARATOR + mptrUrl;
+		}
     }
 
     /***************************************************************************
@@ -5096,6 +5114,68 @@ public class MetsMods implements ugh.dl.Fileformat {
     public void setMptrAnchorUrl(String mptrAnchorUrl) {
         this.mptrUrlAnchor = mptrAnchorUrl;
     }
+
+	/**
+	 * Returns the upwards pointing METS pointer depeding on the given anchor
+	 * class and the logical document structure the given docStruct is part of.
+	 * 
+	 * @param inStruct
+	 *            a logical document structure entity whose anchor class
+	 *            hierarchy is to examine
+	 * @param anchorClass
+	 *            the anchor class of the file under construction
+	 * @return the upwards pointing METS pointer
+	 * @throws PreferencesException
+	 *             if an anchor class name is encountered a second time after
+	 *             having been descending right into a hierarchy to be
+	 *             maintained in another anchor class already
+	 */
+	protected String getUpwardsMptrFor(DocStruct inStruct, String anchorClass) throws PreferencesException {
+		if (this.mptrUrl == null) {
+			return null;
+		}
+		String result = "";
+		Collection<String> anchorChain = inStruct.getTopStruct().getAllAnchorClasses();
+		anchorChain.add(null);
+		Iterator<String> capstan = anchorChain.iterator();
+		Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
+		for (String link = capstan.next(); !(link == null || link.equals(anchorClass)); link = capstan.next()) {
+			if (path.hasNext()) {
+				result = path.next();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the downwards pointing METS pointer depeding on the given anchor
+	 * class and the logical document structure the given docStruct is part of.
+	 * 
+	 * @param inStruct
+	 *            a logical document structure entity whose anchor class
+	 *            hierarchy is to examine
+	 * @param anchorClass
+	 *            the anchor class of the file under construction
+	 * @return the downwards pointing METS pointer
+	 * @throws NoSuchElementException
+	 *             if the given anchorClass isn’t found in the list of anchor
+	 *             classes
+	 */
+	protected String getDownwardsMptrFor(DocStruct inStruct, String anchorClass) throws PreferencesException {
+		if (this.mptrUrlAnchor == null || this.mptrUrl == null) {
+			return null;
+		}
+		if (anchorClass == null) {
+			return "";
+		}
+		Iterator<String> capstan = inStruct.getTopStruct().getAllAnchorClasses().iterator();
+		Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
+		String step = path.hasNext() ? path.next() : null;
+		do {
+			step = path.hasNext() ? path.next() : null;
+		} while (!anchorClass.equals(capstan.next()));
+		return step != null && capstan.hasNext() ? step : this.mptrUrlAnchor;
+	}
 
     /***************************************************************************
      * @return

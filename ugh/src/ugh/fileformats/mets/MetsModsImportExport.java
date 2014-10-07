@@ -1338,25 +1338,28 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
 
-        // Write the MPTR element if a non-anchor file is written AND element is
-        // defined as an anchor in the prefs --> METS pointer in e.g.
-        // "periodical volume".
-		if (anchorClass == null && inStruct.getType().getAnchorClass() != null) {
+		// Write an "upwards" MPTR pointing to the only or a higher anchor file
+        // if the current docStruct is of a different anchor class than the
+        // anchor class of the file thas is currently written, but at least one
+        // child is of that class.
+        if (inStruct.mustWriteUpwardsMptrIn(anchorClass)){
             if (this.mptrUrl.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the parent/anchor DocStruct is defined! Referencing will NOT work!");
             }
-            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, this.mptrUrl);
+            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getUpwardsMptrFor(inStruct, anchorClass));
             // Write mptr element.
             div.appendChild(mptr);
         }
 
-        // Write the MPTR element if an anchor file is written AND parent
-        // element is an anchor --> METS pointer in e.g. "periodical".
-		if (anchorClass != null && inStruct.getType().getAnchorClass() == null) {
+		// Write a "downwards" MPTR pointing to the only or a higher anchor
+        // file if if the parent docStruct is of the the anchor class of the
+        // file thas is currently written, but this docStruct isn’t.
+		List<Metadata> metsPointerURLs = inStruct.getMetadataByType(CREATE_MPTR_ELEMENT_TYPE);
+		if (metsPointerURLs.size() == 0 && inStruct.mustWriteDownwardsMptrIn(anchorClass)) {
             if (this.mptrUrlAnchor.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the child DocStructs is defined! Referencing will NOT work!");
             }
-            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, this.mptrUrlAnchor);
+            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getDownwardsMptrFor(inStruct, anchorClass));
             if (ordernumber != null && ordernumber.length() > 0) {
                 div.setAttribute(METS_ORDER_STRING, ordernumber);
             }
@@ -1366,7 +1369,6 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
 		// Create METS pointer element if requested through meta data element
 		// METADATA_TYPE_CREATE_MPTR
-		List<Metadata> metsPointerURLs = inStruct.getMetadataByType(CREATE_MPTR_ELEMENT_TYPE);
 		for (Metadata url : metsPointerURLs) {
 			Element metsPointer = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_MPTR_STRING);
 			metsPointer.setAttribute(METS_LOCTYPE_STRING, "URL");
@@ -1378,6 +1380,9 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         List<DocStruct> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
+				if (anchorClass == null && child.isMetsPointerStruct()) {
+					continue;
+				}
 				if (writeLogDivs(div, child, anchorClass) == null) {
                     // Error occured while writing div for child.
                     return null;
