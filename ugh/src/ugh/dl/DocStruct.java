@@ -673,7 +673,7 @@ public class DocStruct implements Serializable {
                     }
                 }
             }
-        }
+            }        	
 
 		// Iterate over all children, if recursive set to true.
 		if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
@@ -730,6 +730,9 @@ public class DocStruct implements Serializable {
 			if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
 				if (allMetadata != null) {
 					for (Metadata md : allMetadata) {
+						if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
+							continue;
+						}
 						Metadata mdnew = new Metadata(md.getType());
 						mdnew.setValue(md.getValue());
 						if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
@@ -826,14 +829,31 @@ public class DocStruct implements Serializable {
 
 					}
 				}
+			} else if (allMetadata != null
+					&& parent != null
+					&& parent.getType().getAnchorClass() != null
+					&& parent.getType().getAnchorClass().equals(anchorClass)
+					&& (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
+							.equals(type.getAnchorClass()))) {
+				for (Metadata md : allMetadata) {
+					if (!MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
+						continue;
+					}
+					Metadata mdnew = new Metadata(md.getType());
+					mdnew.setValue(md.getValue());
+					newStruct.addMetadata(mdnew);
+				}
 			}
 
 			if (children != null
 					&& (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
 							.getAnchorClass().equals(anchorClass))) {
 				for (DocStruct child : this.getAllChildren()) {
-					DocStruct copiedChild = child.copyTruncated(anchorClass, this);
-					newStruct.addChild(copiedChild);
+					if ((anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass()))
+							|| !child.isMetsPointerStruct() ) {
+						DocStruct copiedChild = child.copyTruncated(anchorClass, this);
+						newStruct.addChild(copiedChild);
+					}
 				}
 			}
 
@@ -843,7 +863,29 @@ public class DocStruct implements Serializable {
 		}
 	}
 
-    /***************************************************************************
+	/**
+	 * Returns whether this is a DocStruct that contains METS pointers himself
+	 * or whose children are, without exception, METS pointers in the same
+	 * sense.
+	 * 
+	 * @return whether this contains only METS pointers
+	 */
+	public boolean isMetsPointerStruct() {
+		if (getMetadataByType(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE).size() > 0) {
+			return true;
+		}
+		if (children == null) {
+			return false;
+		}
+		for (DocStruct child : children) {
+			if (!child.isMetsPointerStruct()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/***************************************************************************
      * <p>
      * Returns all References; parameter must be "to" or "from"; otherwise all references are returned a List is returned, containing "References"
      * instances.
@@ -4155,5 +4197,61 @@ public class DocStruct implements Serializable {
 			result.append(children.toString());
 		}
 		return result.toString();
+	}
+
+	/**
+	 * Returns whether a downwards METS pointer must be written. This is the
+	 * case if the parent docStruct is of the the anchor class of the file thas
+	 * is currently written, but this docStruct isn’t.
+	 * 
+	 * @param fileClass
+	 *            anchor class of the file to write
+	 * @return whether a downwards METS pointer must be written
+	 */
+	public boolean mustWriteDownwardsMptrIn(String fileClass) {
+		if (fileClass == null || parent == null) {
+			return false;
+		}
+		return fileClass.equals(parent.getType().getAnchorClass())
+				&& !fileClass.equals(type.getAnchorClass());
+	}
+
+	/**
+	 * Returns whether an upwards METS pointer must be written. This is the case
+	 * if the current docStruct is of a different anchor class than the anchor
+	 * class of the file thas is currently written, but at least one child is of
+	 * that class.
+	 * 
+	 * @param fileClass
+	 *            anchor class of the file to write
+	 * @return whether an upwards METS pointer must be written
+	 */
+	public boolean mustWriteUpwardsMptrIn(String fileClass) {
+		if (type.getAnchorClass() == null || children == null || type.getAnchorClass().equals(fileClass)) {
+			return false;
+		}
+		if (fileClass != null) {
+			for (DocStruct child : children) {
+				if (fileClass.equals(child.getType().getAnchorClass())) {
+					return true;
+				}
+			}
+		} else {
+			for (DocStruct child : children) {
+				if (child.getType().getAnchorClass() == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the topmost DocStruct
+	 * 
+	 * @return the topmost DocStruct
+	 */
+	public DocStruct getTopStruct() {
+		return parent == null ? this : parent.getTopStruct();
 	}
 }
