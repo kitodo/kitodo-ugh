@@ -325,12 +325,15 @@ public class DocStruct implements Serializable {
 	 */
 	public List<DocStruct> getAllRealSuccessors() {
 		LinkedList<DocStruct> result = new LinkedList<DocStruct>();
-		if (children != null)
-			for (DocStruct child : children)
-				if (type.getAnchorClass().equals(child.getType().getAnchorClass()))
+		if (children != null) {
+			for (DocStruct child : children) {
+				if (type.getAnchorClass().equals(child.getType().getAnchorClass())) {
 					result.addAll(child.getAllRealSuccessors());
-				else if (!child.hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE))
+				} else if (!child.hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE)) {
 					result.add(child);
+				}
+			}
+		}
 		return result;
 	}
 
@@ -676,8 +679,9 @@ public class DocStruct implements Serializable {
 			for (DocStruct child : this.getAllChildren()) {
 				if (recursive == null
 						&& (type == null || type.getAnchorClass() == null || child.getType() == null || !type
-								.getAnchorClass().equals(child.getType().getAnchorClass())))
+								.getAnchorClass().equals(child.getType().getAnchorClass()))) {
 					continue;
+				}
 				DocStruct copiedChild = child.copy(cpmetadata, recursive);
 				try {
 					newStruct.addChild(copiedChild);
@@ -827,7 +831,7 @@ public class DocStruct implements Serializable {
 					&& (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
 							.getAnchorClass().equals(anchorClass))) {
 				for (DocStruct child : this.getAllChildren()) {
-					DocStruct copiedChild = child.copyTruncated(anchorClass, parent);
+					DocStruct copiedChild = child.copyTruncated(anchorClass, this);
 					newStruct.addChild(copiedChild);
 				}
 			}
@@ -2108,8 +2112,8 @@ public class DocStruct implements Serializable {
             }
         }
 
-        if (this.persons != null)
-            for (Person per : this.persons) {
+        if (this.persons != null) {
+			for (Person per : this.persons) {
                 MetadataType mdt = per.getType();
                 if (mdt == null) {
                     continue;
@@ -2119,6 +2123,7 @@ public class DocStruct implements Serializable {
                     return true;
                 }
             }
+		}
 
         return false;
     }
@@ -2486,11 +2491,12 @@ public class DocStruct implements Serializable {
 
 		inchild.setParent(this);
 
-		if (index == null)
+		if (index == null) {
 			// Add child to end of List.
 			children.add(inchild);
-		else
+		} else {
 			children.add(index.intValue(), inchild);
+		}
 
 		// Child was added.
 		return true;
@@ -3835,16 +3841,18 @@ public class DocStruct implements Serializable {
 	 *             if this DocStruct does not contain the DocStruct
 	 */
 	public String indexOf(DocStruct d) throws NoSuchElementException {
-		if (children != null)
+		if (children != null) {
 			for (int i = 0; i < children.size(); i++) {
 				DocStruct child = children.get(i);
-				if (child.equals(d))
+				if (child.equals(d)) {
 					return Integer.toString(i);
+				}
 				try {
 					return Integer.toString(i) + ',' + child.indexOf(d);
 				} catch (NoSuchElementException go_on) {
 				}
 			}
+		}
 		throw new NoSuchElementException("No " + d + " in " + this);
 	}
 
@@ -3859,8 +3867,9 @@ public class DocStruct implements Serializable {
 	 * @return String, which is null, if it cannot be used as an anchor
 	 */
 	public String getAnchorClass() {
-		if (type == null)
+		if (type == null) {
 			return null;
+		}
 		return type.getAnchorClass();
 	}
 
@@ -3905,8 +3914,9 @@ public class DocStruct implements Serializable {
 				}
 				if(anchorClass != null && !result.add(anchorClass)) {
 					String last = "";
-					for (String entry : result)
+					for (String entry : result) {
 						last = entry;
+					}
 					throw new PreferencesException(
 							"All levels of the logical document structure that belong to the same anchor file must "
 									+ "immediately  follow each other as children. The given logical document "
@@ -3935,8 +3945,9 @@ public class DocStruct implements Serializable {
 		if ((fieldSeparator = reference.indexOf(',')) > -1) {
 			int index = Integer.parseInt(reference.substring(0, fieldSeparator));
 			return children.get(index).getChild(reference.substring(fieldSeparator + 1));
-		} else
+		} else {
 			return children.get(Integer.parseInt(reference));
+		}
 	}
 
 	/**
@@ -3963,9 +3974,10 @@ public class DocStruct implements Serializable {
 				break;
 			}
 		}
-		if (!success)
+		if (!success) {
 			throw new MetadataTypeNotAllowedException("Couldn’t add " + fieldName + " to " + type.getName()
 					+ ": No corresponding MetadataType object in result of DocStruc.getAllMetadataTypes().");
+		}
 		return this;
 	}
 
@@ -4013,13 +4025,17 @@ public class DocStruct implements Serializable {
 	 */
 	public DocStruct getChild(String type, String identifierField, String identifier) throws NoSuchElementException {
 		List<DocStruct> children = getAllChildrenByTypeAndMetadataType(type, identifierField);
-		if (children == null)
+		if (children == null) {
 			children = Collections.emptyList();
-		for (DocStruct child : children)
-			for (Metadata metadataElement : child.getAllMetadata())
+		}
+		for (DocStruct child : children) {
+			for (Metadata metadataElement : child.getAllMetadata()) {
 				if (metadataElement.getType().getName().equals(identifierField)
-						&& metadataElement.getValue().equals(identifier))
+						&& metadataElement.getValue().equals(identifier)) {
 					return child;
+				}
+			}
+		}
 		throw new NoSuchElementException("No child " + type + " with " + identifierField + " = " + identifier + " in "
 				+ this + '.');
 	}
@@ -4034,11 +4050,13 @@ public class DocStruct implements Serializable {
 	 */
 	public List<Metadata> getMetadataByType(String typeName) {
 		LinkedList<Metadata> result = new LinkedList<Metadata>();
-		if (allMetadata != null)
+		if (allMetadata != null) {
 			for (Metadata metadata : allMetadata) {
-				if (metadata.getType().getName().equals(typeName))
+				if (metadata.getType().getName().equals(typeName)) {
 					result.add(metadata);
+				}
 			}
+		}
 		return result;
 	}
 
@@ -4062,41 +4080,45 @@ public class DocStruct implements Serializable {
 		final short MAX_CHARS = 12;
 
 		StringBuilder result = new StringBuilder();
-		if (type == null)
+		if (type == null) {
 			result.appendCodePoint(EMPTY);
-		else if (type.getName() == null)
+		} else if (type.getName() == null) {
 			result.appendCodePoint(EM_DASH);
-		else
+		} else {
 			result.append(type.getName());
-		if(type != null)
+		}
+		if(type != null) {
 			result.append(' ');
+		}
 		result.append('(');
-		if (allMetadata == null)
+		if (allMetadata == null) {
 			result.appendCodePoint(EM_DASH);
-		else {
+		} else {
 			String out = null;
 			Iterator<String> iter = IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING.iterator();
 			while (out == null && iter.hasNext()) {
 				Iterator<Metadata> mdIter = getMetadataByType(iter.next()).iterator();
-				while (mdIter.hasNext() && out == null)
+				while (mdIter.hasNext() && out == null) {
 					out = mdIter.next().getValue();
+				}
 			}
 			if (out != null && out.length() > MAX_CHARS) {
 				result.append(out.substring(0, MAX_CHARS - 1));
 				result.appendCodePoint(HORIZONTAL_ELLIPSIS);
-			} else if (out != null)
+			} else if (out != null) {
 				result.append(out);
-			else {
+			} else {
 				result.append("\u2026 ");
 				result.append(allMetadata.size());
 				result.append(" \u2026");
 			}
 		}
 		result.append(')');
-		if(children == null)
+		if(children == null) {
 			result.append("[\u2014]");
-		else
+		} else {
 			result.append(children.toString());
+		}
 		return result.toString();
 	}
 }
