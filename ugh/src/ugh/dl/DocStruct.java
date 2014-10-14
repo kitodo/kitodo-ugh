@@ -3829,29 +3829,63 @@ public class DocStruct implements Serializable {
 
 	/**
 	 * Returns the index of the first occurrence of the specified element in
-	 * this DocStruct, or throws exceptions. More formally, returns the lowest
+	 * this DocStruct, or throws an exception. More formally, returns the lowest
 	 * index of the DocStruct in this DocStruct. If there is no such index, a
 	 * NoSuchElementException will be thrown.
 	 * 
 	 * @param d
 	 *            DocStruct to search for
 	 * @return the index of the first occurrence of the specified DocStruct in
-	 *         this DocStruct, separated by comma, or "−1" if this DocStruct
-	 *         does not contain the element
+	 *         this DocStruct, separated by comma
 	 * @throws NoSuchElementException
 	 *             if this DocStruct does not contain the DocStruct
 	 */
 	public String indexOf(DocStruct d) throws NoSuchElementException {
+		return indexOf(d, null);
+	}
+
+	/**
+	 * Returns the index of the first occurrence of the specified element in
+	 * this DocStruct after the specified index or throws an exception. More
+	 * formally, returns the lowest index of the DocStruct in this DocStruct
+	 * after the index. If there is no such index, a NoSuchElementException will
+	 * be thrown. The search will be fast-forwarded to the specified element so
+	 * that the search will continue right after the specified element. If there
+	 * is no such index, a NoSuchElementException will be thrown.
+	 * 
+	 * @param d
+	 *            DocStruct to search for
+	 * @param afterIndex
+	 *            index after which to start searching
+	 * @return the index of the first occurrence of the specified DocStruct in
+	 *         this DocStruct, separated by comma
+	 * @throws NoSuchElementException
+	 *             if this DocStruct does not contain the DocStruct
+	 */
+	public String indexOf(DocStruct d, String afterIndex) throws NoSuchElementException {
+		int from = 0;
+		String subIndex = null;
+		if (afterIndex != null) {
+			int comma = afterIndex.indexOf(',');
+			if (comma >= 0) {
+				from = Integer.parseInt(afterIndex.substring(0, comma));
+				subIndex = afterIndex.substring(comma + 1);
+			} else {
+				from = Integer.parseInt(afterIndex) + 1;
+			}
+		}
+
 		if (children != null) {
-			for (int i = 0; i < children.size(); i++) {
+			for (int i = from; i < children.size(); i++) {
 				DocStruct child = children.get(i);
-				if (child.equals(d)) {
+				if (subIndex == null && child.equals(d)) {
 					return Integer.toString(i);
 				}
 				try {
-					return Integer.toString(i) + ',' + child.indexOf(d);
+					return Integer.toString(i) + ',' + child.indexOf(d, subIndex);
 				} catch (NoSuchElementException go_on) {
 				}
+				subIndex = null;
 			}
 		}
 		throw new NoSuchElementException("No " + d + " in " + this);

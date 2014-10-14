@@ -1532,8 +1532,9 @@ public class MetsMods implements ugh.dl.Fileformat {
 							docStructList = newDocStruct.getAllRealSuccessors();
 						}
 					}
+					String child = null;
 					for (DocStruct firstStruct : docStructList) {
-						String child = newDocStruct.indexOf(firstStruct);
+						child = newDocStruct.indexOf(firstStruct, child);
 						origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
 					}
 
