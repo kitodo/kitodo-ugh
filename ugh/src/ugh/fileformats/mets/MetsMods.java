@@ -3521,11 +3521,11 @@ public class MetsMods implements ugh.dl.Fileformat {
         mptr.setAttribute(METS_LOCTYPE_STRING, "URL");
 
 		// Write an "upwards" MPTR pointing to the only or a higher anchor file
-        // if the current docStruct is of a different anchor class than the
-        // anchor class of the file thas is currently written, but at least one
-        // child is of that class.
+        // if at least one child of the current docStruct is of a different
+        // anchor class than the anchor class of the current docStruct and the
+        // file under construction isn’t the topmost anchor file.
         if (inStruct.mustWriteUpwardsMptrIn(anchorClass)){
-            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getUpwardsMptrFor(inStruct, anchorClass));
+            createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getUpwardsMptrFor(inStruct));
             div.appendChild(mptr);
         }
 
@@ -5122,28 +5122,28 @@ public class MetsMods implements ugh.dl.Fileformat {
 	 * @param inStruct
 	 *            a logical document structure entity whose anchor class
 	 *            hierarchy is to examine
-	 * @param anchorClass
-	 *            the anchor class of the file under construction
 	 * @return the upwards pointing METS pointer
 	 * @throws PreferencesException
 	 *             if an anchor class name is encountered a second time after
 	 *             having been descending right into a hierarchy to be
 	 *             maintained in another anchor class already
 	 */
-	protected String getUpwardsMptrFor(DocStruct inStruct, String anchorClass) throws PreferencesException {
+	protected String getUpwardsMptrFor(DocStruct inStruct) throws PreferencesException {
 		if (this.mptrUrl == null) {
 			return null;
 		}
 		String result = "";
+		String anchorClass = inStruct.getType().getAnchorClass();
 		Collection<String> anchorChain = inStruct.getTopStruct().getAllAnchorClasses();
 		anchorChain.add(null);
 		Iterator<String> capstan = anchorChain.iterator();
 		Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
-		for (String link = capstan.next(); !(link == null || link.equals(anchorClass)); link = capstan.next()) {
+		String link = capstan.next();
+		do{
 			if (path.hasNext()) {
 				result = path.next();
 			}
-		}
+		}while(!(link.equals(anchorClass) || (link = capstan.next()) == null));
 		return result;
 	}
 

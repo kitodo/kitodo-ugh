@@ -4218,27 +4218,24 @@ public class DocStruct implements Serializable {
 
 	/**
 	 * Returns whether an upwards METS pointer must be written. This is the case
-	 * if the current docStruct is of a different anchor class than the anchor
-	 * class of the file thas is currently written, but at least one child is of
-	 * that class.
+	 * if at least one child of the current docStruct is of a different anchor
+	 * class than the anchor class of this docStruct and the file under
+	 * construction isn’t the topmost anchor file.
 	 * 
 	 * @param fileClass
 	 *            anchor class of the file to write
 	 * @return whether an upwards METS pointer must be written
 	 */
 	public boolean mustWriteUpwardsMptrIn(String fileClass) {
-		if (type.getAnchorClass() == null || children == null || type.getAnchorClass().equals(fileClass)) {
+		if (children == null || fileClass != null && fileClass.equals(getTopStruct().getType().getAnchorClass())) {
 			return false;
 		}
-		if (fileClass != null) {
+		String anchorClass = type.getAnchorClass();
+		if(anchorClass == null){
+			return false;
+		}else{
 			for (DocStruct child : children) {
-				if (fileClass.equals(child.getType().getAnchorClass())) {
-					return true;
-				}
-			}
-		} else {
-			for (DocStruct child : children) {
-				if (child.getType().getAnchorClass() == null) {
+				if (!anchorClass.equals(child.getType().getAnchorClass())) {
 					return true;
 				}
 			}
