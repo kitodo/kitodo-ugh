@@ -1338,10 +1338,14 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             }
         }
 
-		// Write an "upwards" MPTR pointing to the only or a higher anchor file
-        // if at least one child of the current docStruct is of a different
-        // anchor class than the anchor class of the current docStruct and the
-        // file under construction isn’t the topmost anchor file.
+		// Write an "upwards" MPTR pointing to a higher anchor file if the
+		// metadata of the current docStruct is not kept in the file currently
+		// under construction, and either the current docStruct has no parent
+		// and the anchor class of the file to create is different from the
+		// anchor class of the current docStruct, or if the parent of the
+		// current docStruct belongs to a different anchor class and the anchor
+		// class of the file to create appears after the anchor class of the
+		// parent of the current docStruct in the list of anchor classes.
         if (inStruct.mustWriteUpwardsMptrIn(anchorClass)){
             if (this.mptrUrl.equals("")) {
                 LOGGER.warn("No METS pointer URL (mptr) to the parent/anchor DocStruct is defined! Referencing will NOT work!");

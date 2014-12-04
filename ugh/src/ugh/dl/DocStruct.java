@@ -4218,29 +4218,45 @@ public class DocStruct implements Serializable {
 
 	/**
 	 * Returns whether an upwards METS pointer must be written. This is the case
-	 * if at least one child of the current docStruct is of a different anchor
-	 * class than the anchor class of this docStruct and the file under
-	 * construction isn’t the topmost anchor file.
+	 * if the metadata of this docStruct is not kept in the file currently under construction, and either
+	 * this docStruct has no parent and the anchor class of the file to create
+	 * is different from the anchor class of this docStruct, or if the parent of
+	 * this docStruct belongs to a different anchor class and the anchor class
+	 * of the file to create appears after the anchor class of the parent of
+	 * this docStruct in the list of anchor classes for the logical document
+	 * structure.
 	 * 
 	 * @param fileClass
 	 *            anchor class of the file to write
 	 * @return whether an upwards METS pointer must be written
+	 * @throws PreferencesException
+	 *             if an anchor class name is encountered a second time after
+	 *             having been descending right into a hierarchy to be
+	 *             maintained in another anchor class already
 	 */
-	public boolean mustWriteUpwardsMptrIn(String fileClass) {
-		if (children == null || fileClass != null && fileClass.equals(getTopStruct().getType().getAnchorClass())) {
-			return false;
-		}
+	public boolean mustWriteUpwardsMptrIn(String fileClass) throws PreferencesException {
 		String anchorClass = type.getAnchorClass();
-		if(anchorClass == null){
+		if (fileClass == null && anchorClass == null || fileClass != null && fileClass.equals(anchorClass)) {
 			return false;
-		}else{
-			for (DocStruct child : children) {
-				if (!anchorClass.equals(child.getType().getAnchorClass())) {
-					return true;
-				}
-			}
 		}
-		return false;
+		if (this.parent == null) {
+			return anchorClass == null ? false : !anchorClass.equals(fileClass);
+		}
+		String parentClass = parent.getType().getAnchorClass();
+		if (parentClass == null || parentClass.equals(anchorClass)) {
+			return false;
+		}
+		Collection<String> anchorChain = getTopStruct().getAllAnchorClasses();
+		anchorChain.add(null);
+		Iterator<String> capstan = anchorChain.iterator();
+		String link;
+		do {
+			link = capstan.next();
+			if (link.equals(fileClass)) {
+				return false;
+			}
+		} while (!link.equals(parentClass));
+		return true;
 	}
 
 	/**
