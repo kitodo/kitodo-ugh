@@ -57,6 +57,7 @@
 
 		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" target="1.5" encoding="UTF8"  debug="true" debuglevel="lines,vars,source">
 			<compilerarg value="-Xlint" />
+			<compilerarg value="-Xlint:-path" />
 			<classpath refid="classpath" />
 		</javac>
 	</target>
