@@ -55,19 +55,11 @@ import java.io.Serializable;
 
 public class Reference implements Serializable {
 
-	private static final long	serialVersionUID	= 8042513549869050025L;
+	private static final long	serialVersionUID	= -938868501151047047L;
 
 	private String				type;
 	private DocStruct			source;
-
-	// If sourceid has a value != 0, this must be taken; source in invalid then.
-	private long				sourceid;
 	private DocStruct			target;
-	private long				targetid;
-	private boolean				updated;
-	// Database ID.
-	// TODO What database ID?? I do not know!! Remove it!
-	private long				dbid;
 
 	/***************************************************************************
 	 * Constructor.
@@ -86,22 +78,8 @@ public class Reference implements Serializable {
 	/***************************************************************************
 	 * @return
 	 **************************************************************************/
-	public long getSourceID() {
-		return this.sourceid;
-	}
-
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
 	public DocStruct getTarget() {
 		return this.target;
-	}
-
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public long getTargetID() {
-		return this.targetid;
 	}
 
 	/***************************************************************************
@@ -109,17 +87,6 @@ public class Reference implements Serializable {
 	 **************************************************************************/
 	public void setSource(DocStruct in) {
 		this.source = in;
-		this.sourceid = 0;
-		this.updated = true;
-	}
-
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public void setSourceID(long in) {
-		this.sourceid = in;
-		this.source = null;
-		this.updated = true;
 	}
 
 	/***************************************************************************
@@ -127,17 +94,6 @@ public class Reference implements Serializable {
 	 **************************************************************************/
 	public void setTarget(DocStruct in) {
 		this.target = in;
-		this.targetid = 0;
-		this.updated = true;
-	}
-
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public void setTargetID(long in) {
-		this.targetid = in;
-		this.target = null;
-		this.updated = true;
 	}
 
 	/***************************************************************************
