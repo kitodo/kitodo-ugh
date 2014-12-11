@@ -13,6 +13,7 @@
 	<property name="dir.lib" value="./lib" />
 	<property name="dir.build" location="./build" />
 	<property name="dir.build.src" location="${dir.build}/src" />
+	<property name="dir.dist" location="./dist" />
 	<property name="dir.src" location="./src" />
 
 	<path id="classpath">
@@ -22,6 +23,7 @@
 	<!-- Clean up generated and compiled files. -->
 	<target name="clean" description="Clean up generated and compiled files.">
 		<delete dir="${dir.build}" />
+		<delete dir="${dir.dist}" />
 	</target>
 
 	<!-- Create needed directories -->
@@ -30,6 +32,7 @@
 		<property name="dir.build.classes" value="${dir.build}/classes" />
 		<mkdir dir="${dir.build.classes}" />
 		<mkdir dir="${dir.build.src}" />
+		<mkdir dir="${dir.dist}" />
 	</target>
 
 	<!-- copy sources to build directory -->
@@ -49,8 +52,7 @@
 
 	<!-- Build of ugh jar file. -->
 	<target name="jar" depends="compile" description="Build of ugh jar file.">
-		<jar destfile="ugh-${dist.version}.jar" basedir="${dir.build.classes}" />
-		<delete dir="${dir.build}" />
+		<jar destfile="${dir.dist}/ugh-${dist.version}.jar" basedir="${dir.build.classes}" />
 	</target>
 
 	<!-- Build single ugh jar file. -->
