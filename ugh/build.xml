@@ -14,14 +14,9 @@
 	<!-- Comment the property decleration out, since stupid ant isn't checking the the value. -->
 	<property name="check.versions" value="true" />
 
-
-
-
-
 	<path id="classpath">
 		<fileset dir="${dir.lib}" />
 	</path>
-
 
 	<!-- Clean up generated and compiled files. -->
 	<target name="clean" description="Clean up generated and compiled files.">
@@ -35,13 +30,6 @@
 		<mkdir dir="${dir.build.classes}" />
 		<mkdir dir="${dir.build.src}" />
 	</target>
-
-
-
-
-
-
-
 
 	<!-- copy sources to build directory -->
 	<target name="copySources" description="Copy the sources to the build directory">
@@ -76,8 +64,6 @@
 
 	<!-- Build all, not really needed yet. -->
 	<target name="all" depends="dist" description="Build all, not really needed yet." />
-
-
 
 	<target name="git.revision" description="Store git revision in ${repository.version}" >
 		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="" >
