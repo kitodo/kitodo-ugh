@@ -10,9 +10,6 @@
 	<property name="dir.build" location="./build" />
 	<property name="dir.build.src" location="${dir.build}/src" />
 	<property name="dir.src" location="./src" />
-	<!-- Check Versions? Disable only for development! -->
-	<!-- Comment the property decleration out, since stupid ant isn't checking the the value. -->
-	<property name="check.versions" value="true" />
 
 	<path id="classpath">
 		<fileset dir="${dir.lib}" />
@@ -38,9 +35,7 @@
 		</copy>
 	</target>
 
-	<!-- Normal build of application.
-	<target name="compile" depends="writeVersion" description="Normal build of application.">
-	-->
+	<!-- Normal build of application -->
 	<target name="compile" depends="copySources, createDirs, writeVersion" description="Normal build of application.">
 
 		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" target="1.5" encoding="UTF8"  debug="true" debuglevel="lines,vars,source">
@@ -51,8 +46,7 @@
 
 	<!-- Build of war file. -->
 	<target name="jar" depends="compile" description="Build of war file.">
-		<jar destfile="ugh-1.10.jar" basedir="${dir.build.classes}">
-		</jar>
+		<jar destfile="ugh-1.10.jar" basedir="${dir.build.classes}" />
 		<delete dir="${dir.build}" />
 	</target>
 
