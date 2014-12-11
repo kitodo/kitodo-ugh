@@ -171,9 +171,9 @@ public class DocStruct implements Serializable {
     private DocStruct parent;
     // All references to other DocStrct instances (containing References
     // objects).
-    private List<Reference> docStructRefsTo = new LinkedList<Reference>();
+    private final List<Reference> docStructRefsTo = new LinkedList<Reference>();
     // All references from another DocStruct to this one.
-    private List<Reference> docStructRefsFrom = new LinkedList<Reference>();
+    private final List<Reference> docStructRefsFrom = new LinkedList<Reference>();
     // Type of this instance.
     private DocStructType type;
     // Local identifier of this docstruct.
@@ -181,7 +181,7 @@ public class DocStruct implements Serializable {
     // Digital document, to which this DocStruct belongs.
     private DigitalDocument digdoc;
     // ID in database table (4 byte long).
-    private long databaseid = 0;
+    private final long databaseid = 0;
     private Object origObject = null;
     // Information, if database instance is the same than this one.
     private boolean updated = false;
@@ -1208,7 +1208,7 @@ public class DocStruct implements Serializable {
         // First get MetadataType object for the DocStructType to which this
         // document structure belongs to get global MDType.
         if (this.type == null) {
-            String message = "Error occured while adding metadata of type '" + inMdName + "' to DocStruct '" + this.getType().getName() + "'";
+            String message = "Error occured while adding metadata group of type '" + inMdName + "' to " + this.toString() + " DocStruct: DocStruct has no type.";
             LOGGER.error(message);
             throw new DocStructHasNoTypeException(message);
         }
@@ -1469,7 +1469,7 @@ public class DocStruct implements Serializable {
         // First get MetadataType object for the DocStructType to which this
         // document structure belongs to get global MDType.
         if (this.type == null) {
-            String message = "Error occured while adding metadata of type '" + inMdName + "' to DocStruct '" + this.getType().getName() + "'";
+            String message = "Error occured while adding metadata of type '" + inMdName + "' to " + this.toString() + " DocStruct: DocStruct has no type.";
             LOGGER.error(message);
             throw new DocStructHasNoTypeException(message);
         }
@@ -1538,7 +1538,7 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /***************************************************************************
+	/***************************************************************************
      * <p>
      * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
      * (according to configuration), the metadata is NOT removed. By setting the second parameter to true, this behaviour can be influenced. This can
@@ -1914,8 +1914,8 @@ public class DocStruct implements Serializable {
             }
         }
 
-        if (this.persons != null)
-            for (Person per : this.persons) {
+        if (this.persons != null) {
+			for (Person per : this.persons) {
                 MetadataType mdt = per.getType();
                 if (mdt == null) {
                     continue;
@@ -1925,6 +1925,7 @@ public class DocStruct implements Serializable {
                     return true;
                 }
             }
+		}
 
         return false;
     }
@@ -3470,7 +3471,8 @@ public class DocStruct implements Serializable {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        @Override
+		public int compare(Object o1, Object o2) {
 
             Metadata m1 = (Metadata) o1;
             Metadata m2 = (Metadata) o2;
@@ -3498,7 +3500,8 @@ public class DocStruct implements Serializable {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        @Override
+		public int compare(Object o1, Object o2) {
 
             MetadataGroup m1 = (MetadataGroup) o1;
             MetadataGroup m2 = (MetadataGroup) o2;
@@ -3570,4 +3573,45 @@ public class DocStruct implements Serializable {
         }
     }
 
+	/**
+	 * Returns a readable name for the DocStruct.
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		if (type != null && type.getName() != null) {
+			return "'" + type.getName() + "'";
+		}
+		if (parent == null) {
+			return "top level";
+		}
+		List<DocStruct> parentsChildren = parent.getAllChildren();
+		if (parentsChildren == null || parentsChildren.isEmpty()) {
+			return "orphan";
+		}
+		int position = parentsChildren.indexOf(this);
+		if (position < 0) {
+			return "orphan";
+		}
+		String childOfParent = " child of " + parent.toString();
+		if (position == 0) {
+			return "first" + childOfParent;
+		}
+		int childNo = position + 1;
+		if (childNo == parentsChildren.size()) {
+			return "last" + childOfParent;
+		}
+		String childIndex = Integer.toString(childNo);
+		switch (Integer.valueOf(childIndex.substring(childIndex.length() - 1))) {
+		case 1:
+			return childIndex + "st" + childOfParent;
+		case 2:
+			return childIndex + "nd" + childOfParent;
+		case 3:
+			return childIndex + "rd" + childOfParent;
+		default:
+			return childIndex + "th" + childOfParent;
+		}
+	}
 }
