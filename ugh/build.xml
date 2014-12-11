@@ -47,14 +47,14 @@
 		</javac>
 	</target>
 
-	<!-- Build of war file. -->
+	<!-- Build of ugh jar file. -->
 	<target name="jar" depends="compile" description="Build of ugh jar file.">
 		<jar destfile="ugh-${dist.version}.jar" basedir="${dir.build.classes}" />
 		<delete dir="${dir.build}" />
 	</target>
 
-	<!-- Build single war file. -->
-	<target name="dist" depends="clean, jar" description="Build single war file.">
+	<!-- Build single ugh jar file. -->
+	<target name="dist" depends="clean, jar" description="Build single ugh jar file.">
 		<echo>Alles ist gut</echo>
 	</target>
 
