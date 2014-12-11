@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <project name="Goobi" default="dist" xmlns:artifact="urn:maven-artifact-ant">
 
+	<!-- build properties -->
+	<property name="build.javac.target" value="1.5"/>
+	<property name="build.javac.source" value="1.5"/>
+
 	<!-- Distribution specific settings. -->
 	<property name="dist.name" value="UGH" />
 	<property name="dist.version" value="1.10" />
@@ -38,7 +42,7 @@
 	<!-- Normal build of application -->
 	<target name="compile" depends="copySources, createDirs, writeVersion" description="Normal build of application.">
 
-		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" target="1.5" encoding="UTF8"  debug="true" debuglevel="lines,vars,source">
+		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" source="${build.javac.source}" target="${build.javac.target}" encoding="UTF8"  debug="true" debuglevel="lines,vars,source">
 			<compilerarg value="-Xlint" />
 			<classpath refid="classpath" />
 		</javac>
@@ -46,7 +50,7 @@
 
 	<!-- Build of war file. -->
 	<target name="jar" depends="compile" description="Build of war file.">
-		<jar destfile="ugh-1.10.jar" basedir="${dir.build.classes}" />
+		<jar destfile="ugh-${dist.version}.jar" basedir="${dir.build.classes}" />
 		<delete dir="${dir.build}" />
 	</target>
 
