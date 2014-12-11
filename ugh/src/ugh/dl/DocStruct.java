@@ -1449,7 +1449,7 @@ public class DocStruct implements Serializable {
         // First get MetadataType object for the DocStructType to which this
         // document structure belongs to get global MDType.
         if (this.type == null) {
-            String message = "Error occured while adding metadata of type '" + inMdName + "' to DocStruct '" + this.getType().getName() + "'";
+            String message = "Error occured while adding metadata group of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
             LOGGER.error(message);
             throw new DocStructHasNoTypeException(message);
         }
@@ -1710,7 +1710,7 @@ public class DocStruct implements Serializable {
         // First get MetadataType object for the DocStructType to which this
         // document structure belongs to get global MDType.
         if (this.type == null) {
-            String message = "Error occured while adding metadata of type '" + inMdName + "' to DocStruct '" + this.getType().getName() + "'";
+            String message = "Error occured while adding metadata of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
             LOGGER.error(message);
             throw new DocStructHasNoTypeException(message);
         }
@@ -4152,15 +4152,12 @@ public class DocStruct implements Serializable {
 	@Override
 	public String toString() {
 		final int EM_DASH = 0x2014;
-		final int EMPTY = 0x2205;
 		final int HORIZONTAL_ELLIPSIS = 0x2026;
 		final short MAX_CHARS = 12;
 
 		StringBuilder result = new StringBuilder();
-		if (type == null) {
-			result.appendCodePoint(EMPTY);
-		} else if (type.getName() == null) {
-			result.appendCodePoint(EM_DASH);
+		if (type == null || type.getName() == null) {
+			result.append(identify(this));
 		} else {
 			result.append(type.getName());
 		}
@@ -4266,5 +4263,50 @@ public class DocStruct implements Serializable {
 	 */
 	public DocStruct getTopStruct() {
 		return parent == null ? this : parent.getTopStruct();
+	}
+	
+	/**
+	 * Returns a readable name for a DocStruct.
+	 * 
+	 * @param obj
+	 *            DocStruct whose name is to return
+	 * @return a readable name for the DocStruct
+	 */
+	private static String identify(DocStruct obj) {
+		DocStructType objectType = obj.getType();
+		if (objectType != null && objectType.getName() != null) {
+			return "'" + objectType.getName() + "'";
+		}
+		DocStruct parent = obj.getParent();
+		if (parent == null) {
+			return "top level";
+		}
+		List<DocStruct> parentsChildren = parent.getAllChildren();
+		if (parentsChildren == null || parentsChildren.isEmpty()) {
+			return "orphan";
+		}
+		int position = parentsChildren.indexOf(obj);
+		if (position < 0) {
+			return "orphan";
+		}
+		String childOfParent = " child of " + identify(parent);
+		if (position == 0) {
+			return "first" + childOfParent;
+		}
+		int childNo = position + 1;
+		if (childNo == parentsChildren.size()) {
+			return "last" + childOfParent;
+		}
+		String childIndex = Integer.toString(childNo);
+		switch (Integer.valueOf(childIndex.substring(childIndex.length() - 1))) {
+		case 1:
+			return childIndex + "st" + childOfParent;
+		case 2:
+			return childIndex + "nd" + childOfParent;
+		case 3:
+			return childIndex + "rd" + childOfParent;
+		default:
+			return childIndex + "th" + childOfParent;
+		}
 	}
 }
