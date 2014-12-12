@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <project name="Goobi" default="dist" xmlns:artifact="urn:maven-artifact-ant">
 
+	<!-- build properties -->
+	<property name="build.javac.target" value="1.5"/>
+	<property name="build.javac.source" value="1.5"/>
+
 	<!-- Distribution specific settings. -->
 	<property name="dist.name" value="UGH" />
 	<property name="dist.version" value="1.10" />
@@ -9,23 +13,17 @@
 	<property name="dir.lib" value="./lib" />
 	<property name="dir.build" location="./build" />
 	<property name="dir.build.src" location="${dir.build}/src" />
+	<property name="dir.dist" location="./dist" />
 	<property name="dir.src" location="./src" />
-	<!-- Check Versions? Disable only for development! -->
-	<!-- Comment the property decleration out, since stupid ant isn't checking the the value. -->
-	<property name="check.versions" value="true" />
-
-
-
-
 
 	<path id="classpath">
 		<fileset dir="${dir.lib}" />
 	</path>
 
-
 	<!-- Clean up generated and compiled files. -->
 	<target name="clean" description="Clean up generated and compiled files.">
 		<delete dir="${dir.build}" />
+		<delete dir="${dir.dist}" />
 	</target>
 
 	<!-- Create needed directories -->
@@ -34,14 +32,8 @@
 		<property name="dir.build.classes" value="${dir.build}/classes" />
 		<mkdir dir="${dir.build.classes}" />
 		<mkdir dir="${dir.build.src}" />
+		<mkdir dir="${dir.dist}" />
 	</target>
-
-
-
-
-
-
-
 
 	<!-- copy sources to build directory -->
 	<target name="copySources" description="Copy the sources to the build directory">
@@ -50,54 +42,46 @@
 		</copy>
 	</target>
 
-	<!-- Normal build of application. 
-	<target name="compile" depends="writeVersion" description="Normal build of application.">
-	-->
+	<!-- Normal build of application -->
 	<target name="compile" depends="copySources, createDirs, writeVersion" description="Normal build of application.">
-
-		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" target="1.5" encoding="UTF8"  debug="true" debuglevel="lines,vars,source">
+		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" source="${build.javac.source}" target="${build.javac.target}" encoding="UTF8"  debug="true" debuglevel="lines,vars,source" includeantruntime="false" >
 			<compilerarg value="-Xlint" />
 			<classpath refid="classpath" />
 		</javac>
 	</target>
 
-	<!-- Build of war file. -->
-	<target name="jar" depends="compile" description="Build of war file.">
-		<jar destfile="ugh-1.10.jar" basedir="${dir.build.classes}">
-		</jar>
-		<delete dir="${dir.build}" />
+	<!-- Build of ugh jar file. -->
+	<target name="jar" depends="compile" description="Build of ugh jar file.">
+		<jar destfile="${dir.dist}/ugh-${dist.version}.jar" basedir="${dir.build.classes}" />
 	</target>
 
-
-	<!-- Build single war file. -->
-	<target name="dist" depends="clean, jar" description="Build single war file.">
+	<!-- Build single ugh jar file. -->
+	<target name="dist" depends="clean, jar" description="Build single ugh jar file.">
 		<echo>Alles ist gut</echo>
 	</target>
 
 	<!-- Build all, not really needed yet. -->
 	<target name="all" depends="dist" description="Build all, not really needed yet." />
 
-
-
 	<target name="git.revision" description="Store git revision in ${repository.version}" >
-	    <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="" >
-	        <arg value="describe"/>
-	        <arg value="--tags"/>
-	        <arg value="--always"/>
-	        <arg value="HEAD"/>
-	    </exec>
-	    <condition property="repository.version" value="${git.revision}" else="unknown">
-	        <and>
-	            <isset property="git.revision"/>
-	            <length string="${git.revision}" trim="yes" length="0" when="greater"/>
-	        </and>
-	    </condition>
+		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="" >
+			<arg value="describe"/>
+			<arg value="--tags"/>
+			<arg value="--always"/>
+			<arg value="HEAD"/>
+		</exec>
+		<condition property="repository.version" value="${git.revision}" else="unknown">
+			<and>
+				<isset property="git.revision"/>
+				<length string="${git.revision}" trim="yes" length="0" when="greater"/>
+			</and>
+		</condition>
 	</target>
 
 	<!-- rewrite the Version file with informations from the build system, not used yet-->
 	<target name="writeVersion" depends="git.revision" description="writes the build version">
 		<tstamp>
-		<format property="date" pattern="dd−MMMM−yyyy" locale="en" />
+			<format property="date" pattern="dd−MMMM−yyyy" locale="en" />
 		</tstamp>
 		<echo file="${dir.build.src}/ugh/Version.java">
 			package ugh;
