@@ -46,6 +46,7 @@
 	<target name="compile" depends="copySources, createDirs, writeVersion" description="Normal build of application.">
 		<javac srcdir="${dir.build.src}" destdir="${dir.build.classes}" source="${build.javac.source}" target="${build.javac.target}" encoding="UTF8"  debug="true" debuglevel="lines,vars,source" includeantruntime="false" >
 			<compilerarg value="-Xlint" />
+			<compilerarg value="-Xlint:-path" />
 			<classpath refid="classpath" />
 		</javac>
 	</target>
