@@ -30,11 +30,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
@@ -94,6 +96,8 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * 
  *      CHANGELOG
  *      
+ *      20.02.2015 --- Ronge --- Export label metadata of first child to anchor
+ * 
  *      26.06.2014 --- Ronge --- Get anchor classes & get only real successors --- Pass DigitalDocument as parameter --- Fix NullPointerException
  *      
  *      25.06.2014 --- Ronge --- Get reading of logical structure to work --- Recursive implementation of getChild() --- Get all childs' MODS
@@ -178,6 +182,11 @@ public class DocStruct implements Serializable {
 		new String[] { "TitleDocMain", "CatalogIDDigital", "TitleDocMainShort", "MetsPointerURL" }
 	);
 
+	private static final Set<String> FOREIGN_CHILD_METADATA_TYPES_TO_COPY = new HashSet<String>(
+			Arrays.asList(new String[] { MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE,
+					MetsModsImportExport.CREATE_LABEL_ATTRIBUTE_TYPE,
+					MetsModsImportExport.CREATE_ORDERLABEL_ATTRIBUTE_TYPE }));
+	
     // List containing all Metadata instances.
     private List<Metadata> allMetadata;
     // List containing Metadata instances which has been removed; this instances
@@ -836,7 +845,7 @@ public class DocStruct implements Serializable {
 					&& (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
 							.equals(type.getAnchorClass()))) {
 				for (Metadata md : allMetadata) {
-					if (!MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
+					if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
 						continue;
 					}
 					Metadata mdnew = new Metadata(md.getType());
