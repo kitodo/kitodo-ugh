@@ -852,7 +852,23 @@ public class DocStruct implements Serializable {
 					mdnew.setValue(md.getValue());
 					newStruct.addMetadata(mdnew);
 				}
-			}
+			} else if (allMetadata != null
+					&& children != null
+					&& (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
+							.equals(type.getAnchorClass())))
+				for (DocStruct child : children)
+					if (anchorClass == null ? child.getAnchorClass() == null : anchorClass.equals(child
+							.getAnchorClass())) {
+						for (Metadata md : allMetadata) {
+							if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
+								continue;
+							}
+							Metadata mdnew = new Metadata(md.getType());
+							mdnew.setValue(md.getValue());
+							newStruct.addMetadata(mdnew);
+						}
+						break;
+					}
 
 			if (children != null
 					&& (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
