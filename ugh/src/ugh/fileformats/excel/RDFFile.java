@@ -2683,7 +2683,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 										// all.
 										else if (currentNode4 != null
 												&& currentNode4.getNodeValue() != null
-												&& !currentNode4.equals("")) {
+												&& !currentNode4.getNodeValue().equals("")) {
 											resultPerson
 													.setDisplayname(currentNode4
 															.getNodeValue());
