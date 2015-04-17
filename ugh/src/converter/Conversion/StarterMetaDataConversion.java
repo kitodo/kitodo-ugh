@@ -232,7 +232,7 @@ public class StarterMetaDataConversion {
 
 							myCommitLog.info(procFile.getAbsolutePath()	+ " stringValidator turned off - " + conversionFailure.toString());
 
-							// Tokenizer Validation, using newFile wich is the backup of the original file
+							// Tokenizer Validation, using newFile which is the backup of the original file
 							if (myValidators.getTokenizerValidation(newFile, fileA)) {
 
 								myLogger.info("File " + procFile.getAbsolutePath()

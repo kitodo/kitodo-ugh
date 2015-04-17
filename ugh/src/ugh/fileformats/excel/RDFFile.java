@@ -314,7 +314,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 			if (currentNode.getNodeName().equals("AGORA:ImageSet")) {
 				try {
 					if (!parseImageSet(currentNode)) {
-						// Error occured while reading imageset.
+						// Error occurred while reading imageset.
 						String message = "Wrong file type! No <AGORA:ImageSet> element found!";
 						ugh.exceptions.ReadException re = new ugh.exceptions.ReadException(
 								message);
@@ -489,16 +489,16 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 			// Build all logical structures (fill the DOM tree).
 			if (!writeDocStruct(rdf, this.mydoc.getLogicalDocStruct())) {
-				// Error occured while writing the RDF/XML file.
-				LOGGER.error("Error occured while writing logical docstruct");
+				// Error occurred while writing the RDF/XML file.
+				LOGGER.error("Error occurred while writing logical docstruct");
 				xmlFile.close();
 				return false;
 			}
 
 			// Build all physical structures.
 			if (!writePhysical(rdf)) {
-				// Error occured while writing the RDF/XML file.
-				LOGGER.error("Error occured while writing physical docstruct");
+				// Error occurred while writing the RDF/XML file.
+				LOGGER.error("Error occurred while writing physical docstruct");
 				xmlFile.close();
 				return false;
 			}
@@ -2085,7 +2085,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 					// TODO Make the whitespace handling configurable!!
 					//
 					// Parse metadata and delete some characters as tabstops and
-					// newlines etc. The occurence of several spaces are
+					// newlines etc. The occurrence of several spaces are
 					// replaced by a single space character.
 					// metadataValue = metadataValue
 					// .replaceAll("[\n\t\b\f\r]", "");
@@ -2895,7 +2895,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 					&& currentNode.getNodeName().equals("DocStruct")
 					&& !readDocStructPrefs(currentNode)) {
 				// Read information about a single docstruct matching.
-				String message = "Error occured while reading DocStructs";
+				String message = "Error occurred while reading DocStructs";
 				LOGGER.error(message);
 				return false;
 			}

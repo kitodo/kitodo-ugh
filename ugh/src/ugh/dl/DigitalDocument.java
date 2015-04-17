@@ -106,7 +106,7 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  * 
  *      TODO Remove all XStream things from here and put it into the XStream class!!
  * 
- *      TODO Maybe provide a possibility to change content file pathes in addContentFileFromPhysicalPage()!!
+ *      TODO Maybe provide a possibility to change content file paths in addContentFileFromPhysicalPage()!!
  * 
  *      CHANGELOG
  *      
@@ -559,7 +559,7 @@ public class DigitalDocument implements Serializable {
 
     /***************************************************************************
      * <p>
-     * Sorts all metadata and persons recursively in this DocStruct according to their occurance in the preferences file.
+     * Sorts all metadata and persons recursively in this DocStruct according to their occurrence in the preferences file.
      * </p>
      **************************************************************************/
     public synchronized void sortMetadataRecursively(Prefs thePrefs) {
@@ -689,7 +689,7 @@ public class DigitalDocument implements Serializable {
 
     /***************************************************************************
      * <p>
-     * Sorts all metadata and persons recursively for the given DocStruct according to their occurance in the preferences file.
+     * Sorts all metadata and persons recursively for the given DocStruct according to their occurrence in the preferences file.
      * </p>
      **************************************************************************/
     private synchronized void sortMetadataRecursively(DocStruct theSruct, Prefs thePrefs) {

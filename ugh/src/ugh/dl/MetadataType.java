@@ -37,12 +37,12 @@ import java.util.Map;
  * 
  * <p>
  * Besides the internal name, a MetadataType object contains information, about
- * it occurences; some metadata may occur just once, other may occur many times.
+ * it occurrences; some metadata may occur just once, other may occur many times.
  * </p>
  * <p>
- * E.g. for all titles of a document there can be a seperate MetadataType
+ * E.g. for all titles of a document there can be a separate MetadataType
  * element, which contains information about this class of metadata elements.
- * Information which they share are information about their occurences; each
+ * Information which they share are information about their occurrences; each
  * structure entity can only have a single title.<BR>
  * MetadataType objects can occur in two different ways:
  * </p>
@@ -60,7 +60,7 @@ import java.util.Map;
  * which a MetadataType object is used. When adding a <code>MetadataType</code>
  * object to a <DocStructType> object, an internal copy is created and stored
  * with the <code>DocStructType</code> object. This copy is called locally and
- * may store information about its occurences in this special
+ * may store information about its occurrences in this special
  * <code>DocStructType</code> object. The <code>DocStructType</code> class
  * contains methods to retrieve local <code>MetadataType</code> objects from
  * global ones.
@@ -95,7 +95,7 @@ public class MetadataType implements Serializable {
 	// Unique name of MetadataType.
 	private String					name;
 
-	// Maximum number of occurences of this MetadataType for one DocStrct (can
+	// Maximum number of occurrences of this MetadataType for one DocStrct (can
 	// be 1 (1), one or more (+) or as many as you want (*).
 	private String					max_number;
 
@@ -148,7 +148,7 @@ public class MetadataType implements Serializable {
 	 * </p>
 	 * <p>
 	 * The copy contains the same languages, the same internal name and the
-	 * number of possible occurences as the original.
+	 * number of possible occurrences as the original.
 	 * </p>
 	 * 
 	 * @return the newly created MetadataType

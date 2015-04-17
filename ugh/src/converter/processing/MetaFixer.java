@@ -144,17 +144,17 @@ public class MetaFixer implements Validatable {
 	}
 
 	public void setBaseFolder(String path) {
-		// implementation not neccesary in this class
+		// implementation not necessary in this class
 
 	}
 
 	public void setID(String id) {
-		// implementation not neccesary in this class
+		// implementation not necessary in this class
 
 	}
 
 	public void setSearchString(String searchExpression) {
-		// implementation not neccesary in this class
+		// implementation not necessary in this class
 
 	}
 

@@ -980,7 +980,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 *            single sheet of a whole excel file containing the pagination
 	 *            sequences
 	 * @param pathasstring
-	 * @return true, if everthing is okay; otherwise false
+	 * @return true, if everything is okay; otherwise false
 	 * @throws MetadataTypeNotAllowedException
 	 **************************************************************************/
 	private boolean ReadPaginationSequences(HSSFSheet inSheet,
@@ -1526,7 +1526,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 				} else {
 					if (levelcell.getCellType() != HSSFCell.CELL_TYPE_BLANK) {
 						System.err
-								.println("ERROR: Value of hierachy is NOT numeric (1) - line "
+								.println("ERROR: Value of hierarchy is NOT numeric (1) - line "
 										+ x);
 					}
 					continue;
@@ -2038,7 +2038,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 					List<? extends Metadata> allmds = page
 							.getAllMetadataByType(physpagetype);
 					if ((allmds == null) || (allmds.size() > 1)) {
-						// Error occured; every page MUST HAVE a physical page
+						// Error occurred; every page MUST HAVE a physical page
 						// number.
 						System.out
 								.println("ERROR: Calculate EndPage: page does not have a physical pagenumber or more than one physical pagenumber");
@@ -2083,7 +2083,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 		for (int i = 0; i < allchildren.size(); i++) {
 			DocStruct currentdoc = allchildren.get(i);
 			if (!CalculateEndPage(currentdoc)) {
-				// Error occured.
+				// Error occurred.
 				return false;
 			}
 		}
@@ -2359,7 +2359,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 				// Read information about a single docstruct matching.
 				if (!readDocStructPrefs(currentNode)) {
 					System.err
-							.println("ERROR: Excelfile.readPrefs: error occured while reading docstructs for excel");
+							.println("ERROR: Excelfile.readPrefs: error occurred while reading docstructs for excel");
 					PreferencesException pe = new PreferencesException(
 							"ERROR - can't read preferences for Excel module (DocStruct section)");
 					throw pe;

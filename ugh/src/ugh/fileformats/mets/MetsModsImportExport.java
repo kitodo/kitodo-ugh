@@ -393,7 +393,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                                 Node valueNode = domDoc.createTextNode(metadataValue);
                                 createdNode.appendChild(valueNode);
 
-                                // The node was sucessfully written, remove the
+                                // The node was successfully written, remove the
                                 // metadata object from the notMappedMetadata
                                 // list.
                                 notMappedMetadataAndPersons.remove(md);
@@ -425,7 +425,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                                 if (mmo.getWriteXPath() != null) {
                                     writeSingleModsMetadata(mmo.getWriteXPath(), mmo, m, dommodsnode, domDoc);
 
-                                    // The node was sucessfully written! Remove the
+                                    // The node was successfully written! Remove the
                                     // metadata object from the checklist.
                                     notMappedMetadataAndPersons.remove(m);
                                 }
@@ -456,7 +456,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                             if (!isEmpty) {
                                 writeSingleModsGroup(mmo, group, dommodsnode, domDoc);
 
-                                // The node was sucessfully written! Remove the
+                                // The node was successfully written! Remove the
                                 // metadata object from the checklist.
                                 notMappedMetadataAndPersons.remove(group);
 
@@ -490,7 +490,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                                 if (mmo.getWriteXPath() != null) {
                                     writeSingleModsPerson(mmo.getWriteXPath(), mmo, p, dommodsnode, domDoc);
 
-                                    // The node was sucessfully written! Remove the
+                                    // The node was successfully written! Remove the
                                     // person object from the checklist.
                                     notMappedMetadataAndPersons.remove(p);
                                 }
@@ -590,7 +590,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                         // Write other metadata into MODS the section.
                         writeSingleModsMetadata(xquery, mmo, currentMd, dommodsnode, domDoc);
 
-                        // The node was sucessfully written! Remove the
+                        // The node was successfully written! Remove the
                         // metadata object from the notMappedMetadata list.
                         notMappedMetadataAndPersons.remove(currentMd);
                     }
@@ -618,7 +618,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                         if (!isEmpty) {
                             writeSingleModsGroup(mmo, group, dommodsnode, domDoc);
 
-                            // The node was sucessfully written! Remove the
+                            // The node was successfully written! Remove the
                             // metadata object from the checklist.
                             notMappedMetadataAndPersons.remove(group);
 
@@ -655,7 +655,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                 if (xquery != null) {
                     writeSingleModsPerson(xquery, mmo, currentPer, dommodsnode, domDoc);
 
-                    // The node was sucessfully written, remove the
+                    // The node was successfully written, remove the
                     // person object from the notMappedPersons list.
                     notMappedMetadataAndPersons.remove(currentPer);
                 }
@@ -1201,7 +1201,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
                 if (writePhysDivs(div, child) == null) {
-                    // Error occured while writing div for child.
+                    // Error occurred while writing div for child.
                     return null;
                 }
             }
@@ -1388,7 +1388,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 					continue;
 				}
 				if (writeLogDivs(div, child, anchorClass) == null) {
-                    // Error occured while writing div for child.
+                    // Error occurred while writing div for child.
                     return null;
                 }
             }

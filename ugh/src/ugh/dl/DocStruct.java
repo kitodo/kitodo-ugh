@@ -149,11 +149,11 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * 
  *      29.09.2009 --- Funk --- Added the sortMetadataAbcdefg() methods.
  * 
- *      17.09.2009 --- Funk --- Fixed some NullPointerException occurances in sortMetadata().
+ *      17.09.2009 --- Funk --- Fixed some NullPointerException occurrences in sortMetadata().
  * 
  *      11.09.2009 --- Wulf Riebensahm --- Equals method overloaded.
  * 
- *      08.06.2009 --- Funk --- Added the method sortMetadataRecursively, to be able to sort the metadata according to the prefs occurance.
+ *      08.06.2009 --- Funk --- Added the method sortMetadataRecursively, to be able to sort the metadata according to the prefs occurrence.
  * 
  *      03.06.2009 --- Funk --- Added null check in countMDofthisType
  * 
@@ -542,7 +542,7 @@ public class DocStruct implements Serializable {
         } catch (TypeNotAllowedForParentException e) {
             // This should never happen as we are creating the same
             // DocStructType.
-            String message = "This " + e.getClass().getName() + " should not have been occured!";
+            String message = "This " + e.getClass().getName() + " should not have been occurred!";
             LOGGER.error(message, e);
         }
 
@@ -570,12 +570,12 @@ public class DocStruct implements Serializable {
                     } catch (DocStructHasNoTypeException e) {
                         // This should never happen, as we are adding the same
                         // MetadataType.
-                        String message = "This " + e.getClass().getName() + " should not have been occured!";
+                        String message = "This " + e.getClass().getName() + " should not have been occurred!";
                         LOGGER.error(message, e);
                     } catch (MetadataTypeNotAllowedException e) {
                         // This should never happen, as we are adding the same
                         // MetadataType.
-                        String message = "This " + e.getClass().getName() + " should not have been occured!";
+                        String message = "This " + e.getClass().getName() + " should not have been occurred!";
                         LOGGER.error(message, e);
                     }
                 }
@@ -631,12 +631,12 @@ public class DocStruct implements Serializable {
                     } catch (DocStructHasNoTypeException e) {
                         // This should never happen, as we are adding the same
                         // MetadataType.
-                        String message = "This " + e.getClass().getName() + " should not have been occured!";
+                        String message = "This " + e.getClass().getName() + " should not have been occurred!";
                         LOGGER.error(message, e);
                     } catch (MetadataTypeNotAllowedException e) {
                         // This should never happen, as we are adding the same
                         // MetadataType.
-                        String message = "This " + e.getClass().getName() + " should not have been occured!";
+                        String message = "This " + e.getClass().getName() + " should not have been occurred!";
                         LOGGER.error(message, e);
                     }
 
@@ -672,12 +672,12 @@ public class DocStruct implements Serializable {
                     } catch (IncompletePersonObjectException e) {
                         // This should never happen as we are adding the same
                         // person type.
-                        String message = "This " + e.getClass().getName() + " should not have been occured!";
+                        String message = "This " + e.getClass().getName() + " should not have been occurred!";
                         LOGGER.error(message, e);
                     } catch (MetadataTypeNotAllowedException e) {
                         // This should never happen as we are adding the same
                         // person type.
-                        String message = "This " + e.getClass().getName() + " should not have been occured!";
+                        String message = "This " + e.getClass().getName() + " should not have been occurred!";
                         LOGGER.error(message, e);
                     }
                 }
@@ -696,7 +696,7 @@ public class DocStruct implements Serializable {
 				try {
 					newStruct.addChild(copiedChild);
 				} catch (TypeNotAllowedAsChildException e) {
-					String message = "This " + e.getClass().getName() + " should not have been occured!";
+					String message = "This " + e.getClass().getName() + " should not have been occurred!";
 					LOGGER.error(message, e);
 				}
 			}
@@ -1221,7 +1221,7 @@ public class DocStruct implements Serializable {
             fs = this.digdoc.getFileSet();
         }
 
-        // Add the file, existance check is done in FileSet.addFile() now.
+        // Add the file, existence check is done in FileSet.addFile() now.
         fs.addFile(theFile);
 
         if (this.contentFileReferences == null) {
@@ -1451,7 +1451,7 @@ public class DocStruct implements Serializable {
      * </p>
      * 
      * @param theMetadataGroup Metadata object to be added.
-     * @return TRUE if metadata was added succesfully, FALSE otherwise.
+     * @return TRUE if metadata was added successfully, FALSE otherwise.
      * @throws MetadataTypeNotAllowedException If the DocStructType of this DocStruct instance does not allow the MetadataType or if the maximum
      *             number of Metadata (of this type) is already available.
      * @throws DocStructHasNoTypeException If no DocStruct Type is set for the DocStruct object; for this reason the metadata can't be added, because
@@ -1474,7 +1474,7 @@ public class DocStruct implements Serializable {
         // First get MetadataType object for the DocStructType to which this
         // document structure belongs to get global MDType.
         if (this.type == null) {
-            String message = "Error occured while adding metadata group of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
+            String message = "Error occurred while adding metadata group of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
             LOGGER.error(message);
             throw new DocStructHasNoTypeException(message);
         }
@@ -1712,7 +1712,7 @@ public class DocStruct implements Serializable {
      * </p>
      * 
      * @param theMetadata Metadata object to be added.
-     * @return TRUE if metadata was added succesfully, FALSE otherwise.
+     * @return TRUE if metadata was added successfully, FALSE otherwise.
      * @throws MetadataTypeNotAllowedException If the DocStructType of this DocStruct instance does not allow the MetadataType or if the maximum
      *             number of Metadata (of this type) is already available.
      * @throws DocStructHasNoTypeException If no DocStruct Type is set for the DocStruct object; for this reason the metadata can't be added, because
@@ -1735,7 +1735,7 @@ public class DocStruct implements Serializable {
         // First get MetadataType object for the DocStructType to which this
         // document structure belongs to get global MDType.
         if (this.type == null) {
-            String message = "Error occured while adding metadata of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
+            String message = "Error occurred while adding metadata of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
             LOGGER.error(message);
             throw new DocStructHasNoTypeException(message);
         }
@@ -3308,7 +3308,7 @@ public class DocStruct implements Serializable {
 
     /***************************************************************************
      * <p>
-     * Sorts the metadata and persons in the current DocStruct according to their occurance in the preferences file.
+     * Sorts the metadata and persons in the current DocStruct according to their occurrence in the preferences file.
      * </p>
      * 
      * @param thePrefs
@@ -3533,7 +3533,7 @@ public class DocStruct implements Serializable {
         // Only if also the number of Objects in the lists is the same we need
         // an exhausting in depth comparism of the Objects contained.
         // Simply using the List.equals method doesn't help us, because the
-        // lists may only have two seperate instances of equal objects but
+        // lists may only have two separate instances of equal objects but
         // never the same instances.
         ListPairCheck lpcResult = null;
 

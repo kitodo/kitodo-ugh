@@ -45,7 +45,7 @@ public class ProcessStarter {
 		List<String> myIds = UsedRuleSetParser.getIds(usedRulesSetPath);
 
 		myLogger
-				.info("The following ids match the search pattern and will be examined for the occurence of replacement conditions:"
+				.info("The following ids match the search pattern and will be examined for the occurrence of replacement conditions:"
 						+ myIds);
 
 		try {
@@ -62,7 +62,7 @@ public class ProcessStarter {
 		// if caught here filepath validator had failed
 		catch (Exception e) {
 			myLogger
-					.fatal("The program was terminated with an exception before examining any metadata because an inconsistency was detected in the filesystem. Folders supposed to be existant according to usedRules.xml or contained files within (meta.xml) are missing."
+					.fatal("The program was terminated with an exception before examining any metadata because an inconsistency was detected in the filesystem. Folders supposed to be existent according to usedRules.xml or contained files within (meta.xml) are missing."
 							+ e.getStackTrace());
 			throw e;
 		}
@@ -116,7 +116,7 @@ public class ProcessStarter {
 		}
 
 		myLogger
-				.info("Program terminated normally. The presented data was examined and replaced in case of occurences of the conditions required");
+				.info("Program terminated normally. The presented data was examined and replaced in case of occurrences of the conditions required");
 
 		/*
 		 * - regex - vorhandensein der ordner - vorhandensein der meta.xml -

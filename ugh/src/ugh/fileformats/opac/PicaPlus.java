@@ -574,7 +574,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 								// Parse a single picaplus record.
 								ds = parsePicaPlusRecord(n);
 								// It's the first one, so this becomes the
-								// toplogical structual entity.
+								// toplogical structural entity.
 								if (dsOld == null) {
 									this.mydoc.setLogicalDocStruct(ds);
 									dsTop = ds;
@@ -677,7 +677,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 									// Parse a single picaplus record.
 									ds = parsePicaPlusRecord(n);
 									// It's the first one, so this becomes the
-									// toplogical structual entity.
+									// toplogical structural entity.
 									if (dsOld == null) {
 										this.mydoc.setLogicalDocStruct(ds);
 										dsTop = ds;

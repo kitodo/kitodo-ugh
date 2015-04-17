@@ -108,7 +108,7 @@ public class MetadataGroup implements Serializable {
 
     /***************************************************************************
      * <p>
-     * Returns the DocStruct instance, to which this metadataGroup object belongs. This is extremly helpful, if only the metadata instance is stored
+     * Returns the DocStruct instance, to which this metadataGroup object belongs. This is extremely helpful, if only the metadata instance is stored
      * in a list; the reference to the associated DocStrct instance is always kept.
      * </p>
      * 
