@@ -44,7 +44,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * 
  *        CHANGELOG
  * 
- *        27.10.2009 --- Funk --- Changed from deprecated class to deprecetad
+ *        27.10.2009 --- Funk --- Changed from deprecated class to deprecated
  *        constructor, class must be still used for reading. --- Removed debug
  *        output.
  * 
