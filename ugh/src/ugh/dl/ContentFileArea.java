@@ -43,7 +43,7 @@ import ugh.exceptions.ContentFileAreaTypeUnknownException;
  * <li>
  * </ul>
  * byte-offset: If an area just contains the lowest entity, which can be
- * adressed in the content file (e.g. a single pixel, a single second, a single
+ * addressed in the content file (e.g. a single pixel, a single second, a single
  * xml-element), the from and to fields must contain the same values.
  * </p>
  * 

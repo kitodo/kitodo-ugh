@@ -41,7 +41,7 @@ import java.io.Serializable;
  * 
  *      30.10.2009 --- Funk --- Added generated serialVersionUID.
  * 
- *      16.01.2009 --- Funk --- Made the suffix input "." resistent!
+ *      16.01.2009 --- Funk --- Made the suffix input "." resistant!
  * 
  ******************************************************************************/
 

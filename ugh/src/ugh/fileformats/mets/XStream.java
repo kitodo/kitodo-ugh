@@ -112,7 +112,7 @@ public class XStream implements ugh.dl.Fileformat {
 		}
 
 		LOGGER
-				.info("Sorting metadata according to occurance in the Preferences");
+				.info("Sorting metadata according to occurrence in the Preferences");
 
 		this.digdoc.sortMetadataRecursively(this.myPreferences);
 

@@ -1,7 +1,7 @@
 package converter.logger;
 
 /**
- * This class is only used to seperate loggers
+ * This class is only used to separate loggers
  * @author Wulf
  *
  */

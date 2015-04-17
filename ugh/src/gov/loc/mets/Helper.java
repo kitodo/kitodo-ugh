@@ -57,7 +57,7 @@ import org.w3c.dom.Node;
  *
  *        TODOLOG
  *
- *        TODO This should be a seperate maven project!
+ *        TODO This should be a separate maven project!
  *
  *        TODO Update the HelperTest class and use it for JUnit tests!
  *
@@ -962,7 +962,7 @@ public class Helper {
 				// Checkfrom should be checked, but was not equal.
 				from = false;
 			} else {
-				// Checkfrom ist false, from field is not beeing tested.
+				// Checkfrom ist false, from field is not being tested.
 				from = true;
 			}
 
@@ -974,7 +974,7 @@ public class Helper {
 				// Checkfrom should be checked, but was not equal.
 				to = false;
 			} else {
-				// checkto ist false, to field is not beeing tested.
+				// checkto ist false, to field is not being tested.
 				to = true;
 			}
 

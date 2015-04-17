@@ -43,7 +43,7 @@ public class MetadataGroupType implements Serializable {
     // Unique name of MetadataType.
     private String name;
 
-    // Maximum number of occurences of this MetadataType for one DocStrct (can
+    // Maximum number of occurrences of this MetadataType for one DocStrct (can
     // be 1 (1), one or more (+) or as many as you want (*).
     private String max_number;
 

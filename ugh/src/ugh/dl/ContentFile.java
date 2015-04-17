@@ -29,7 +29,7 @@ import java.util.List;
 
 /*******************************************************************************
  * <p>
- * A ContentFile represents a file which must be accessable via the file system
+ * A ContentFile represents a file which must be accessible via the file system
  * and contains the content of the <code>DigitalDocument</code>. A ContentFile
  * belongs always to <code>FileSet</code>, which provides methods to add and
  * remove content files (<code>addFile</code> and <code>removeFile</code>.

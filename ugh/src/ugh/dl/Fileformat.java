@@ -102,7 +102,7 @@ public interface Fileformat {
 	 * 
 	 * @param filename
 	 *            full path to the file
-	 * @return true, if everything is okay. Otherwise false, if an error occured
+	 * @return true, if everything is okay. Otherwise false, if an error occurred
 	 *         (IO-Error etc...)
 	 * @throws WriteException
 	 * @throws PreferencesException
@@ -132,7 +132,7 @@ public interface Fileformat {
 	 * </p>
 	 * 
 	 * @param inDoc
-	 * @return true; only if a problem occured, false is returned.
+	 * @return true; only if a problem occurred, false is returned.
 	 **************************************************************************/
 	public boolean setDigitalDocument(DigitalDocument inDoc);
 

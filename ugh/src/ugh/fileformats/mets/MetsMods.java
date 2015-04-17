@@ -169,13 +169,13 @@ import ugh.exceptions.WriteException;
  *        WARNINGs into DEBUG loglevel. --- Changed a "&" into a "&&", was actually a typo! --- Throw a WriteException in writeLogDmd(), if the child
  *        of anchor DocStruct has no MODS metadata! We have then no identifier!
  * 
- *        24.02.2010 --- Funk --- " "s are now also beeing ignored inside of "'"s in the prefs XPath configuration.
+ *        24.02.2010 --- Funk --- " "s are now also being ignored inside of "'"s in the prefs XPath configuration.
  * 
  *        15.02.2010 --- Funk --- Logging version information now.
  * 
  *        14.02.2010 --- Funk --- Commented the whitespace things.
  * 
- *        12.02.2010 --- Funk --- "/"s are now beeing ignored inside of "'"s in the prefs XPath configuration.
+ *        12.02.2010 --- Funk --- "/"s are now being ignored inside of "'"s in the prefs XPath configuration.
  * 
  *        26.01.2010 --- Funk --- Fixed a bug not writing all the SMLINKS into the METS file in writeSMLinks.
  * 
@@ -209,7 +209,7 @@ import ugh.exceptions.WriteException;
  *        prefixes, uris, and schema locations.
  * 
  *        20.10.2009 --- Funk --- smlink section is only read for non-anchor structs now, fixes bug DPD-352 --- Added modifiers to all class
- *        atributes.
+ *        attributes.
  * 
  *        19.10.2009 --- Funk --- Persons with last name OR first name == "" are now be written, too!
  * 
@@ -243,7 +243,7 @@ import ugh.exceptions.WriteException;
  *        16.07.2009 --- Funk --- Namespaces are handled correctly now. METS is serialised using the METS XMLBeans.
  * 
  *        08.07.2009 --- Funk --- Namespaces now are first defined with default values, then definitions from the prefs are considered and default
- *        values are beeing changed.
+ *        values are being changed.
  * 
  *        26.06.2009 --- Funk --- ADMSEC is written no more for internal METS.
  * 
@@ -329,7 +329,7 @@ import ugh.exceptions.WriteException;
  * 
  *        29.09.2008 --- Funk --- Logging added.
  * 
- *        26.09.2008 --- Funk --- Prefixes and default namespace can be configured in the regelsatz now --- File group data (pathes, etc.) can be
+ *        26.09.2008 --- Funk --- Prefixes and default namespace can be configured in the regelsatz now --- File group data (paths, etc.) can be
  *        configured via setters now.
  * 
  *        19.08.2008 --- Funk --- Merging of METSMODS and METSMODSGDZ
@@ -951,7 +951,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * </p>
      * 
      * @param inNode
-     * @return true, if preferences were read succesfully, false otherwise.
+     * @return true, if preferences were read successfully, false otherwise.
      **************************************************************************/
     public void readPrefs(Node inNode) throws PreferencesException {
 
@@ -3153,7 +3153,7 @@ public class MetsMods implements ugh.dl.Fileformat {
             }
         }
 
-        // Check file group pathes, suffixes, and mimetypes, except for
+        // Check file group paths, suffixes, and mimetypes, except for
         // filegroup LOCAL.
         if (!theFilegroup.getName().equals(METS_FILEGROUP_LOCAL_STRING)) {
             if (theFilegroup.getPathToFiles().equals("")) {
@@ -3406,7 +3406,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
                 if (writePhysDivs(div, child) == null) {
-                    // Error occured while writing div for child.
+                    // Error occurred while writing div for child.
                     return null;
                 }
             }
@@ -3546,7 +3546,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
 				if (writeLogDivs(div, child, anchorClass) == null) {
-                    // Error occured while writing div for child.
+                    // Error occurred while writing div for child.
                     return null;
                 }
             }
@@ -4028,7 +4028,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     private String substractStrings(String in1, String in2) {
 
         if (in2.equals("")) {
-            // There is nothing to substract.
+            // There is nothing to subtract.
             return in1;
         }
 
@@ -4052,7 +4052,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /***************************************************************************
      * <p>
-     * Splits the Xpath into subpathes. The "'"s also are now beeing ignored.
+     * Splits the Xpath into subpathes. The "'"s also are now being ignored.
      * </p>
      * 
      * @param in
@@ -4618,7 +4618,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
                 if (!writeSingleSMLink(parentNode, child)) {
-                    // Error occured while writing div for child.
+                    // Error occurred while writing div for child.
                     return false;
                 }
             }

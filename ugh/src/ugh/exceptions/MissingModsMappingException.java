@@ -104,7 +104,7 @@ public class MissingModsMappingException extends UGHException {
 					+ listEntries.toString().trim();
 		}
 
-		return "Error occured for unknown reason";
+		return "Error occurred for unknown reason";
 	}
 
 	/***************************************************************************

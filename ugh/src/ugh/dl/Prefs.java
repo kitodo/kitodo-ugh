@@ -439,7 +439,7 @@ public class Prefs implements Serializable {
                     }
 
                     if (result == null) {
-                        // Error occured; so exit this method; no new
+                        // Error occurred; so exit this method; no new
                         // DocStrctType.
                         LOGGER.error("Error reading config for DocStrctType '" + currentDocStrctType.getName() + "'! Can't add metadatatype '"
                                 + newMdType.getName() + "'");
@@ -519,7 +519,7 @@ public class Prefs implements Serializable {
                     }
 
                     if (result == null) {
-                        // Error occured; so exit this method; no new
+                        // Error occurred; so exit this method; no new
                         // DocStrctType.
                         LOGGER.error("Error reading config for DocStrctType '" + currentDocStrctType.getName() + "'! Can't add metadatatype '"
                                 + newMdGroup.getName() + "'");
@@ -547,7 +547,7 @@ public class Prefs implements Serializable {
                     // Check, if an appropriate DocStruct Type is defined.
                     boolean bResult = currentDocStrctType.addDocStructTypeAsChild(allowedChild);
                     if (!bResult) {
-                        // Error occured; so exit this method; no new
+                        // Error occurred; so exit this method; no new
                         // DocStrctType.
                         LOGGER.error("Error reading config for DocStructType '" + currentDocStrctType.getName()
                                 + "'! Can't addDocStructType as child '" + allowedChild + "'");

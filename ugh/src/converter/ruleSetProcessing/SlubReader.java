@@ -35,7 +35,7 @@ public class SlubReader extends RulesetReader {
 		Element manuscriptRoot = (Element) mr.getDocument().getRootElement()
 				.clone();
 
-		//now create a SlubElement from the slub.xml root Element to start the compare proceedure
+		//now create a SlubElement from the slub.xml root Element to start the compare procedure
 		mySlubRoot = new SlubElement(super.getDocument().getRootElement());
 
 		// add those element names which you would like to keep as a unit if they differ
