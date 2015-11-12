@@ -5009,7 +5009,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         premis.setUri(DEFAULT_PREMIS_URI);
         premis.setSchemalocation(DEFAULT_PREMIS_SCHEMA_LOCATION);
         this.namespaces.put(premis.getPrefix(), premis);
-        this.mixNamespacePrefix = premis.getPrefix();
+        this.premisNamespacePrefix = premis.getPrefix();
         this.namespaceDeclarations.put(premis.getPrefix(), "declare namespace " + premis.getPrefix() + "='" + premis.getUri() + "';");
 
         // Goobi namespace.
