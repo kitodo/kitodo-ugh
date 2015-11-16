@@ -397,11 +397,11 @@ public class MetsMods implements ugh.dl.Fileformat {
     private static final String DEFAULT_XSI_SCHEMA_LOCATION = "";
 
     private static final String DEFAULT_MIX_PREFIX = "mix";
-    private static final String DEFAULT_MIX_URI = "http://www.loc.gov/standards/mix/";
-    private static final String DEFAULT_MIX_SCHEMA_LOCATION = "http://www.loc.gov/standards/mix/mix.xsd";
+    private static final String DEFAULT_MIX_URI = "http://www.loc.gov/mix/v10";
+    private static final String DEFAULT_MIX_SCHEMA_LOCATION = "http://www.loc.gov/standards/mix/mix10/mix10.xsd";
 
     private static final String DEFAULT_PREMIS_PREFIX = "premis";
-    private static final String DEFAULT_PREMIS_URI = "http://www.loc.gov/standards/premis/";
+    private static final String DEFAULT_PREMIS_URI = "info:lc/xmlns/premis-v2";
     private static final String DEFAULT_PREMIS_SCHEMA_LOCATION = "http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd";
 
     // Validation and anchor finals.
