@@ -379,10 +379,10 @@ public class MetsMods implements ugh.dl.Fileformat {
     // Default namespace things.
     private static final String DEFAULT_METS_PREFIX = "mets";
     private static final String DEFAULT_METS_URI = "http://www.loc.gov/METS/";
-    private static final String DEFAULT_METS_SCHEMA_LOCATION = "http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd";
+    private static final String DEFAULT_METS_SCHEMA_LOCATION = "http://www.loc.gov/standards/mets/mets.xsd";
     private static final String DEFAULT_MODS_PREFIX = "mods";
     private static final String DEFAULT_MODS_URI = "http://www.loc.gov/mods/v3";
-    private static final String DEFAULT_SCHEMA_LOCATION = "http://www.loc.gov/standards/mods/v3/mods-3-3.xsd";
+    private static final String DEFAULT_SCHEMA_LOCATION = "http://www.loc.gov/standards/mods/mods.xsd";
     private static final String DEFAULT_GOOBI_PREFIX = "goobi";
     private static final String DEFAULT_GOOBI_URI = "http://meta.goobi.org/v1.5.1/";
     private static final String DEFAULT_GOOBI_SCHEMA_LOCATION = "";
