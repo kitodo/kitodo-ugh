@@ -744,7 +744,7 @@ public class DigitalDocument implements Serializable {
         // Get the physical DocStruct.
         DocStruct physicalDocStruct = this.getPhysicalDocStruct();
 
-        // Iterate throught all the physical docstruct's metadata.
+        // Iterate through all the physical docstruct's metadata.
         if (physicalDocStruct != null && physicalDocStruct.getAllChildren() != null) {
 
             // Iterate over all DocStructs "page" with metadata "physPageNumber"
@@ -816,7 +816,7 @@ public class DigitalDocument implements Serializable {
 
         String representative = "";
 
-        // Iterate throught all the physical docstruct's metadata.
+        // Iterate through all the physical docstruct's metadata.
         if (tp != null && tp.getAllMetadata() != null) {
 
             // Set the path to the images.
@@ -905,7 +905,7 @@ public class DigitalDocument implements Serializable {
         this.setFileSet(new FileSet());
         this.getFileSet().setVirtualFileGroups(vfgList);
         String representative = "";
-        // Iterate throught all the physical docstruct's metadata.
+        // Iterate through all the physical docstruct's metadata.
         if (tp != null && tp.getAllMetadata() != null) {
 
             // Set the path to the images.
