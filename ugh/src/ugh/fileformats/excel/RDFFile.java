@@ -2,21 +2,21 @@ package ugh.fileformats.excel;
 
 /*******************************************************************************
  * ugh.fileformats.excel / RDFFile.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -71,7 +71,7 @@ import ugh.exceptions.WriteException;
  * The RDFFile class allows to load and save a DigitalDocument in the GDZ
  * RDF/XML format. When reading and writing the files, this class makes some
  * assumptions:
- * 
+ *
  * <ul>
  * <li>The physical structure just consists only of the BoundBook with pages (as
  * children); there are no further hierarchical levels in the physical
@@ -85,84 +85,84 @@ import ugh.exceptions.WriteException;
  * metadata element</li>
  * </ul>
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-18
  * @since 2004-05-21
- * 
+ *
  *        TODOLOG
- * 
+ *
  *        TODO read and write metadataGroups
- *        
+ *
  *        TODO read and write normdata
- * 
+ *
  *        TODO Use final strings for fixed XML strings and error messages!
- * 
+ *
  *        TODO Move this out of the excel package!
- * 
+ *
  *        TODO Get rid of deprecated Classes!! (Hm, we have here a deprecated
  *        class itself, so we maybe should leave it at is is!)
- * 
+ *
  *        CHANGELOG
- *        
+ *
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- * 
+ *
  *        05.05.2010 --- Funk --- Just trying to solve some person and metadata
  *        reading bugs (see recent SLUB mails and DPD-408).
- * 
+ *
  *        15.03.2010 --- Funk --- Added displayName to writing persons method.
- * 
+ *
  *        10.03.2010 --- Funk --- Added FormatSourcePrint to <ImageSet> tag,
  *        will be created as metadata of BoundBook now. --- More persons are
  *        taken with displayname now.
- * 
+ *
  *        25.02.2010 --- Funk --- Added some more logging.
- * 
+ *
  *        15.02.2010 --- Funk --- Logging version information now.
- * 
+ *
  *        14.02.2010 --- Funk --- Commented the whitespace things, trim() added
  *        to method getMDValueOfNode(). --- Using HIDDEN_METADATA_CHAR now. ---
  *        Refactored some error message strings. -- Slightly refactored the
  *        displayName retrieval, text content of the metadata nodes now are
  *        retrieved by the method getMDValueOfNode() to get the trim()
  *        everywhere.
- * 
+ *
  *        03.02.2010 --- Funk --- Commmented out the whitespace diminishing in
  *        getMDValueOfNode() due to .
- * 
+ *
  *        26.01.2010 --- Funk --- Handling text in person tags without FirstName
  *        and LastName tags is put into displayName now.
- * 
+ *
  *        22.01.2010 --- Funk --- Handling text in person tags without FirstName
  *        and LastName tags as LastName. --- Some findbugs improvements.
- * 
+ *
  *        18.01.2010 --- Funk --- Adapted class to changed
  *        DocStruct.getAllMetadataByType().
- * 
+ *
  *        21.12.2009 --- Funk --- Added some "? extends " to metadata things.
- * 
+ *
  *        03.12.2009 --- Funk --- Slightly improved the person extraction from
  *        the RDF file.
- * 
+ *
  *        19.11.2009 --- Funk --- Improved class for Sonar.
- * 
+ *
  *        30.10.2009 --- Funk --- Improved XML date and RDFFile version comment.
- * 
+ *
  *        27.10.2009 --- Funk --- Changed the conditionals that caused DPD-359
  *        and DPD-361 from ">= -1" to "== -1". --- Removed debug output.
- * 
+ *
  *        09.10.2009 --- Funk --- Removed some of the deprecated anotations,
  *        only WRITE should be deprecated!
- * 
+ *
  *        05.10.2009 --- Funk --- Adapted metadata and person constructors.
- * 
+ *
  *        30.09.2009 --- Funk --- Merged Wulf's thingsg into here.
- * 
+ *
  *        29.04.2008 --- Funk --- All whitespaces of text nodes now are replaced
  *        with a single space in getMDValueOfNode().
- * 
+ *
  ******************************************************************************/
 
 @Deprecated
@@ -238,9 +238,9 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 	/*
 	 * Loads file and builds a DOM tree.
-	 * 
+	 *
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#read(java.lang.String)
 	 */
 	@Override
@@ -383,7 +383,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#update(java.lang.String)
 	 */
 	@Override
@@ -394,9 +394,9 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 	/*
 	 * Returns the digital document in which this file is loaded.
-	 * 
+	 *
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
 	@Override
@@ -413,7 +413,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * Reads all document structures; the first parameter is already the first
 	 * document structure.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @return
 	 * @throws TypeNotAllowedForParentException
@@ -434,7 +434,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
 	@Override
@@ -889,7 +889,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * children (containing all MEtadata) parameter: the document instance (from
 	 * DOM) the DocStruct instance, which should be written to XML.
 	 * </p>
-	 * 
+	 *
 	 * @param parentElement
 	 * @param inDocStruct
 	 * @return
@@ -985,7 +985,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * Writes all physical document strcutres entities; calculates the
 	 * pagination sequences and writes them.
 	 * </p>
-	 * 
+	 *
 	 * @param parentElement
 	 * @return
 	 * @throws WriteException
@@ -1363,7 +1363,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Writes a single metadata instance to XML.
 	 * </p>
-	 * 
+	 *
 	 * @param parentElement
 	 * @param inMetadata
 	 * @return
@@ -1401,7 +1401,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 		}
 
 		// Only one simple element.
-		//	
+		//
 		// Get name of XML-element.
 		elementName = getRDFName(metadataType);
 		if (elementName == null) {
@@ -1433,7 +1433,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Writes all Metadata being in an RDF-List /RDF:Li.
 	 * </p>
-	 * 
+	 *
 	 * @param parentElement
 	 *            XML-Element in DOM-Tree under which the RDF:Li shall be
 	 *            wirtten
@@ -1568,7 +1568,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Writes all Metadata being in an RDF-List /RDF:Li
 	 * </p>
-	 * 
+	 *
 	 * @param parentElement
 	 *            XML-Element in DOM-Tree under which the RDF:Li shall be
 	 *            wirtten
@@ -1693,7 +1693,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 				// Check, if metadata has external identifier; if so, write
 				// value in ID field.
-			
+
 
 				Element lastnameElement = domdoc
 						.createElement("AGORA:CreatorLastName");
@@ -1829,7 +1829,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * Reads a logical document structure with all metadata and tries to read
 	 * all children.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @param inStruct
 	 * @return
@@ -1911,7 +1911,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 			}
 
 			// Reference to start/endpages.
-			//	    
+			//
 			// Child document structure was found.
 			if (currentNode.getNodeName().equals("AGORA:RefImageSetRange")) {
 				readRefImageSetRange(currentNode, docStruct);
@@ -2006,7 +2006,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 				}
 			} else {
 				// It is not an RDF-List but maybe a single metadata or person.
-				// 
+				//
 				// Get internal metadata name from MMO.
 				metadataType = getMDTypeByName(nodename);
 
@@ -2108,7 +2108,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Reads the start and end pages.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 *            Node in DOM tree
 	 * @param mydocstruct
@@ -2211,7 +2211,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
 	@Override
@@ -2225,7 +2225,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * Reads pagination sequence form file; adds appropriate document
 	 * structures; one for each page.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @return
 	 * @throws ReadException
@@ -2499,7 +2499,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * LinkedList containing the Names (as Strings) of XML-Elements if an
 	 * RDF:Seq RDF:Bag or RDF:Li cannot be found, NULL is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @param inXMLElements
 	 * @return
@@ -2591,7 +2591,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 										 * ).equals("Illustrator"))){
 										 **************************************/
 
-										
+
 
 										// Get values of first- and lastname.
 										NodeList namenodes = currentNode3
@@ -2723,7 +2723,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * Gets the metadata value out of an element; the method will find the FIRST
 	 * textnode and returns its content as a string.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @return
 	 **************************************************************************/
@@ -2747,7 +2747,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Returns the RDF name, which is the name of the XML element.
 	 * </p>
-	 * 
+	 *
 	 * @param inType
 	 * @return
 	 **************************************************************************/
@@ -2772,7 +2772,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Description get the mmo objecdt by the internal name.
 	 * </p>
-	 * 
+	 *
 	 * @param theMetadataName
 	 *            internal name of the metadata type
 	 * @return the MetadataMatchingObject which contains the mapping for the
@@ -2869,7 +2869,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * All methods to read RDF file specific preferences are read here.
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @return true, if preference file can be read. false, if preference file
 	 *         has wrong structure, element names are wrong etc.
@@ -2907,7 +2907,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Methods ro read all the preferences (matching information).
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @return
 	 **************************************************************************/
@@ -3096,7 +3096,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Checks, wether there is an RDFList with this name or not.
 	 * </p>
-	 * 
+	 *
 	 * @param nodename
 	 *            name of the node, which can be the list
 	 * @return true, if this should be in a RDF-List
@@ -3120,7 +3120,7 @@ public class RDFFile implements ugh.dl.Fileformat {
 	 * <p>
 	 * Retrieves all MetadataMatchingObjects belonging to a single rdfList.
 	 * </p>
-	 * 
+	 *
 	 * @param listname
 	 * @return LinkedList containing mmos.
 	 **************************************************************************/

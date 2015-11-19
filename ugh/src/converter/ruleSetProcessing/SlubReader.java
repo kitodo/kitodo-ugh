@@ -30,7 +30,7 @@ public class SlubReader extends RulesetReader {
 
 	public void compare(ManuscriptReader mr) throws JDOMException, IOException {
 
-		//get a deep clone of the root element, for manipulation without 
+		//get a deep clone of the root element, for manipulation without
 		//effecting the original tree
 		Element manuscriptRoot = (Element) mr.getDocument().getRootElement()
 				.clone();

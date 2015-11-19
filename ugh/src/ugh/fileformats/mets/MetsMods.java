@@ -2,21 +2,21 @@ package ugh.fileformats.mets;
 
 /*******************************************************************************
  * ugh.fileformats.mets / MetsMods.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -130,232 +130,232 @@ import ugh.exceptions.WriteException;
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-23
  * @since 2008-05-09
- * 
+ *
  *        TODOLOG
- * 
+ *
  *        TODO REFACTOR ALL THE XPATH PARSING STUFF!!
- * 
+ *
  *        TODO Separate the VirtualFileGroup usage, put it into MetsModsImportExport!
  *
  *        TODO Get the anchor files from the METS' mptrs, and not via filename! Don't we do that already?
- * 
+ *
  *        TODO Check if there is a metadata with type="identifier" is existing in those DocStructs with anchor="true"! Already checked?
  *
  *        TODO Maybe read the content files while reading the DocStructs and then use the MetsHelper to retrieve things!
- * 
+ *
  *        CHANGELOG
- *        
+ *
  *        25.06.2014 --- Ronge --- Check if an anchorIdentifier was written only for traditional hierarchy --- Get reading of logical structure to
  *        work --- Get all childs' MODS sections
- *        
+ *
  *        24.06.2014 --- Ronge --- Make reading work --- Use appropriate anchor class
- *        
+ *
  *        23.06.2014 --- Ronge --- Rename sort title accordingly --- Make read & write functions work with multiple anchor files --- Create
  *        ORDERLABEL attribute on export & add getter for meta data
- *        
+ *
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- * 
+ *
  *        05.05.2010 --- Funk --- Commented out some DPD-407 debigging checks. --- Added check for empty displayName at displayName creation.
- * 
+ *
  *        11.03.2010 --- Funk --- Closing ">"s now are escaped with &gt; at XML document storing.
- * 
+ *
  *        10.03.2010 --- Funk --- Added ValueRegExps to AnchorIdentifier.
- * 
+ *
  *        03.03.2010 --- Funk --- Fixed the vanishing-of-XPath-element-values-if-attributes-are-existing-bug. Using Java RegExps instead of single
  *        string char processing!
- * 
+ *
  *        25.02.2010 --- Funk --- If no MODS section is existing for a child of an anchor DocStruct, fail due to missing backlink. --- Changed some
  *        WARNINGs into DEBUG loglevel. --- Changed a "&" into a "&&", was actually a typo! --- Throw a WriteException in writeLogDmd(), if the child
  *        of anchor DocStruct has no MODS metadata! We have then no identifier!
- * 
+ *
  *        24.02.2010 --- Funk --- " "s are now also being ignored inside of "'"s in the prefs XPath configuration.
- * 
+ *
  *        15.02.2010 --- Funk --- Logging version information now.
- * 
+ *
  *        14.02.2010 --- Funk --- Commented the whitespace things.
- * 
+ *
  *        12.02.2010 --- Funk --- "/"s are now being ignored inside of "'"s in the prefs XPath configuration.
- * 
+ *
  *        26.01.2010 --- Funk --- Fixed a bug not writing all the SMLINKS into the METS file in writeSMLinks.
- * 
+ *
  *        18.01.2010 --- Funk --- Adapted class to changed DocStruct.getAllMetadataByType().
- * 
+ *
  *        23.12.2009 --- Funk --- Slightly improved the grouping functionality.
- * 
+ *
  *        22.12.2009 --- Funk --- Added some grouping functionality.
- * 
+ *
  *        21.12.2009 --- Funk --- Added some "? extends " to metadata things.
- * 
+ *
  *        14.12.2009 --- Funk --- Fixed bug forgetting to write the CatalogIDDigital in!
- * 
+ *
  *        09.12.2009 --- Funk --- Refactored the whole addAllContentFile() thing: Removed unnecesarry FPTR and addFile()s. --- Deleted unused stuff
  *        concerning FPTRs. --- Creating ContentFiles now, if no FileGroup LOCAL is existing.
- * 
+ *
  *        08.12.2009 --- Funk --- Fixed bug with FPTRs.
- * 
+ *
  *        03.12.2009 --- Funk --- Write a person, if a role is existing and a firstname OR a lastname. --- Generalized writing persons to the MODS,
  *        created writeDmdPersons().
- * 
+ *
  *        16.11.2009 --- Funk --- Always check for new content files in non-anchor documents if storing the METS file.
- * 
+ *
  *        13.11.2009 --- Funk --- Added check for non-existing anchorIdentifierMetadata Type.
- * 
+ *
  *        30.10.2009 --- Funk --- Improved XML date and RDFFile version comment.
- * 
+ *
  *        29.10.2009 --- Funk --- Fixed a NPE accessing DocStructs without children. --- WE NEED THOSE NULL RETURN VALUES TO BE REMOVED!!!!!!
- * 
+ *
  *        26.10.2009 --- Funk --- Removed the constructor without Prefs object. We really need that Prefs thing! --- Added finals for namespace
  *        prefixes, uris, and schema locations.
- * 
+ *
  *        20.10.2009 --- Funk --- smlink section is only read for non-anchor structs now, fixes bug DPD-352 --- Added modifiers to all class
  *        attributes.
- * 
+ *
  *        19.10.2009 --- Funk --- Persons with last name OR first name == "" are now be written, too!
- * 
+ *
  *        13.10.2009 --- Funk --- Fixed bug with smlink attributes, now the have an xlink namespace prefix! --- Fixed bug with NullPointerExceptions
  *        in parseMetadataForPhysicalDocStruct() at setting content files.
- * 
+ *
  *        06.10.2009 --- Funk --- Corrected some not-conform-to-rules variable names.
- * 
+ *
  *        05.10.2009 --- Funk --- Adapted metadata and person constructors.
- * 
+ *
  *        24.09.2009 --- Funk --- Refactored all the Exception things.
- * 
+ *
  *        22.09.2009 --- Funk --- Removed checking of all not needed tags in the METS formats section.
- * 
+ *
  *        21.09.2009 --- Funk --- Removed returning FALSE in readMetadataPrefs(), if a tag is set in the METS section but has no values. That is
  *        ignored now. Checked are only if <internalName> and <writeXPath> are existing --- Removed the class readPrefs from MetsMods, and put it into
  *        MetsModeImportExport. It is not needed here.
- * 
+ *
  *        11.09.2009 --- Funk --- Created a final static for the anchor filename suffix.
- * 
+ *
  *        27.08.2009 --- Funk --- Added version string comment to METS file.
- * 
+ *
  *        18.08.2009 --- Funk --- Changed Goobi namespace from "http://meta.goobi.org/v1.5.1" to "http://meta.goobi.org/v1.5.1/". --- Changed
  *        exception handling in checkForAnchorReference(), now an Exception is thrown, if an anchor file is not existing and if an anchor reference is
  *        not found.
- * 
+ *
  *        22.07.2009 --- Funk --- Fixed the non-read-internal-periodicals-bug. --- Added HTML tags to JavaDOC.
- * 
+ *
  *        17.07.2009 --- Funk --- Removed the excalibur XML parser kwatsch!
- * 
+ *
  *        16.07.2009 --- Funk --- Namespaces are handled correctly now. METS is serialised using the METS XMLBeans.
- * 
+ *
  *        08.07.2009 --- Funk --- Namespaces now are first defined with default values, then definitions from the prefs are considered and default
  *        values are being changed.
- * 
+ *
  *        26.06.2009 --- Funk --- ADMSEC is written no more for internal METS.
- * 
+ *
  *        18.06.2009 --- Funk --- Generalised the WriteLogDMD() method, using WriteMODS() now.
- * 
+ *
  *        08.06.2009 --- Funk --- Added sorting the metadata and persons according to prefs when storing internally --> Put into
  *        DocStruct.sortMetadataRecursively!
- * 
+ *
  *        03.06.2009 --- Funk --- Added setContentIDs setter. --- Added SUB-internal PURL handling. --- Added SUB-internal METS Reference
  *        "PPN"-dimisher.
- * 
+ *
  *        02.06.2009 --- Funk --- CHECK if the whitespaces in the XML tags can be avoided anyhow, or do we need them? TESTIT! It can: just avoid
  *        storing the XML in pretty-print OUTSIDE of UGH :-) --- CHECK why the label values have got so many special chars in it after reading! See
  *        above!
- * 
+ *
  *        29.05.2009 --- Funk --- Now metadata of the physical DocStructs are written in goobi:goobi, too. Persons are not implemented yet! --- If no
  *        files are existing in the fileSec:filegroup LOCAL, the fileset will be set from the "pathimagefiles" metadata!
- * 
+ *
  *        28.05.2009 --- Funk --- Added digiprovReferenceAnchor and digiprovPresentationAnchor.
- * 
+ *
  *        28.04.2009 --- Funk --- changed "dv:digiprov" to "dv:links" in the AMD sec.
- * 
+ *
  *        27.04.2009 --- Funk --- Re-Engaged the removal of the internal Sun JRE classes.
- * 
+ *
  *        24.04.2009 --- Funk --- Labels are not written for internal METS.
- * 
+ *
  *        22.04.2009 --- Funk --- Fixed a NullPointerException at reading the physSequence and the pages without if no files given. --- Changed
  *        writePhysDivs and writeLogDivs, for internal writing the METS DocStructTypes must not be mapped.
- * 
+ *
  *        06.04.2009 --- Funk --- Fixed problems with the empty smLink element, fixed reading of persons. Now the METS internal storing is working
  *        just fine.
- * 
+ *
  *        03.04.2009 --- Mahnke --- Got rid of internal Sun JRE classes.
- * 
+ *
  *        03.04.2009 --- Funk --- Finished METS writing. --- added some things that valid METS is written without smLinks. --- refactored some oooold
  *        for loop constructs.
- * 
+ *
  *        30.03.2009 --- Funk --- Change some DEBUG log messages to TRACE. --- Separated internal storing from exporting.
- * 
+ *
  *        27.03.2009 --- Funk --- Added some null pointer checks.
- * 
+ *
  *        24.03.2009 --- Funk --- Namespace SchemaLocations now are set for METS and MODS, if not contained in prefs.
- * 
+ *
  *        23.03.2009 --- Funk --- Finished putting all unmapped metadata to mods:extension.goobi:metadata and mods:extension:goobi:person.
- * 
+ *
  *        19.03.2009 --- Funk --- Exceptions thrown by public classes now are logged from the public classes only --- improved METS reading ---
  *        organised class documentation structure --- All "ruleset"s changed to "prefs".
- * 
+ *
  *        18.03.2009 --- Funk --- Added metsPtrAnchorUrl, fixed FileGroupID bug.
- * 
+ *
  *        13.03.2009 --- Funk --- Tested METS reading with Monographs and MultivolumeWorks. It works! --- More stringifying done.
- * 
+ *
  *        12.03.2009 --- Funk --- Nearly completed METS import --- "stringyfied" some strings.
- * 
+ *
  *        09.03.2009 --- Funk --- Persons are checked for existing type and not for value at METS export now.
- * 
+ *
  *        24.02.2009 --- Funk --- Added/Swiched on/Improved internalName 2 MetyType mapping in METS formats section.
- * 
+ *
  *        16.02.2009 --- Funk --- Empty metadata fields are NOT taken as empty tags anymore.
- * 
+ *
  *        13.02.2009 --- Funk --- ADMID is set for Monographs again, too --- DisplayName is generated from first and last name, if existing.
- * 
+ *
  *        11.02.2009 --- Funk --- MODS tags are ordered by their appearance in the prefs' METS metadata section now --- Multiple usage of the same
  *        metadataType is possible now, too.
- * 
+ *
  *        23.12.2008 --- Funk --- Commented out all the special GDZ things --- Merry Christmas!
- * 
+ *
  *        22.12.2008 --- Funk --- Error is logged, if a MODS mapping is missing for an existing metadata from the prefs.
- * 
+ *
  *        11.12.2008 --- Funk --- Added some changes for the filegroups. A LOCAL filegroup is ALWAYS created now.
- * 
+ *
  *        09.12.2008 --- Funk --- Added MPTRs.
- * 
+ *
  *        19.11.2008 --- Funk --- Added VirtualFileGroup support.
- * 
+ *
  *        18.11.2008 --- Funk --- Added digiprovMD section.
- * 
+ *
  *        21.10.2008 --- Funk --- IDs starting with "0" now instead of "1".
- * 
+ *
  *        14.10.2008 --- Funk-- - Moved the Java object storing methods into the DigitalDocument class.
- * 
+ *
  *        07.10.2008 --- Funk --- Added Java Object storing and reading.
- * 
+ *
  *        29.09.2008 --- Funk --- Logging added.
- * 
+ *
  *        26.09.2008 --- Funk --- Prefixes and default namespace can be configured in the regelsatz now --- File group data (paths, etc.) can be
  *        configured via setters now.
- * 
+ *
  *        19.08.2008 --- Funk --- Merging of METSMODS and METSMODSGDZ
- * 
+ *
  *        30.08.2008 --- Funk --- Changed class name from ZvddMets to MetsMods, to stay compatible to the existing Goobi calls --- Added ADM and
  *        several file groups.
- * 
+ *
  *        29.07.2008 --- Funk --- Added some methods from MetsModsGdz and adapted them to the ZVDD METS profile.
- * 
+ *
  *        09.05.2008 --- Funk --- First version.
- * 
+ *
  *        OLD CHANGELOG METSMODSGDZ
- * 
+ *
  *        08.08.2008 --- Funk --- Changed class name from MetsMods to MetsModsGdz.
- * 
+ *
  *        04.08.2008 --- Funk --- Changed some namespace issues.
- * 
+ *
  *        29.07.2008 --- Funk --- Changed some visibilities to "protected" for objects to be used from MetsMods class.
- * 
+ *
  *        13.05.2008 --- Funk --- Added default constructor.
- * 
+ *
  *        29.04.2008 --- Funk --- Tried to change the whitespace handling at the XML factory level (getMDValueOfNode()), but my solution is NOT
  *        working here. Please have a look at the class RDFFile.java --- Added security checks for given person metadata in the RDF:GDZ MODS, but
  *        missing xpath queries in the Regelsatz file concerning that metadata.
- * 
+ *
  *        25.04.2008 --- Funk ---Trimming added to avoid empty xquery values caused by newlines.
- * 
+ *
  ******************************************************************************/
 
 public class MetsMods implements ugh.dl.Fileformat {
@@ -605,7 +605,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     // A hash to store some tag grouping things.
     // This is a really dirty hack, I will fix it tomorrow! (hihi)
     protected HashMap<String, String> replaceGroupTags = new HashMap<String, String>();
-    
+
     // set to true if you need to call yourself to prevent infinite recursion
     private boolean recursive = false;
 
@@ -638,7 +638,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
 	/**
 	 * Constructor to create a MetsMods object by loading a file.
-	 * 
+	 *
 	 * @param inPrefs
 	 *            rule set object to read the file
 	 * @param fileName
@@ -682,7 +682,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#GetDigitalDocument()
      */
     @Override
@@ -692,7 +692,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#Update(java.lang.String)
      */
     @Override
@@ -702,7 +702,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
@@ -713,7 +713,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
@@ -844,7 +844,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsModsGdz#write(java.lang.String)
      */
     @Override
@@ -948,7 +948,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * All methods to read METS file specific preferences are read here.
      * </p>
-     * 
+     *
      * @param inNode
      * @return true, if preferences were read successfully, false otherwise.
      **************************************************************************/
@@ -1053,7 +1053,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Gets a DocStruct by div ID.
      * </p>
-     * 
+     *
      * @param id
      * @param inStruct
      * @return
@@ -1094,7 +1094,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Maps logical and physical DocStructs.
      * </p>
-     * 
+     *
      * @param inMetsElement
      * @throws ReadException
      **************************************************************************/
@@ -1178,7 +1178,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Adds something to a list.
      * </p>
-     * 
+     *
      * @param result
      * @param inStruct
      **************************************************************************/
@@ -1220,7 +1220,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Read all sub <div> elements of the current one.
      * </p>
-     * 
+     *
      * @param inDiv
      * @return LinkedList containing DocStruct instances
      * @throws ReadException
@@ -1356,7 +1356,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Reads the logical doc struct.
      * </p>
-     * 
+     *
      * @param inMetsElement
      * @param theFilename
      * @throws ReadException
@@ -1522,7 +1522,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                     }
                 }
             }
-            
+
 			// If things are more complex, get all childs' MODS sections.
 			else if (newDocStruct.getType().getAnchorClass() != null && !recursive) {
 				try {
@@ -1557,7 +1557,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 							caught.getMessage(), caught);
 				}
 			}
-            
+
         } else {
             // No logical structMap available. Error - there must be at least a
             // single uppermost div containing basic bibliographic metadata e.g.
@@ -1572,7 +1572,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Builds the anchor filename.
      * </p>
-     * 
+     *
      * @param xmlfileName
      * @param anchor If true, "_anchor" will be used
      * @return
@@ -1582,7 +1582,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         if (!xmlFilename.endsWith(".xml")) {
             xmlFilename += ".xml";
         }
-        
+
         String suffix = Boolean.parseBoolean(anchor) ? ANCHOR_XML_FILE_SUFFIX_STRING : '_' + anchor;
         return xmlFilename.substring(0, xmlFilename.lastIndexOf('.')) + suffix
                 + xmlFilename.substring(xmlFilename.lastIndexOf('.'), xmlFilename.length());
@@ -1592,8 +1592,8 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Checks, if there is a reference to another METS file using the <code>&lt;XPathAnchorQuery></code> element from the prefs.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param inMods
      * @param filename
 	 * @param topAnchorClassName top anchor class name
@@ -1727,7 +1727,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Gets the descriptive metadata section of the type "MODS" for the given DocStruct. The appropriavte DivType element must be stored in the
      * DocStructs.getOrigObject() method. After reading the DocStruct it is stored there.
      * </p>
-     * 
+     *
      * @param inStruct
      * @return String which contains the mods data
      **************************************************************************/
@@ -1774,7 +1774,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Returns the first Element NODE within the &lt;xmlData> element.
      * </p>
-     * 
+     *
      * @param inStruct
      * @return
      **************************************************************************/
@@ -1831,7 +1831,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Parses the MODS metadata section for the given DocStruct Element. The DocStruct element must have an appropriate DivType object (&lt;div>
      * element) attached to it. The metadata is stored and added to the DocStruct.
      * </p>
-     * 
+     *
      * @param inStruct
      * @param recursive
      * @throws ReadException
@@ -1870,7 +1870,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Gets the anchor identifier from the MODS DOM.
      * </p>
-     * 
+     *
      * @param inMods
      * @param inStruct
      * @return
@@ -1941,7 +1941,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * node found under the element node selected by the XPath As more than one node can be returned by the xquery expression the result of this
      * method is an array containing the values of all textnodes.
      * </p>
-     * 
+     *
      * @param inNode
      * @param queryExpression
      * @return
@@ -2012,8 +2012,8 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * DOMImplementationLS was possibly used by Mr Enders to be able to use XPath on the MODS XML fragments, that is configurable in the prefs.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param inMods
      * @param inStruct
      * @throws ReadException
@@ -2129,7 +2129,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                         && metabagu.getAttributes().getNamedItem("type") == null) {
                     String name = metabagu.getAttributes().getNamedItem("name").getNodeValue();
                     String value = metabagu.getTextContent();
-                   
+
                     LOGGER.debug("Metadata '" + name + "' with value '" + value + "' found in Goobi's MODS extension");
 
                     // Check if metadata exists in prefs.
@@ -2152,7 +2152,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                             String valueURI = metabagu.getAttributes().getNamedItem("valueURI").getNodeValue();
                             md.setAutorityFile(authority, authorityURI, valueURI);
                          }
-                         
+
                         inStruct.addMetadata(md);
 
                         LOGGER.debug("Added metadata '" + mdt.getName() + "' to DocStruct '" + inStruct.getType().getName() + "' with value '"
@@ -2208,7 +2208,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                                     authorityURI = metadata.getAttributes().getNamedItem("authorityURI").getNodeValue();
                                     valueURI = metadata.getAttributes().getNamedItem("valueURI").getNodeValue();
                                 }
-                                
+
                                 List<Metadata> metadataList = new ArrayList<Metadata>(metadataGroup.getMetadataList());
                                 for (Metadata meta : metadataList) {
                                     if (meta.getType().getName().equals(metadataName)) {
@@ -2271,7 +2271,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                                                     String name = personbagu.getLocalName();
                                                     String value = personbagu.getTextContent();
 
-                                                    
+
                                                     // Get and set values.
                                                     if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
                                                         ps.setFirstname(value);
@@ -2291,7 +2291,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                                                     if (name.equals(GOOBI_PERSON_AUTHORITYVALUE_STRING)) {
                                                         authortityValue =value;
                                                     }
-                                                   
+
                                                     if (name.equals(GOOBI_PERSON_PERSONTYPE_STRING)) {
                                                         ps.setPersontype(value);
                                                     }
@@ -2386,8 +2386,8 @@ public class MetsMods implements ugh.dl.Fileformat {
                                 }
                                 if (name.equals(GOOBI_PERSON_AUTHORITYVALUE_STRING)) {
                                     authortityValue =value;
-                                }                               
-                               
+                                }
+
                                 if (name.equals(GOOBI_PERSON_PERSONTYPE_STRING)) {
                                     ps.setPersontype(value);
                                 }
@@ -2424,7 +2424,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Checks for missing, but needed settings.
      * </p>
-     * 
+     *
      * @return
      **************************************************************************/
     protected List<String> checkMissingSettings() {
@@ -2436,11 +2436,11 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Reads the physical structMap (&lt;structMap type="PHYSICAL">) and creates the appropriate physical DocStruct objects. The topmost physical
      * structure entity for the DigitalDocument is set as well.
      * </p>
-     * 
+     *
      * <p>
      * We expext here only to be an amount of children of the top DocStruct, no grandchildren or greatgreatgrandchildren or something else!
      * </p>
-     * 
+     *
      * @param inMetsElement
      * @throws ReadException
      **************************************************************************/
@@ -2594,7 +2594,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Parses the Metadata for the physical DocStruct.
      * </p>
-     * 
+     *
      * @param inStruct
      * @param recursive
      * @throws ReadException
@@ -2761,7 +2761,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Gets a DOM text node value.
      * </p>
-     * 
+     *
      * @param inNode
      * @return
      **************************************************************************/
@@ -2785,7 +2785,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a deep copy of the DigitalDocument.
      * </p>
-     * 
+     *
      * @return the new DigitalDocument instance
      **************************************************************************/
     private DigitalDocument copyDigitalDocument() throws WriteException {
@@ -2832,7 +2832,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Write the METS/MODS object.
      * </p>
-     * 
+     *
      * @param filename
      * @param validate
      * @param anchorClass
@@ -3054,7 +3054,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Reads namespace information from the configuration file, and change namespace prefixes.
      * </p>
-     * 
+     *
      * @param inNode
      * @return
      **************************************************************************/
@@ -3122,7 +3122,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a METS file group.
      * </p>
-     * 
+     *
      * @param domDoc
      * @param theFilegroup
      * @return
@@ -3213,7 +3213,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         	if(!theFilegroup.isOrdinary() && !cf.isRepresentative()) {
 				continue;
 			}
-            
+
             // Use the content file's ID if local filegroup is written, append
             // the filegroup's name if not.
             if (!theFilegroup.getName().equals(METS_FILEGROUP_LOCAL_STRING)) {
@@ -3265,7 +3265,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Reads the METS FileSec.
      * </p>
-     * 
+     *
      * @param inMetsElement
      * @throws ReadException
      **************************************************************************/
@@ -3360,7 +3360,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsModsGdz#writePhysDivs(org.w3c.dom.Node, ugh.dl.DocStruct)
      */
     protected Element writePhysDivs(Node parentNode, DocStruct inStruct) throws PreferencesException {
@@ -3419,7 +3419,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Write links to ContentFiles (for this physical docstruct), currently only linking to complete files are supported. The METS <area> element is
      * NOT supported.
      * </p>
-     * 
+     *
      * @param theStruct
      * @param theDocument
      * @param theDiv
@@ -3460,7 +3460,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Write single logical div METS sections.
      * </p>
-     * 
+     *
      * @param parentNode
      * @param inStruct
      * @param anchorClass
@@ -3559,7 +3559,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Retrieves all Metadata for the current DocStruct which are identifiers and can be used to link to inStruct from its child. This is only used,
      * if inStruct is an anchor and therefore stored in a separate XML file.
      * </p>
-     * 
+     *
      * @param inStruct
      **************************************************************************/
     private void getIdentifiersForAnchorLink(DocStruct inStruct) {
@@ -3579,12 +3579,12 @@ public class MetsMods implements ugh.dl.Fileformat {
      * well. In this the appropriate attribute is created for inNode and an appropriate value is set. If the attribute definitions has no value, the
      * attribute is created without a value and returned.
      * </p>
-     * 
+     *
      * <p>
      * PLEASE NOTE: There can only be ONE attribute inside this input string! The " " splitting was taken out because (a) no spaces were possible in
      * the attribute values and (b) nobody seems to have used that!
      * </p>
-     * 
+     *
      * @param in
      * @param inNode Tthe parent Node, which needs to be an element.
      * @param inDoc
@@ -3631,7 +3631,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a node according to XPath.
      * </p>
-     * 
+     *
      * @param query The xpath.
      * @param startingNode The base node for the xquery.
      * @param modsDocument
@@ -3960,7 +3960,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Gets the content of some brackets.
      * </p>
-     * 
+     *
      * @param in
      * @return
      **************************************************************************/
@@ -4007,7 +4007,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Gets the element name of a subpath, and its value if existing. Just takes out all brackets.
      * </p>
-     * 
+     *
      * @param in
      * @return
      **************************************************************************/
@@ -4019,7 +4019,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Delete String in2 from String in1, if in2 is not included in in1, then the comlete String n1 is returned.
      * </p>
-     * 
+     *
      * @param in1
      * @param in2
      * @return the result string
@@ -4053,7 +4053,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Splits the Xpath into subpathes. The "'"s also are now being ignored.
      * </p>
-     * 
+     *
      * @param in
      * @return
      **************************************************************************/
@@ -4105,7 +4105,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Creates an element, if the node name contains a "=", the part behind the "=" is regarded as the value of a textNode, which is created. The
      * value between the "''" is added to the TextNode.
      * </p>
-     * 
+     *
      * @param in the name of the node
      * @param inNode the parentNode
      * @return
@@ -4187,8 +4187,8 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Uses XPATH expressions to create new elements.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param parentNode
      * @param inStruct
      * @param anchorClass
@@ -4260,7 +4260,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates the MODS metadata header.
      * </p>
-     * 
+     *
      * @param thePrefix
      * @param theDmdid
      * @param theDmdsec
@@ -4292,7 +4292,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * The logical MODS section for internal METS storing.
      * </p>
-     * 
+     *
      * @param inStruct
      * @param dommodsnode
      * @param domDoc
@@ -4411,7 +4411,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a single Goobi internal metadata element.
      * </p>
-     * 
+     *
      * @param theXQuery
      * @param theMetadata
      * @param theStartingNode
@@ -4447,7 +4447,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a single Goobi internal person element.
      * </p>>
-     * 
+     *
      * @param theXQuery
      * @param thePerson
      * @param theStartingNode
@@ -4495,7 +4495,7 @@ public class MetsMods implements ugh.dl.Fileformat {
             affiliationNode.appendChild(affiliationvalueNode);
             createdNode.appendChild(affiliationNode);
         }
-       
+
         if (thePerson.getAuthorityID() != null && !thePerson.getAuthorityID().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_AUTHORITYID_STRING;
             Node authorityfileidNode = createNode(theXQuery, createdNode, theDocument);
@@ -4517,8 +4517,8 @@ public class MetsMods implements ugh.dl.Fileformat {
             authorityfileidNode.appendChild(authorityfileidvalueNode);
             createdNode.appendChild(authorityfileidNode);
         }
-        
-        
+
+
         if (thePerson.getDisplayname() != null && !thePerson.getDisplayname().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_DISPLAYNAME_STRING;
             Node displaynameNode = createNode(theXQuery, createdNode, theDocument);
@@ -4561,7 +4561,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * Write a single <code>smLink</code> element in DOM tree; If logical and/or physical DocStruct instances don't have an identifier, a new one is
      * created.
      * </p>
-     * 
+     *
      * @param parentNode Node in DOM tree
      * @param currentLogStruct DocStruct element of current logical structure entity
      * @return true, if write statement was successful
@@ -4630,7 +4630,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Writes the <code>structLink</code> section.
      * </p>
-     * 
+     *
      * @param parentNode Node in DOM tree
      * @return DOM-Element representing &lt;structLink>
      **************************************************************************/
@@ -4675,7 +4675,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Write the descriptive metadata for physical structure entities.
      * </p>
-     * 
+     *
      * @param parentNode
      * @param divElement
      * @param inStruct
@@ -4718,7 +4718,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * The physical MODS section for internal METS storing.
      * </p>
-     * 
+     *
      * @param inStruct
      * @param dommodsnode
      * @param domDoc
@@ -4781,10 +4781,10 @@ public class MetsMods implements ugh.dl.Fileformat {
     /**************************************************************************
      * <p>
      * Go through all the current persons and write them to <mods:extension><goobi:goobi><goobi:persons>.
-     * 
+     *
      * NOTE Write a person only if a role is existing and firstname OR lastname is not null.
      * </p>
-     * 
+     *
      * @param inStruct
      * @param domModsNode
      * @param domDoc
@@ -4809,7 +4809,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Writes the AMD section.
      * </p>
-     * 
+     *
      * @param theDomDoc
      * @param isAnchorFile
      **************************************************************************/
@@ -4862,7 +4862,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Reads the internal METS metadata prefs.
      * </p>
-     * 
+     *
      * @param childnode
      * @throws PreferencesException
      **************************************************************************/
@@ -4878,7 +4878,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Reads the DocStruct settings from the preferences fie.
      * </p>
-     * 
+     *
      * @param inNode
      * @throws PreferencesException
      **************************************************************************/
@@ -4890,7 +4890,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Serializes the METS DOM document.
      * </p>
-     * 
+     *
      * @param domDoc
      * @param xmlFile
      * @throws IOException
@@ -4934,7 +4934,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a DOM element and sets its prefix.
      * </p>
-     * 
+     *
      * @param theDocument
      * @param thePrefix
      * @param theElement
@@ -4956,7 +4956,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * <p>
      * Creates a DOM attribute and sets its prefix.
      * </p>
-     * 
+     *
      * @param theElement
      * @param thePrefix
      * @param theName
@@ -5057,7 +5057,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
     /**
      * Gets a map of all attributes of this node, with their respective values. attributes are expected to follow the pattern [@attribute='value']
-     * 
+     *
      * @param nodeName
      * @return
      */
@@ -5121,7 +5121,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 	/**
 	 * Returns the upwards pointing METS pointer depeding on the given anchor
 	 * class and the logical document structure the given docStruct is part of.
-	 * 
+	 *
 	 * @param inStruct
 	 *            a logical document structure entity whose anchor class
 	 *            hierarchy is to examine
@@ -5153,7 +5153,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 	/**
 	 * Returns the downwards pointing METS pointer depeding on the given anchor
 	 * class and the logical document structure the given docStruct is part of.
-	 * 
+	 *
 	 * @param inStruct
 	 *            a logical document structure entity whose anchor class
 	 *            hierarchy is to examine

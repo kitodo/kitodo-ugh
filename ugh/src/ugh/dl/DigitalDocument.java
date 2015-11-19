@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / DigitalDocument.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -58,116 +58,116 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  * <p>
  * A DigitalDocument represents a digital version of a work. This representation contains the following information:
  * </p>
- * 
+ *
  * <ul>
  * <li>metadata</li>
  * <li>structure of a work</li>
  * <li>content</li>
  * </ul>
- * 
+ *
  * <p>
  * Those three different objects can be linked to each other in ways forming a very complex object. The underlying document model tries to reduce the
  * complexity by defining some rules:
  * </p>
- * 
+ *
  * <ul>
  * <li>every <code>DigitalDocument</code> has two kind of structures:
- * 
+ *
  * <ul>
  * <li>logical structure: this structure represents the logical view. The logical view is normally represented by chapters, paragraphs etc.</li>
- * 
+ *
  * <li>physical structure: The physical structure represents the physical representation of a work. For a book the physical binding and the pages can
  * be regarded a part of the physical structure.</li>
- * 
+ *
  * Each structure has a single top structure element. These structure elements are represented by <code>DocStruct</code> objects and may have
  * children.
- * 
+ *
  * </ul>
  * <li>metadata to this digital document is stored in structure entities</li>
  * <li>the content is represented by content files</li>
  * <li>ContentFiles can be linked to structure entities</li>
  * </ul>
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-18
  * @see DocStruct, Metadata, Prefs
- * 
+ *
  *      TODOLOG
- * 
+ *
  *      TODO Refactor all methods that do return always TRUE!!
- * 
+ *
  *      TODO Refactor ALL these silly content file things!!
- * 
+ *
  *      TODO Use private finals here for Metadata and DocStruct names!!
- * 
+ *
  *      TODO Remove all XStream things from here and put it into the XStream class!!
- * 
+ *
  *      TODO Maybe provide a possibility to change content file paths in addContentFileFromPhysicalPage()!!
- * 
+ *
  *      CHANGELOG
- *      
+ *
  *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- * 
+ *
  *      29.03.2010 --- Funk --- Added this.setFileSet(null); to avoid adding multiple files with an XStream read (DPD-406).
- * 
+ *
  *      23.02.2010 --- Sehr --- Changed XStream DOM driver against XStream Stax driver.
- * 
+ *
  *      14.02.2010 --- Funk --- Remove all the Metadata, person, and ContentFile output lines and implement the toString() methods in the classes
  *      itself!!
- * 
+ *
  *      28.01.2010 -- Funk --- Added some NPE checks to addAllContentFiles().
- * 
+ *
  *      27.01.2010 --- Funk --- Re-added addAllCOntentFiles() for compatibility reasons.
- * 
+ *
  *      22.01.2010 --- Funk --- Added method toString(). --- Improved things due to findbugs.
- * 
+ *
  *      19.01.2010 --- Funk --- Fixed bug updating physical DocStruct with logical DocStruct.
- * 
+ *
  *      21.12.2009 --- Funk --- Minor changes. --- Added VERSION to this class.
- * 
+ *
  *      16.12.2009 --- Mahnke --- Marked print methods as deprecated.
- * 
+ *
  *      14.12.2009 --- Funk --- Added TODO to the equals() method, must be fixed!
- * 
+ *
  *      09.12.2009 --- Funk --- Maekrd addAllContentFiles() deprecated. --- Added addContentFileFromPhysicalPage() to add content files to a DocStruct
  *      "page".
- * 
+ *
  *      08.12.2009 --- Funk --- Added FileSet printout method. --- VirtualFileGroup are preserved now before adding all content files. --- Slightly
  *      refactored some loops and conditionals.
- * 
+ *
  *      03.12.2009 --- Funk --- Slightly improved printChildDocStruct().
- * 
+ *
  *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *      30.10.2009 --- Funk --- Added generated serialVersionUID.
- * 
+ *
  *      28.10.2009 --- Funk --- Slightly refactored PreferencesException throwing in readXStreamXml().
- * 
+ *
  *      06.10.2009 --- Funk --- Changed printDocStruct underline character.
- * 
+ *
  *      30.09.2009 --- Funk --- New public method sortMetadataRecursively, and alphabetically recursively. -- printAllLogDocStruct() and
  *      printAllPhysDocStruct() now really prints, and do not log again!
- * 
+ *
  *      10.09.2009 --- Funk --- Updating DocStructTYPES and MetadataTYPES now! Correctly! Not only NAMES in a LIST! HMPF! --- Corrected the
  *      MetadataType sort algorithm, now the MetadataTypes are sorted as stated in the Prefs' DocStructTypes.
- * 
+ *
  *      07.09.2009 --- Funk --- Added physical DocStruct to update mechanism.
- * 
+ *
  *      08.06.2009 --- Funk --- Declared dome deprecated methods, deleted debug output.
- * 
+ *
  *      11.12.2008 --- Funk --- Writing the XStream the content files are written to the Digital Document first.
- * 
+ *
  *      03.12.2008 --- Funk --- Added updating the DigitalDocument from the Prefs after reading XStream.
- * 
+ *
  *      24.10.2008 --- Funk --- Added XStream read and write methods.
- * 
+ *
  *      14.10.2008 --- Funk --- read() and write() implemented to serialize and de-serialize.
- * 
+ *
  *      29.09.2008 --- Funk --- Logging added.
- * 
+ *
  ******************************************************************************/
 
 public class DigitalDocument implements Serializable {
@@ -210,7 +210,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Create a DocStruct instance for the Digital Document.
      * </p>
-     * 
+     *
      * @param dsType Is a DocStructType object.
      * @throws TypeNotAllowedForParentException Is thrown, if this docstruct is not allowed for a parent.
      **************************************************************************/
@@ -269,7 +269,7 @@ public class DigitalDocument implements Serializable {
 
     /***************************************************************************
      * TODO Why is this method is returning always TRUE???
-     * 
+     *
      * @return
      **************************************************************************/
     public DocStruct getPhysicalDocStruct() {
@@ -278,7 +278,7 @@ public class DigitalDocument implements Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -307,7 +307,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Prints all the given DocStruct's data.
      * </p>
-     * 
+     *
      * @return
      **************************************************************************/
     private String printCompleteDocStruct(DocStruct theDocStruct) {
@@ -325,7 +325,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Prints a DocStruct including persons and metadata.
      * </p>
-     * 
+     *
      * @param inDocStruct
      * @param hierarchy
      * @return
@@ -394,7 +394,7 @@ public class DigitalDocument implements Serializable {
      * Gets all document structures of a certain type, independent of their location in the structure tree and indepedent, if they belong to the
      * logical or physical tree.
      * </p>
-     * 
+     *
      * @param inTypeName
      * @return List Containing DocStruct objects or null, if none are available.
      **************************************************************************/
@@ -478,12 +478,12 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Reads an XStream XML DigitalDocument from disk.
      * </p>
-     * 
+     *
      * <p>
      * Reads all given DocStructTypes and MetadataTypes from the given Preferences and gives all needed information to the DigitalDocument we just
      * read. Checks inconsistencies and updates the DigitalDocument.
      * </p>
-     * 
+     *
      * @param filename
      * @return
      * @throws FileNotFoundException
@@ -574,7 +574,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Updates the top logical DocStruct.
      * </p>
-     * 
+     *
      * @param thePrefs
      * @throws PreferencesException
      **************************************************************************/
@@ -587,7 +587,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Updates the top physical DocStruct.
      * </p>
-     * 
+     *
      * @param thePrefs
      * @throws PreferencesException
      **************************************************************************/
@@ -600,11 +600,11 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Updates a DocStruct tree.
      * </p>
-     * 
+     *
      * <p>
      * NOTE This method only is needed for XStream de-serialisation!
      * </p>
-     * 
+     *
      * @param theStruct
      * @param thePrefs
      * @throws PreferencesException
@@ -715,7 +715,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Writes a DigitalDocument to disk as an XStream XML file.
      * </p>
-     * 
+     *
      * @param filename
      * @deprecated
      * @throws FileNotFoundException
@@ -770,7 +770,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Adds a content file to a DocStruct "page"! All FileSet data (ContentFiles, VrtualFileGroups, etc.) will be lost!
      * </p>
-     * 
+     *
      * @param theStruct
      **************************************************************************/
     public void addContentFileFromPhysicalPage(DocStruct theStruct) {
@@ -797,8 +797,8 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Add all content files to the digital document according to the pathimagefiles metadata. The pages in the physical DocStruct must already exist!
      * </p>
-     * 
-     * 
+     *
+     *
      **************************************************************************/
 
     public void addAllContentFiles() {
@@ -876,7 +876,7 @@ public class DigitalDocument implements Serializable {
 	 * periodical as such an anchor. The periodical itself is a virtual
 	 * structure entity without any own content, but groups all years of
 	 * appearance together. Years may be anchors again for volumes, etc.
-	 * 
+	 *
 	 * @return String, which is null, if it cannot be used as an anchor
 	 **************************************************************************/
 	public String getAnchorClass() {
@@ -887,11 +887,11 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Overrides ContentFiles of DigitalDocument with new names for images. Code mostly taken from old addAllContentFiles method.
      * </p>
-     * 
+     *
      * @param a List of sorted image names
-     * 
+     *
      * @author Robert Sehr
-     * 
+     *
      **************************************************************************/
 
     public void overrideContentFiles(List<String> images) {
@@ -965,7 +965,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Just returns the path to the image files.
      * </p>
-     * 
+     *
      * @return
      **************************************************************************/
     private String getPathToImages() {
@@ -986,9 +986,9 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Adds a single content file to a DocStruct.
      * </p>
-     * 
+     *
      * TODO Get the mimetype from anywhere, and not assume it was tiff!
-     * 
+     *
      * @param theStruct
      * @param theName
      **************************************************************************/
@@ -1030,13 +1030,13 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Overloaded equals method, compares this DigitalDocument with the DigitalDocument in parameter digitalDocument.
      * </p>
-     * 
+     *
      * <p>
      * This method is not yet working within normal parameters! Please use with care (or do not use it at all!)
      * </p>
-     * 
+     *
      * TODO Make this method work properly!!
-     * 
+     *
      * @author Wulf Riebensahm
      * @param digitalDocument
      * @return TRUE if documents can be considered equal, false if they are different.
@@ -1077,7 +1077,7 @@ public class DigitalDocument implements Serializable {
      * Helps simplifying code in equals method, reused in equals methods subsequent to this one (other objects of digdoc), hence protected, not
      * private.
      * </p>
-     * 
+     *
      * @author Wulf Riebensahm
      * @param o1
      * @param o2
@@ -1168,7 +1168,7 @@ public class DigitalDocument implements Serializable {
      * <p>
      * Return values for method ListPairCheck.
      * </p>
-     * 
+     *
      * @author Wulf Riebensahm
      * @see {@link quickPairCheck}
      **************************************************************************/
@@ -1176,15 +1176,15 @@ public class DigitalDocument implements Serializable {
         isEqual, isNotEqual, needsFurtherChecking
     }
 
-    
+
     /***************************************************************************
      * <p>
      * Creates a deep copy of the DigitalDocument.
      * </p>
-     * 
+     *
      * @return the new DigitalDocument instance
      **************************************************************************/
-    
+
     public DigitalDocument copyDigitalDocument() throws WriteException {
 
         DigitalDocument newDigDoc = null;

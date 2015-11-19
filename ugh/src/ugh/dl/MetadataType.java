@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / MetadataType.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -33,7 +33,7 @@ import java.util.Map;
  * same MetadataType object. Each MetadataType object can be identified easily
  * by using its internal name.
  * </p>
- * 
+ *
  * <p>
  * Besides the internal name, a MetadataType object contains information, about
  * it occurrences; some metadata may occur just once, other may occur many times.
@@ -45,12 +45,12 @@ import java.util.Map;
  * structure entity can only have a single title.<BR>
  * MetadataType objects can occur in two different ways:
  * </p>
- * 
+ *
  * <ul>
  * <li>globally
  * <li>locally
  * </ul>
- * 
+ *
  * <p>
  * <b>Global</b> <code>MetadataType</code> objects can be retrieved from the
  * <code>Prefs</code> object by giving the internal name. Some of the
@@ -69,22 +69,22 @@ import java.util.Map;
  * <code>Metadata</code> objects. They are the only parameter in the constructor
  * of the <code>Metadata</code> object.
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @version 2010-02-13
  * @see Metadata#setType
  * @see DocStructType#getMetadataTypeByType
- * 
+ *
  *      CHANGELOG
- * 
+ *
  *      13.02.2010 -- Funk --- Refactored some whiles and iterators.
- * 
+ *
  *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *      06.05.2009 --- Wulf Riebensahm --- equals() method overloaded.
- * 
+ *
  ******************************************************************************/
 
 public class MetadataType implements Serializable {
@@ -107,7 +107,7 @@ public class MetadataType implements Serializable {
 	// Is set to true, if this MetadataType acts as an element; which means,
 	// that a metadata with the same value cannot be available twice.
 	protected boolean				isIdentifier		= false;
-	
+
 	/***************************************************************************
 	 * Constructor.
 	 **************************************************************************/
@@ -149,7 +149,7 @@ public class MetadataType implements Serializable {
 	 * The copy contains the same languages, the same internal name and the
 	 * number of possible occurrences as the original.
 	 * </p>
-	 * 
+	 *
 	 * @return the newly created MetadataType
 	 * @see DocStructType
 	 **************************************************************************/
@@ -182,7 +182,7 @@ public class MetadataType implements Serializable {
 	 * to reference from other documents / parts of documents to a DocStruct
 	 * instance.
 	 * </p>
-	 * 
+	 *
 	 * @return the isIdentifier
 	 **************************************************************************/
 	public boolean isIdentifier() {
@@ -203,9 +203,9 @@ public class MetadataType implements Serializable {
 	 * is now based on the type of DocStruct and is therefor stored in the
 	 * DocStructType.
 	 * </p>
-	 * 
+	 *
 	 * TODO Was set to deprecated, who knows why?
-	 * 
+	 *
 	 * @return number of MetadataType
 	 **************************************************************************/
 	public String getNum() {
@@ -232,7 +232,7 @@ public class MetadataType implements Serializable {
 	 * <p>
 	 * Adds a name (in the given language) for this instance of MetadataType.
 	 * </p>
-	 * 
+	 *
 	 * @param lang
 	 *            language code
 	 * @param value
@@ -257,7 +257,7 @@ public class MetadataType implements Serializable {
 	 * <p>
 	 * Retrieves the name for a certain language.
 	 * </p>
-	 * 
+	 *
 	 * @param lang
 	 *            language code
 	 * @return the translation of this MetadataType; or null, if it has no
@@ -276,7 +276,7 @@ public class MetadataType implements Serializable {
 	 * <p>
 	 * Changes the name of this instance for a certain language.
 	 * </p>
-	 * 
+	 *
 	 * @param lang
 	 *            language code
 	 * @param content
@@ -291,7 +291,7 @@ public class MetadataType implements Serializable {
 	 * <p>
 	 * Removes a language for this MetadataType instance.
 	 * </p>
-	 * 
+	 *
 	 * @param lang
 	 *            language code
 	 * @return true, if successful
@@ -344,7 +344,7 @@ public class MetadataType implements Serializable {
 	 * <p>
 	 * Compares this MetadataType with parameter metadataType.
 	 * </p>
-	 * 
+	 *
 	 * @author Wulf Riebensahm
 	 * @param MetadataType
 	 *            metadataType

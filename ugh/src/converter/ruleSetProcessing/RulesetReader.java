@@ -27,7 +27,7 @@ public class RulesetReader {
 	}
 
 	public RulesetReader(String filePath) {
-		//document is first read from file when getDocument() is called for the first time 
+		//document is first read from file when getDocument() is called for the first time
 		this.myFilePath = filePath;
 	}
 

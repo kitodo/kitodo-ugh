@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-//class fetches all metadata files, provides them for the conversion and organizes backup and save 
+//class fetches all metadata files, provides them for the conversion and organizes backup and save
 
 public class MetadataWalker implements Iterator<File> {
 
 	private static boolean flagInstanceExists;
 
 	private ArrayList<String> mySubDirs = null;
-	private String basePath = null; 
+	private String basePath = null;
 	private int index = 0;
 
 	private MetadataWalker() throws Exception {

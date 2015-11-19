@@ -2,21 +2,21 @@ package ugh.contentfileformats;
 
 /*******************************************************************************
  * ugh.contentfileformats / TiffFormat.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -42,21 +42,21 @@ import com.sun.media.jai.codec.FileSeekableStream;
  * Class allows to read TIFF images as ContentFiles and is able to extract
  * technical metadata.
  * </p>
- * 
+ *
  * @author Markus Enders
  * @version 2010-02-13
  * @since 2008-10-31
  * @deprecated
- * 
+ *
  *             TODOLOG
- * 
+ *
  *             TODO Get rid of this dependency on contentLib or koLibRI! (Is
  *             this still a TODO??)
- * 
+ *
  *             CHANGELOG
- * 
+ *
  *             13.02.1020 --- Funk --- Minor changes.
- * 
+ *
  ******************************************************************************/
 @Deprecated
 public class TiffFormat implements ugh.dl.ContentFileFormat {
@@ -76,7 +76,7 @@ public class TiffFormat implements ugh.dl.ContentFileFormat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.ContentFileFormat#getMetadata(java.lang.String)
 	 */
 	public Metadata getMetadata(String typeName) {
@@ -133,7 +133,7 @@ public class TiffFormat implements ugh.dl.ContentFileFormat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.ContentFileFormat#readFile(java.lang.String)
 	 */
 	public boolean readFile(String filename) {
@@ -165,7 +165,7 @@ public class TiffFormat implements ugh.dl.ContentFileFormat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.ContentFileFormat#convertTo(java.lang.String)
 	 */
 	public boolean convertTo(String format) {

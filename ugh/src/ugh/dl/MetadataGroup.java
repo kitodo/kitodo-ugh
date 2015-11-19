@@ -13,12 +13,12 @@ package ugh.dl;
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************/
@@ -37,16 +37,16 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  * A MetadataGroup object represents a single MetadataGroup element. Each MetadataGroup element has at least a metadata element. The type of a
  * MetadataGroup element is stored as a {@link MetadataGroupType} object.
  * </p>
- * 
+ *
  * <p>
  * MetadataGroups are a list of {@link Metadata}
  * </p>
- * 
+ *
  * @author Robert Sehr
  * @version 2013-05-08
  * @see MetadataGroupType
- * 
- * 
+ *
+ *
  ******************************************************************************/
 
 public class MetadataGroup implements Serializable {
@@ -66,7 +66,7 @@ public class MetadataGroup implements Serializable {
      * <p>
      * Constructor.
      * </p>
-     * 
+     *
      * @throws MetadataTypeNotAllowedException
      **************************************************************************/
     public MetadataGroup(MetadataGroupType theType) throws MetadataTypeNotAllowedException {
@@ -98,7 +98,7 @@ public class MetadataGroup implements Serializable {
      * <p>
      * Sets the Document structure entity to which this object belongs to.
      * </p>
-     * 
+     *
      * @param inDoc
      **************************************************************************/
     public void setDocStruct(DocStruct inDoc) {
@@ -110,7 +110,7 @@ public class MetadataGroup implements Serializable {
      * Returns the DocStruct instance, to which this metadataGroup object belongs. This is extremely helpful, if only the metadata instance is stored
      * in a list; the reference to the associated DocStrct instance is always kept.
      * </p>
-     * 
+     *
      * @return DocStruct instance.
      **************************************************************************/
     public DocStruct getDocStruct() {
@@ -122,7 +122,7 @@ public class MetadataGroup implements Serializable {
      * Returns the type of the metadataGroup instance; The MetadataGroupType object which is returned, may have the same name, but be a different
      * object than the MetadataGroupType object from another MetadataGroupType.
      * </p>
-     * 
+     *
      * @return MetadataGroupType instance
      **************************************************************************/
     public MetadataGroupType getType() {
@@ -134,7 +134,7 @@ public class MetadataGroup implements Serializable {
      * Sets the MetadataGroupType for this instance; only a MetadataGroupType instance is used as the only parameter. The method returns true if
      * MDType was set; false if not.
      * </p>
-     * 
+     *
      * @param inType
      * @return
      **************************************************************************/
@@ -180,7 +180,7 @@ public class MetadataGroup implements Serializable {
         }
         return returnList;
     }
-    
+
     public List<Person> getPersonByType(String theType) {
         List<Person> returnList = new ArrayList<Person>();
         for (Person md : personList) {

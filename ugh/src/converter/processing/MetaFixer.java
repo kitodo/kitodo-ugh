@@ -34,15 +34,15 @@ public class MetaFixer implements Validatable {
 		logger.debug("start replacing in " + fileName);
 		SAXBuilder sxbuild = new SAXBuilder();
 		InputSource is = new InputSource(fileName);
-		
+
 		try{
 			myDoc = sxbuild.build(is);
 		}catch (FileNotFoundException e){
 			logger.debug("File listed in usedRuleset.xml was not found - program abnormally terminated", e);
 			throw e;
 		}
-		
-		
+
+
 		Namespace ns = Namespace.getNamespace("AGORA", "GDZ:DMSDB-Semantics");
 
 		replaceElementsRecursively(myDoc.getRootElement(),  "AGORA:Monograph",
@@ -61,8 +61,8 @@ public class MetaFixer implements Validatable {
 			return false;
 		}
 	}
-/* 
- * 
+/*
+ *
  */
 	private void replaceElementsRecursively(Element parent, String startName,
 			String endName, Namespace ns) throws FileNotFoundException,
@@ -102,7 +102,7 @@ public class MetaFixer implements Validatable {
 
 	/*
 	 * Validates after processing and saving if saved
-	 * checks occurrences of replaced strings 
+	 * checks occurrences of replaced strings
 	 * @see com.intranda.goobi.metadataprocessing.Validatable#validate()
 	 */
 	public void validate() throws ContentLibException {
@@ -133,7 +133,7 @@ public class MetaFixer implements Validatable {
 					+ "' in file '" + fileName + "'");
 		}
 		logger.debug(fileName + " clean of 'AGORA:MultiVolumeWork'");
-	
+
 		searchString = "AGORA:Volume";
 		if (readFile.split(searchString).length > 1) {
 			throw new ContentLibException("Found '" + searchString

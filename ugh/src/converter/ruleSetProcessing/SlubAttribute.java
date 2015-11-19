@@ -7,7 +7,7 @@ public class SlubAttribute
 
 	private Attribute myAttribute = null;
 	private boolean flagSameID = false;
-	
+
 	@SuppressWarnings("unused")
 	private SlubAttribute()
 	{
@@ -31,7 +31,7 @@ public class SlubAttribute
 		{
 			return false;
 		}
-		
+
 		flagSameID = true;
 
 		if (!att.getValue().equals(myAttribute.getValue()))
@@ -41,11 +41,11 @@ public class SlubAttribute
 
 		return true;
 	}
-	
+
 	public boolean hasSameID(){
 		return flagSameID;
 	}
-	
+
 	public Attribute getAttribute(){
 		return myAttribute;
 	}

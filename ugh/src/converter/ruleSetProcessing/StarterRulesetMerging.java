@@ -11,7 +11,7 @@ import org.jdom.output.XMLOutputter;
 
 public class StarterRulesetMerging {
 
-	
+
 	protected final Logger myLogger = Logger
 	.getLogger(StarterRulesetMerging.class);
 

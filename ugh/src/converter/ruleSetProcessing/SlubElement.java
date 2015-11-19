@@ -33,7 +33,7 @@ public class SlubElement
 	/*
 	 * overwritten method equals checks on a deep level, if element represented
 	 * in myElement and it's tree is the same as the Element in parameter ele
-	 * 
+	 *
 	 * @parameter eleChecked
 	 */
 	@SuppressWarnings("unchecked")

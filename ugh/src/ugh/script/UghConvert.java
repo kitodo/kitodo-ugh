@@ -2,21 +2,21 @@ package ugh.script;
 
 /*******************************************************************************
  * ugh.script / UghConvert.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -58,55 +58,55 @@ import ugh.fileformats.opac.PicaPlus;
  * <p>
  * Writes METS, DVMETS, RDF and XStream.
  * </p>
- * 
+ *
  * @author Stefan Funk
  * @version 2010-05-05
  * @since 2008-09-21
- * 
+ *
  *        TODOLOG
- * 
+ *
  *        TODO Add switches for mets file and anchor file filenames!!
- * 
+ *
  *        TODO Add more Junit tests for UghConvert!!
- * 
+ *
  *        TODO Check missing/wrong switches for virtual filegroups!!
- * 
+ *
  *        TODO Add contentIDs to this script!!
- * 
+ *
  *        TODO Handle "-" for -i and -o arguments as alias for Stdin and Stdout. This requires UGH to handle streams!!
- * 
+ *
  *        CHANGELOG
- * 
+ *
  *        07.10.2010 --- Sehr --- Added experimental metadata exchange switch.
- * 
+ *
  *        05.05.2010 --- Funk --- Added LGPL header.
- * 
+ *
  *        10.03.2010 --- Funk --- Added the rightsOwnerContact switch.
- * 
+ *
  *        12.02.2010 --- Funk --- Repaired the AMD settings. Fixes bug DPD-399.
- * 
+ *
  *        15.01.2010 --- Funk --- Added some null checks for logging.
- * 
+ *
  *        08.12.2009 --- Funk --- Corrected some typos. ---Added content filed to log verbose output. --- Catching missing output filename and format
  *        now.
- * 
+ *
  *        30.10.2009 --- Funk --- Added UghConvert version. --- Improved log output. --- Added finals for Fileformat strings.
- * 
+ *
  *        14.10.2009 --- Funk --- Added virtual file group support for PRESENTATION and LOCAL.
- * 
+ *
  *        13.10.2009 --- Funk --- Fixed a bug comncerning the Fileformat's versions.
- * 
+ *
  *        06.10.2009 --- Funk --- Added the -q flag, some modifications for better usage. --- Removed internal metadata exchange code. --- Changed
  *        back return code numbers.
- * 
+ *
  *        02.10.2009 --- Funk --- Added the anchor flags.
- * 
+ *
  *        22.05.2009 --- Funk --- Added some correction implementation lines.
- * 
+ *
  *        27.03.2009 --- Funk --- Added MetsModsImportExport.
- * 
+ *
  *        16.02.2009 --- Funk --- copied from agora2mets.java.
- * 
+ *
  ******************************************************************************/
 
 public class UghConvert {
@@ -125,7 +125,7 @@ public class UghConvert {
 	 * <p>
 	 * Normal main class.
 	 * </p>
-	 * 
+	 *
 	 * @param args
 	 **************************************************************************/
 	public static void main(String args[]) {
@@ -136,7 +136,7 @@ public class UghConvert {
 	 * <p>
 	 * Test main class, just to return int values for the JUnit tests... does all the work, of course...
 	 * </p>
-	 * 
+	 *
 	 * @param args
 	 **************************************************************************/
 	public static int testmain(String args[]) {
@@ -508,7 +508,7 @@ public class UghConvert {
 	/***************************************************************************
 	 * <p>
 	 * </p>
-	 * 
+	 *
 	 * @param theDocstruct
 	 * @param theMetadataName
 	 * @param theValue
@@ -540,7 +540,7 @@ public class UghConvert {
 	 * <p>
 	 * The command line interface options are created here.
 	 * </p>
-	 * 
+	 *
 	 * @return The command line interface options.
 	 **************************************************************************/
 	private static Options cliOptions() {

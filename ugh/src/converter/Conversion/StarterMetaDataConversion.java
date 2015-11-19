@@ -57,7 +57,7 @@ public class StarterMetaDataConversion {
 		Fileformat metsOutput = null;
 
 		myLogger.info("Original files are backuped to meta.bak(n) - (highest number = latest backup)");
-	
+
 		for (Iterator<File> iterator = walker.iterator(); iterator.hasNext();) {
 
 			Boolean flagError = false;
@@ -105,7 +105,7 @@ public class StarterMetaDataConversion {
 
 						DigitalDocument digDoc1 = metsOutput.getDigitalDocument();
 						DigitalDocument digDoc2 = rdfInput.getDigitalDocument();
-						new Validator().validate(metsOutput, pref, newFile.getAbsolutePath()); 
+						new Validator().validate(metsOutput, pref, newFile.getAbsolutePath());
 						/*######## Begin of 1. Equals Validation  #########*/
 						// if conversion doesn't generates equal digDoc
 						if (!myValidators.getEqualsValidation(digDoc1, digDoc2)) {
@@ -117,8 +117,8 @@ public class StarterMetaDataConversion {
 							myLogger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
 						}
 						/*######## End of 1. Equals Validator  #########*/
-						
-						
+
+
 					} else {
 						myLogger.info("File " + procFile.getAbsolutePath() + " could not be read, will not be written");
 						myRollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
@@ -185,7 +185,7 @@ public class StarterMetaDataConversion {
 							Boolean conversionFailure = false;
 
 							// Validator
-							
+
 							if (myValidators.getEqualsValidation(digDoc1, digDoc2)) {
 								myLogger.info("File " + procFile.getAbsolutePath() + " was successfully verified by equals validator in mets format");
 
@@ -201,7 +201,7 @@ public class StarterMetaDataConversion {
 										+ " digital document from the reloaded mets is not equal to the originally loaded digital document");
 								*/
 							}
-							
+
 							//next line only if previous block is taken out from //validator
 							//myCommitLog.info(procFile.getAbsolutePath()	+ " was NOT verified by equalsValidator in mets format");
 
@@ -211,10 +211,10 @@ public class StarterMetaDataConversion {
 
 							rdfCompare.write(fileA.getAbsolutePath());
 							rdfInput.write(fileB.getAbsolutePath());
-							
-							
+
+
 							/*
-							// Validator 
+							// Validator
 							if (myValidators.getFileStringValidation(fileA, fileB)) {
 								myLogger.info("File " + procFile.getAbsolutePath() + " was successfully verified by stringValidator in mets format");
 								myCommitLog.info(procFile.getAbsolutePath()
@@ -251,7 +251,7 @@ public class StarterMetaDataConversion {
 										+ " the file reloaded from mets, reconverted to rdf and saved as '" + fileA.getAbsolutePath() + "' is not equal to the originally read and saved '" + fileB.getAbsolutePath() + "'"
 								+ "tokenizer returned  ->" + FileCompare.getErrorMSG());
 							}
-							
+
 							if (conversionFailure){
 								myRollbackLog.info(procFile.getAbsolutePath()  + " conversion couldn't satisfy validators");
 								myCommitLog.info(procFile.getAbsolutePath() + " conversion couldn't satisfy validators");

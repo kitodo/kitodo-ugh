@@ -20,17 +20,17 @@ import ugh.exceptions.PreferencesException;
 public class Validator {
 
 	protected final Logger myLogger = Logger.getLogger(Validator.class);
-	
+
 	List<DocStruct> docStructsOhneSeiten;
 
 	boolean autoSave = false;
 
 	public boolean validate(Prefs myPrefs, Fileformat gdzfile, String id) {
-		
+
 	    /*
 	     * -------------------------------- Fileformat einlesen --------------------------------
 	     */
-		
+
 		return validate(gdzfile, myPrefs, id);
 	}
 

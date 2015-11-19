@@ -78,7 +78,7 @@ public class FileCompare {
 				}
 			}
 		}
-		
+
 		Boolean validated = false;
 		String returnString = "";
 		for (String elem1 : alist1) {

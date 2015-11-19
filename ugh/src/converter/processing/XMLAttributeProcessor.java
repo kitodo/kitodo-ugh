@@ -19,7 +19,7 @@ public class XMLAttributeProcessor {
 	private String myDocPath;
 
 	/**
-	 * 
+	 *
 	 * @param noClone
 	 * @param e
 	 * @param args
@@ -31,14 +31,14 @@ public class XMLAttributeProcessor {
 	public List<Element> getElementList(boolean noClone, Element e, List<String> args, Namespace ns) throws JDOMException, IOException {
 		/*
 		 * args 1-> filename of XML-source (optional, required if myDoc==null)
-		 * 2-> Elementtype1 
-		 * 3-> Attribute1 
-		 * 4-> equals Condition1 
-		 * 5-> Elementtype2 
-		 * 6-> Attribute2 
+		 * 2-> Elementtype1
+		 * 3-> Attribute1
+		 * 4-> equals Condition1
+		 * 5-> Elementtype2
+		 * 6-> Attribute2
 		 * 7-> equals Condition2
-		 *  ..... 
-		 *  ..... 
+		 *  .....
+		 *  .....
 		 *  n
 		 */
 
