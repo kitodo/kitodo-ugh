@@ -2,21 +2,21 @@ package ugh.fileformats.mets;
 
 /*******************************************************************************
  * ugh.fileformats.mets / MetsModsImportExport.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -84,90 +84,90 @@ import ugh.exceptions.WriteException;
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-26
  * @since 2009-05-09
- * 
- * 
+ *
+ *
  *        CHANGELOG
- *        
+ *
  *        26.06.2014 --- Ronge --- Get anchor classes & get only real successors
- *        
+ *
  *        23.06.2014 --- Ronge --- Create ORDERLABEL attribute on export & add getter for meta data
- *        
+ *
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- * 
+ *
  *        05.05.2010 --- Funk --- Added displayName check at displayName creation time. --- Added some DPD-407 debugging outputs (commented out).
- * 
+ *
  *        10.03.2010 --- Funk --- Added ValueRegExps to AnchorIdentifier. --- References to anchor is written only once now, and not for every
  *        identifier mapping in the prefs.
- * 
+ *
  *        03.03.2010 --- Funk --- ORDERLABEL uncounted things corrected. No additional tags are written anymore.
- * 
+ *
  *        24.02.2010 --- Funk --- ORDERLABEL only is filled with data, if a metadata value is existing. "uncounted" pages are not written as
  *        ORDERLABEL anymore. --- Empty nodes (nodes without value) in RegExp conditions are NOT created anymore.
- * 
+ *
  *        15.02.2010 --- Funk --- Logging version information now. --- Added the RegExp things for the AMD section to the documentation.
- * 
- * 
+ *
+ *
  *        12.02.2010 --- Funk --- Added RegExp support for amdsec setters.
- * 
+ *
  *        22.01.2010 --- Funk --- findbugs improvements.
- * 
+ *
  *        18.01.2010 --- Funk --- Adapted class to changed DocStruct.getAllMetadataByType().
- * 
+ *
  *        22.12.2009 --- Funk --- Grouping of MODS elements added.
- * 
+ *
  *        08.12.2009 --- Funk --- Moved the trim() calls some lines down to avoid NPEs.
- * 
+ *
  *        04.12.2009 --- Funk --- Added trim() to all METS prefs values' getTextNodeValue() calls.
- * 
+ *
  *        21.11.2009 --- Funk --- Added ValueCondition and ValueRegExp to MODS mapping.
- * 
+ *
  *        06.11.2009 --- Funk --- Beautified code for Sonar ranking improvement!
- * 
+ *
  *        26.10.2009 --- Funk --- Removed the constructor without Prefs object. We really need that Prefs thing!
- * 
+ *
  *        09.10.2009 --- Funk --- Changed the authority for the PND ID to "gbv".
- * 
+ *
  *        06.10.2009 --- Funk --- Corrected some not-conform-to-rules variable names.
- * 
+ *
  *        05.10.2009 --- Funk --- Adapted metadata and person constructors.
- * 
+ *
  *        24.09.2009 --- Funk --- Refactored all the Exception things.
- * 
+ *
  *        21.09.2009 --- Funk --- Moved the class readPrefs from MetsMods, and put it into MetsModeImportExport. It is only needed here.
- * 
+ *
  *        11.09.2009 --- Funk --- Using more String finals now.
- * 
+ *
  *        04.09.2009 --- Funk --- Catch all the NULLs in the METS setters. If a value is "", do not create a METS tag, or throw an exception if
  *        necesarry.
- * 
+ *
  *        20.08.2009 --- Funk --- Removed the xPathAnchorReference attribute from this class. We must use the one from MetsMods!
- * 
+ *
  *        28.07.2009 --- Funk --- Added PURLs as CONTENTIDS to logical structmap div.
- * 
+ *
  *        24.07.2009 --- Funk --- Added version string.
- * 
+ *
  *        22.07.2009 --- Funk --- Added HTML tags to JavaDOC.
- * 
+ *
  *        26.06.2009 --- Funk --- ADMSEC is written only here now.
- * 
+ *
  *        22.06.2009 --- Funk --- <physicalDescription><digitalOrigin> added if a _digitalOrigin metadata is existing in the prefs and a
  *        CatalogIDDigital is set.
- * 
+ *
  *        19.06.2009 -- Funk --- writePhysDMD integriert, nun wird auch MODS in der PhysDmd geschrieben.
- * 
+ *
  *        18.06.2009 --- Funk --- Generalised the WriteLogDMD() method, using WriteMODS() now.
- * 
+ *
  *        09.06.2009 --- Funk --- Added authority and ID attributes to the person name MODS part (yet still hard coded).
- * 
+ *
  *        30.04.2009 --- Funk --- Added setPurlFromCatalogIDDigital() to put in Purls from PPNs.
- * 
+ *
  *        22.04.2009 --- Funk --- Corrected some logging things. --- Added methods writePhysDivs and writeLogDivs, here the METS DocStructTypes must
  *        be mapped from the prefs.
- * 
+ *
  *        31.03.2009 --- Funk --- Added the method checkForAnchorReference, because we need another one here.
- * 
+ *
  *        27.03.2009 --- Funk --- Class created.
- * 
+ *
  ******************************************************************************/
 
 public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
@@ -275,7 +275,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#Update(java.lang.String)
      */
     @Override
@@ -285,7 +285,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
@@ -296,7 +296,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
@@ -310,7 +310,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#WriteMODS(ugh.dl.DocStruct, org.w3c.dom.Node, org.w3c.dom.Document)
      */
     @Override
@@ -509,7 +509,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#writePhysModsSection(ugh.dl.DocStruct, org.w3c.dom.Node, org.w3c.dom.Document, org.w3c.dom.Element)
      */
     @Override
@@ -670,7 +670,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#parseMODS(org.w3c.dom.Node, ugh.dl.DocStruct)
      */
     @Override
@@ -890,8 +890,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                         if (mmo.getPersontypeXQuery() != null) {
                             persontypevalue = getValueForUnambigiousXQuery(node, mmo.getDisplayNameXQuery());
                         }
-               
-                        
+
+
 
                         if (lastnamevalue != null) {
                             ps.setLastname(lastnamevalue[0]);
@@ -981,7 +981,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#checkForAnchorReference(java.lang.String, java.lang.String)
      */
     @Override
@@ -1090,7 +1090,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#getAnchorIdentifierFromMODSDOM(org.w3c. dom.Node, ugh.dl.DocStruct)
      */
     @Override
@@ -1144,7 +1144,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsModsGdz#writePhysDivs(org.w3c.dom.Node, ugh.dl.DocStruct)
      */
     @Override
@@ -1211,7 +1211,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#writeLogDivs(org.w3c.dom.Node, ugh.dl.DocStruct, boolean)
      */
     @Override
@@ -1398,7 +1398,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#writeAmdSec(org.w3c.dom.Document, boolean)
      */
     @Override
@@ -1546,7 +1546,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see ugh.fileformats.mets.MetsMods#checkMissingSettings()
      */
     @Override
@@ -1589,7 +1589,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Creates a single Goobi internal metadata element.
      * </p>
-     * 
+     *
      * @param theXQuery
      * @param theMetadata
      * @param theStartingNode
@@ -1655,13 +1655,13 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             // Add value to node.
             Node valueNode = theDocument.createTextNode(newMetadataValue);
 
-            
+
             if (theMetadata.getAuthorityID() != null && theMetadata.getAuthorityURI() != null && theMetadata.getAuthorityValue() != null) {
                 ((Element) createdNode).setAttribute("authority", theMetadata.getAuthorityID());
                 ((Element) createdNode).setAttribute("authorityURI", theMetadata.getAuthorityURI());
                 ((Element) createdNode).setAttribute("valueURI", theMetadata.getAuthorityValue());
             }
-            
+
             createdNode.appendChild(valueNode);
             LOGGER.trace("Value '" + newMetadataValue + "' (" + theMetadata.getType().getName() + ") added to node >>" + createdNode.getNodeName()
                     + "<<");
@@ -1713,7 +1713,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
         for (String key : xpathMap.keySet()) {
             xquery = xpathMap.get(key);
-            
+
 
             if (key.equalsIgnoreCase(METS_PREFS_FIRSTNAMEXPATH_STRING) && thePerson.getFirstname() != null) {
                 if (xquery == null) {
@@ -1785,7 +1785,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Creates a single Goobi MODS person element.
      * </p>
-     * 
+     *
      * @param xquery
      * @param theMMO
      * @param thePerson
@@ -1859,12 +1859,12 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                 createdNode.appendChild(affiliationNode);
             }
         }
-        
+
         if (thePerson.getAuthorityID() != null && thePerson.getAuthorityURI() != null && thePerson.getAuthorityValue() != null) {
             ((Element) createdNode).setAttribute("authority", thePerson.getAuthorityID());
             ((Element) createdNode).setAttribute("authorityURI", thePerson.getAuthorityURI());
             ((Element) createdNode).setAttribute("valueURI", thePerson.getAuthorityValue());
-            
+
 //            xquery = theMMO.getAuthorityIDXquery();
 //            if (xquery == null) {
 //                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s authorityFileID '" + thePerson.getAuthorityID() + "'");
@@ -1903,7 +1903,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Finds the METS type element for a given DocStructType; iterates over the modNamesDS list.
      * </p>
-     * 
+     *
      * @param metstype
      * @return METS type string for the given internal DocStructType.
      **************************************************************************/
@@ -1922,7 +1922,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Gives a warning string including all missing MODS mappings.
      * </p>
-     * 
+     *
      * @param theStruct
      * @param theList
      * @return
@@ -1958,7 +1958,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * Parses a single &lt;Metadata> element in the METS section of the preference file. For the element an appropriate MatchingMetadataObject is
      * created and added to the list of all MatchingMetadataObjects - modsNamesMD.
      * </p>
-     * 
+     *
      * @param inNode the DOM node of the opening tag of the &lt;metadata> element
      * @throws PreferencesException
      **************************************************************************/
@@ -2363,7 +2363,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Reads the DocStruct settings from the preferences fie.
      * </p>
-     * 
+     *
      * @param inNode
      **************************************************************************/
     @Override
@@ -2412,11 +2412,11 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * PLEASE DO NOT TELL ANYONE! This is just a small grouping hack, until the MODS creation is implemented maybe using MODS XML Beans!
      * </p>
-     * 
+     *
      * TODO This is a really dirty hack, I will fix it tomorrow! (hihi)
-     * 
+     *
      * @param theModsNode
-     * 
+     *
      **************************************************************************/
 
     @Deprecated
@@ -2458,8 +2458,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Substitutes an existing $REGEXP().
      * </p>
-     * 
-     * 
+     *
+     *
      * @param theString
      * @return
      **************************************************************************/
@@ -2576,7 +2576,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Set the DigiProv reference and substitute, if some RegExps are contained in $REGEXP().
      * </p>
-     * 
+     *
      * @param digiprovReference
      **************************************************************************/
     public void setDigiprovReference(String digiprovReference) {
@@ -2599,7 +2599,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Set the DigiProv presentation and substitute, if some RegExps are contained in $REGEXP().
      * </p>
-     * 
+     *
      * @param digiprovPresentation
      **************************************************************************/
     public void setDigiprovPresentation(String digiprovPresentation) {
@@ -2622,7 +2622,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Set the DigiProv anchor reference and substitute, if some RegExps are contained in $REGEXP().
      * </p>
-     * 
+     *
      * @param digiprovReference
      **************************************************************************/
     public void setDigiprovReferenceAnchor(String digiprovReferenceAnchor) {
@@ -2645,7 +2645,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Set the DigiProv anchor presentation and substitute, if some RegExps are contained in $REGEXP().
      * </p>
-     * 
+     *
      * @param digiprovPresentation
      **************************************************************************/
     public void setDigiprovPresentationAnchor(String digiprovPresentationAnchor) {
@@ -2668,7 +2668,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Set the PURL URL and substitute, if some RegExps are contained in $REGEXP().
      * </p>
-     * 
+     *
      * @param purlUrl
      **************************************************************************/
     public void setPurlUrl(String purlUrl) {
@@ -2691,7 +2691,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * <p>
      * Set the content IDs and substitute, if some RegExps are contained in $REGEXP().
      * </p>
-     * 
+     *
      * @param contentIDs
      **************************************************************************/
     public void setContentIDs(String contentIDs) {

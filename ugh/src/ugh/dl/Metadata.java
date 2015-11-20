@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / Metadata.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -32,32 +32,32 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  * A Metadata object represents a single Metadata element. Each Metadata element has at least a value and a type. The type of a metadata element is
  * stored as a <code>MetadataType</code> object.
  * </p>
- * 
+ *
  * <p>
  * Metadata can be any kind of data, which can be attached to a structure element. The most common metadata, which is available for almost any
  * structure element is a title.
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @version 2010-02-14
  * @see MetadataType
- * 
+ *
  *      CHANGELOG
- * 
+ *
  *      14.02.2010 --- Funk --- Added method toString().
- * 
+ *
  *      30.11.2009 --- Funk --- Again removed deprecated Metadata() constructor.
- * 
+ *
  *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *      10.11.2009 --- Funk --- Removed deprecated Metadata() constructor.
- * 
+ *
  *      06.10.2009 --- Funk --- Adapted metadata and person constructors.
- * 
+ *
  *      06.05.2009 --- Wulf Riebensahm --- equals() method overloaded.
- * 
+ *
  ******************************************************************************/
 
 public class Metadata implements Serializable {
@@ -79,7 +79,7 @@ public class Metadata implements Serializable {
     private Object nativeObject;
 
     private String authorityURI;
-    
+
     private String authorityID;
 
     private String authorityValue;
@@ -90,7 +90,7 @@ public class Metadata implements Serializable {
      * <p>
      * Constructor.
      * </p>
-     * 
+     *
      * @throws MetadataTypeNotAllowedException
      **************************************************************************/
     public Metadata(MetadataType theType) throws MetadataTypeNotAllowedException {
@@ -110,7 +110,7 @@ public class Metadata implements Serializable {
      * <p>
      * Sets the Document structure entity to which this object belongs to.
      * </p>
-     * 
+     *
      * @param inDoc
      **************************************************************************/
     public void setDocStruct(DocStruct inDoc) {
@@ -122,7 +122,7 @@ public class Metadata implements Serializable {
      * Returns the DocStruct instance, to which this metadata object belongs. This is extremely helpful, if only the metadata instance is stored in a
      * list; the reference to the associated DocStrct instance is always kept.
      * </p>
-     * 
+     *
      * @return DocStruct instance.
      **************************************************************************/
     public DocStruct getDocStruct() {
@@ -134,7 +134,7 @@ public class Metadata implements Serializable {
      * Returns the type of the metadata instance; The MetadataType object which is returned, may have the same name, but be a different object than
      * the MetadataType object from another MetadataType.
      * </p>
-     * 
+     *
      * @return MetadataType instance
      **************************************************************************/
     public MetadataType getType() {
@@ -146,7 +146,7 @@ public class Metadata implements Serializable {
      * Sets the MetadataType for this instance; only a MetadataType instance is used as the only parameter. The method returns true if MDType was set;
      * false if not.
      * </p>
-     * 
+     *
      * @param inType
      * @return
      **************************************************************************/
@@ -159,7 +159,7 @@ public class Metadata implements Serializable {
      * <p>
      * Gets the Value of the Metadata object; is always a string value all types are converted to unicode strings and must be converted by the user.
      * </p>
-     * 
+     *
      * @return String containing the value.
      **************************************************************************/
     public String getValue() {
@@ -171,9 +171,9 @@ public class Metadata implements Serializable {
      * Sets the Metadata value and returns true, if it was set correctly. Otherwise false The only parameter is the value of the type String, all
      * other types (integer, long etc.) must be converted to a string before.
      * </p>
-     * 
+     *
      * TODO For future versions: Check, if the value is of the correct type?
-     * 
+     *
      * @param inValue The value as String.
      **************************************************************************/
     public boolean setValue(String inValue) {
@@ -188,11 +188,11 @@ public class Metadata implements Serializable {
      * setting this ID. If no authority file exists, the ID can be used to link different metadata elements together; each element reprents a version
      * of this system.
      * </p>
-     * 
+     *
      * @param fileID ID for this metadata in some authority file.
-     * 
+     *
      * @param value value of the record in the authority file
-     * 
+     *
      **************************************************************************/
     public boolean setAutorityFile(String authorityID, String authorityURI, String authorityValue) {
         this.authorityID = authorityID;
@@ -205,19 +205,19 @@ public class Metadata implements Serializable {
      * <p>
      * Returns the ID from the authority file.
      * </p>
-     * 
+     *
      * @return Identifier from authority file.
      **************************************************************************/
     public String getAuthorityID() {
         return this.authorityID;
     }
-    
-    
+
+
     /***************************************************************************
      * <p>
      * Returns the ID from the value in the authority file.
      * </p>
-     * 
+     *
      * @return Identifier from value.
      **************************************************************************/
     public String getAuthorityURI() {
@@ -228,7 +228,7 @@ public class Metadata implements Serializable {
      * <p>
      * Returns the ID from the value in the authority file.
      * </p>
-     * 
+     *
      * @return Identifier from value.
      **************************************************************************/
     public String getAuthorityValue() {
@@ -239,7 +239,7 @@ public class Metadata implements Serializable {
      * <p>
      * Returns the value of the updated-flag.
      * </p>
-     * 
+     *
      * @return TRUE if it was updated.
      **************************************************************************/
     public boolean wasUpdated() {
@@ -250,7 +250,7 @@ public class Metadata implements Serializable {
      * <p>
      * Sets the updated flag.
      * </p>
-     * 
+     *
      * @param in
      **************************************************************************/
     public void wasUpdated(boolean in) {
@@ -261,7 +261,7 @@ public class Metadata implements Serializable {
      * <p>
      * Deprecated method for setValueQualifier().
      * </p>
-     * 
+     *
      * @param inVQ ValueQualifier as a string.
      * @param inVQType Type of ValueQualifier as a string.
      * @deprecated
@@ -279,7 +279,7 @@ public class Metadata implements Serializable {
      * for a Metadata-object. There is no controlled vocabulary for the type of ValueQualifier. If a ValueQualifier is set, both type and value must
      * be set.
      * </p>
-     * 
+     *
      * @param inVQ ValueQualifier as a string.
      * @param inVQType Type of ValueQualifier as a string.
      * @return TRUE if successful, if ValueQualifier or type of ValueQualifier is not set, FALSE is returned.
@@ -300,7 +300,7 @@ public class Metadata implements Serializable {
      * <p>
      * Retrieves the value of the ValueQualifier.
      * </p>
-     * 
+     *
      * @return Value of ValueQualifier as String.
      **************************************************************************/
     public String getValueQualifier() {
@@ -311,7 +311,7 @@ public class Metadata implements Serializable {
      * <p>
      * Retrieves the type of the ValueQualifier.
      * </p>
-     * 
+     *
      * @return Type of ValueQualifier as string.
      **************************************************************************/
     public String getValueQualifierType() {
@@ -323,7 +323,7 @@ public class Metadata implements Serializable {
      * Sets the native object. The native object is a java Object which may represent anything; e.g. a representation of this Metadata instance in a
      * database.
      * </p>
-     * 
+     *
      * @return always TRUE.
      **************************************************************************/
     @Deprecated
@@ -337,7 +337,7 @@ public class Metadata implements Serializable {
      * <p>
      * Retrieves the native object. This is used especially for updating files.
      * </p>
-     * 
+     *
      * @return Can be any kind of java object.
      **************************************************************************/
     @Deprecated
@@ -347,7 +347,7 @@ public class Metadata implements Serializable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -369,7 +369,7 @@ public class Metadata implements Serializable {
      * <p>
      * Overwritten method compares this MetaData with parameter metadata.
      * </p>
-     * 
+     *
      * @author Wulf Riebensahm
      * @return TRUE if type and value are the same.
      * @param MetaData metadata

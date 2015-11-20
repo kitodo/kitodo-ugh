@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / VirtualFileGroup.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -28,20 +28,20 @@ import java.io.Serializable;
  * A <code>VirtualFileGroup</code> contains all file groups needed for the class
  * MetsModsImportExport.
  * </p>
- * 
+ *
  * @author Stefan E. Funk
  * @version 2009-11-17
  * @since 2008-11-19
  * @see ContentFile
- * 
+ *
  *      CHANGELOG
- * 
+ *
  *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *      30.10.2009 --- Funk --- Added generated serialVersionUID.
- * 
+ *
  *      16.01.2009 --- Funk --- Made the suffix input "." resistant!
- * 
+ *
  ******************************************************************************/
 
 public class VirtualFileGroup implements Serializable {

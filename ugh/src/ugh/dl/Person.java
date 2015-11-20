@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / Person.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -28,7 +28,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  * A person is a very special kind of metadata. For this reason it is inheirited
  * from <code>Metadata</code> class.
  * </p>
- * 
+ *
  * <p>
  * A person has several metadata and not only a single value. The person's name
  * can be splitted into:
@@ -48,30 +48,30 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  * Most file formats are not able to serialize / store all information from a
  * Person object.
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @version 2010-02-14
  * @see Metadata
- * 
+ *
  *      CHANGELOG
- * 
+ *
  *      14.02.2010 --- Funk --- Added method toString().
- * 
+ *
  *      30.11.2009 --- Funk --- Again removed deprecated Person() constructor.
- * 
+ *
  *      17.11.2009 --- Funk --- Changed method person() to constructor Person().
  *      --- Refactored some things for Sonar improvement.
- * 
+ *
  *      10.11.2009 --- Funk --- Removed deprecated Person() constructor.
- * 
+ *
  *      06.10.2009 --- Funk --- Adapted metadata and person constructors. Left
  *      the old constructors where they were, to not confuse the intranda
  *      peoples :-)
- * 
+ *
  *      06.05.2009 --- Wulf Riebensahm --- Method equals() overloaded .
- * 
+ *
  ******************************************************************************/
 
 public class Person extends Metadata {
@@ -93,7 +93,7 @@ public class Person extends Metadata {
 	 * <p>
 	 * Constructor with a MetadataType is needed.
 	 * </p>
-	 * 
+	 *
 	 * @param theType
 	 * @throws MetadataTypeNotAllowedException
 	 **************************************************************************/
@@ -107,7 +107,7 @@ public class Person extends Metadata {
 	 * this reason, both must be given in this constructor. If one is not
 	 * available; simply set one or both parameters to null.
 	 * </p>
-	 * 
+	 *
 	 * @param in1
 	 *            firstname of the person
 	 * @param in2
@@ -126,7 +126,7 @@ public class Person extends Metadata {
 	 * <p>
 	 * Store the firstname of this person.
 	 * </p>
-	 * 
+	 *
 	 * @param in
 	 * @return true is always returned
 	 **************************************************************************/
@@ -139,7 +139,7 @@ public class Person extends Metadata {
 	 * <p>
 	 * Retrieves the firstname of this person.
 	 * </p>
-	 * 
+	 *
 	 * @return firstname of this person
 	 **************************************************************************/
 	public String getFirstname() {
@@ -251,7 +251,7 @@ public class Person extends Metadata {
 	 * normal/natural persons, juristic persons (as companies) or virtual
 	 * persons (e.g. as conferences etc...).
 	 * </p>
-	 * 
+	 *
 	 * @param in
 	 * @return always true;
 	 **************************************************************************/
@@ -264,7 +264,7 @@ public class Person extends Metadata {
 	 * <p>
 	 * Gets the type of a person.
 	 * </p>
-	 * 
+	 *
 	 * @return type of person as String
 	 **************************************************************************/
 	public String getPersontype() {
@@ -277,7 +277,7 @@ public class Person extends Metadata {
 	 * be displayed and should contain the right order of lastname, firstname
 	 * and affiliation of a person.
 	 * </p>
-	 * 
+	 *
 	 * @return the displayname
 	 **************************************************************************/
 	public String getDisplayname() {
@@ -288,7 +288,7 @@ public class Person extends Metadata {
 	 * <p>
 	 * Sets the displayname of a person.
 	 * </p>
-	 * 
+	 *
 	 * @param displayname
 	 *            the displayname to set
 	 **************************************************************************/
@@ -313,7 +313,7 @@ public class Person extends Metadata {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -347,7 +347,7 @@ public class Person extends Metadata {
 	 * <p>
 	 * Compares this Person with parameter person.
 	 * </p>
-	 * 
+	 *
 	 * @return TRUE if ...
 	 * @param Person
 	 *            person
@@ -408,7 +408,7 @@ public class Person extends Metadata {
 	                return false;
 	            }
 
-			
+
 			if (!((this.getAuthorityID() == null && person
 					.getAuthorityID() == null) || this.getAuthorityID()
 					.equals(person.getAuthorityID()))) {

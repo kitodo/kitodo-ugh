@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / Prefs.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -47,39 +47,39 @@ import ugh.exceptions.PreferencesException;
 
 /*******************************************************************************
  * <b>Title:</b> Preferences
- * 
+ *
  * <b>Description:</b> Reads global preferences (ruleset files) and provides methods to access information and retrieve information about
  * <code>MetadataType</code> and <code>DocStructType</code> objects.
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-18
  * @since 2004-05-21
- * 
+ *
  *        TODOLOG
- * 
+ *
  *        TODO Remove the "p004" error codes? Where do they come from anyway??
- * 
+ *
  *        CHANGELOG
- *        
+ *
  *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- * 
+ *
  *        13.02.2010 --- Funk --- Refactored some conditionals and loops.
- * 
+ *
  *        14.12.2009 --- Funk --- Added the getAllAnchorDocStructTypes() method.
- * 
+ *
  *        17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *        30.10.2009 --- Funk --- Added generated serialVersionUID.
- * 
+ *
  *        24.10.2008 --- Funk --- Commented out the setting of: "current_DocStrctType.setMyPrefs(this);". Do we need that? I think not!
- * 
+ *
  *        29.09.2008 --- Funk --- Added log4j logging, removed the debug level methods.
- * 
+ *
  *        29.04.2008 --- Funk --- Added public setDebug() method.
- * 
+ *
  ******************************************************************************/
 
 public class Prefs implements Serializable {
@@ -120,7 +120,7 @@ public class Prefs implements Serializable {
      * <p>
      * Loads all known DocStruct types from the prefs XML file.
      * </p>
-     * 
+     *
      * @param filename
      * @return
      * @throws PreferencesException
@@ -269,7 +269,7 @@ public class Prefs implements Serializable {
      * <p>
      * Parses just the part of the XML-file which contains information about a single DocStrctType (everything inside the DocStrctType element).
      * </p>
-     * 
+     *
      * @param theDocStrctTypeNode
      * @return DocStructType instance
      * @throws PreferencesException
@@ -445,7 +445,7 @@ public class Prefs implements Serializable {
                         return null;
                     }
                 }
-                
+
                 if (currentNode.getNodeName().equals("group")) {
                     attributeNodelist = currentNode.getAttributes();
                     attribNode = attributeNodelist.getNamedItem("num");
@@ -776,7 +776,7 @@ public class Prefs implements Serializable {
      * <p>
      * Checks, if MetadataType is allowed for given DocStrctType returns the DocStructType, otherwise null.
      * </p>
-     * 
+     *
      * @param theName
      * @return
      **************************************************************************/
@@ -795,7 +795,7 @@ public class Prefs implements Serializable {
      * <p>
      * Gets all anchor DocStrctTypes defined in the Prefs.
      * </p>
-     * 
+     *
      * @return A List of all anchor DocStructTypes defined in the Prefs if some are existing, an empty list otherwise.
      **************************************************************************/
     public List<DocStructType> getAllAnchorDocStructTypes() {
@@ -864,7 +864,7 @@ public class Prefs implements Serializable {
      * <p>
      * It is up to the FileFormat implementation to parse this configuration.
      * </p>
-     * 
+     *
      * @param in name of fileformat (Excel, RDF, METS....), which is the name of the node.
      * @return a DOM Node objects, which contains the whole configuration for this requested FileFormat.
      **************************************************************************/
@@ -973,7 +973,7 @@ public class Prefs implements Serializable {
      * <p>
      * Returns all metadataType instances which represents a person. These metadata types have a "type"-attribute with the value "person".
      * </p>
-     * 
+     *
      * @return List containing MetadataType attributes
      **************************************************************************/
     public List<MetadataType> getAllPersonTypes() {
@@ -996,7 +996,7 @@ public class Prefs implements Serializable {
      * <p>
      * Needs string as parameter and returns MetadataType object with this name.
      * </p>
-     * 
+     *
      * @param name
      * @return
      **************************************************************************/
@@ -1019,13 +1019,13 @@ public class Prefs implements Serializable {
 
         return null;
     }
-    
-    
+
+
     /***************************************************************************
      * <p>
      * Needs string as parameter and returns MetadataGroup object with this name.
      * </p>
-     * 
+     *
      * @param name
      * @return
      **************************************************************************/

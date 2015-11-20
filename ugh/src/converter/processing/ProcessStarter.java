@@ -13,7 +13,7 @@ import org.jdom.JDOMException;
 
 /**
  * @author Wulf
- * 
+ *
  */
 
 public class ProcessStarter {
@@ -91,7 +91,7 @@ public class ProcessStarter {
 			.fatal("The program was terminated with an exception after replacement in metadata and still detecting replaceable strings in meta.xml."
 					+ e.getStackTrace());
 			throw e;
-		
+
 		}catch (Exception e) {
 			myLogger
 					.fatal("The program was terminated with an exception after replacement in metadata and still detecting replaceable strings in meta.xml."

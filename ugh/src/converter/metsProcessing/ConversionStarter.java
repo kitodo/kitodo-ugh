@@ -14,7 +14,7 @@ public class ConversionStarter {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		
+
 		String answer = getInput("Sie sind dabei die Umwandlung aller Ihrer digitalen Dokumente \n" +
 				"in das interne Mets Speicherformat zu starten. Wegen einer Änderung in UGH \n" +
 				"sollten Sie für die automatische Validierung vorher \n" +
@@ -30,7 +30,7 @@ public class ConversionStarter {
 			System.out.println("Programmausführung abgebrochen");
 		}
 	}
-	
+
 	private static String getInput(String message) throws IOException {
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));

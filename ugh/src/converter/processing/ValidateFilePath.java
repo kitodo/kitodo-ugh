@@ -8,9 +8,9 @@ public class ValidateFilePath implements Validatable {
 
 	String myID = null;
 	String myBaseFolder = null;
-	
-	
-	
+
+
+
 	public void setBaseFolder(String path) {
 		myBaseFolder = path;
 	}
@@ -35,7 +35,7 @@ public class ValidateFilePath implements Validatable {
 			// TODO Auto-generated catch block
 			throw new ContentLibException("Validate Error - metafile not found - folder " + myID + " - inconsistent data",e);
 		}
-		
+
 	}
 
 }

@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / RomanNumberal.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -25,24 +25,24 @@ package ugh.dl;
  * <p>
  * A class that represents a number as a Roman numeral.
  * </p>
- * 
+ *
  * <p>
  * A RomanNumeral only represents natural numbers, that is integers greater than
  * 0. The maximum integer value of a RomanNumeral is 4999. The RomanNumeral can
  * be displayed either in archaic style (4 = IIII) or modern style (4 = IV). The
  * default display is modern.
  * </p>
- * 
+ *
  * @author Lara Burton
  * @version 2009-11-17
  * @since 2004-05-21
- * 
+ *
  *        CHANGELOG
- * 
+ *
  *        17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *        30.10.2009 --- Funk --- Added generated serialVersionUID.
- * 
+ *
  ******************************************************************************/
 
 public class RomanNumeral extends Number {
@@ -119,7 +119,7 @@ public class RomanNumeral extends Number {
 	 * Creates new RomanNumeral with style set to modern (4 = IV) with the value
 	 * of the number equal to int.
 	 * </p>
-	 * 
+	 *
 	 * @param value
 	 *            An int value to convert to a Roman numeral
 	 * @exception NumberFormatException
@@ -134,7 +134,7 @@ public class RomanNumeral extends Number {
 	 * Creates new RomanNumeral with style set to modern (4 = IV) with the value
 	 * of the number equal to the RomanNumeral represented by the String value.
 	 * </p>
-	 * 
+	 *
 	 * @param value
 	 *            A String representing a Roman numeral
 	 * @exception NumberFormatException
@@ -150,7 +150,7 @@ public class RomanNumeral extends Number {
 	 * Determines the integer value of a Roman digit, such as 'M', 'C', 'D', and
 	 * so forth.
 	 * </p>
-	 * 
+	 *
 	 * @param digit
 	 *            A character representing a Roman digit.
 	 * @return The integer value of the Roman digit parameter.
@@ -172,7 +172,7 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * Converts a Roman numeral to an integer.
 	 * </p>
-	 * 
+	 *
 	 * @param romanNum
 	 *            A string representing a Roman numeral
 	 * @return An int value of the string parameter
@@ -219,7 +219,7 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * Converts an int into an Archaic style Roman numeral (4 = IIII).
 	 * </p>
-	 * 
+	 *
 	 * @param number
 	 *            the int value to convert to a Roman numeral
 	 **************************************************************************/
@@ -242,7 +242,7 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * Converts an int into a Modern style Roman numeral (4 = IV).
 	 * </p>
-	 * 
+	 *
 	 * @param number
 	 *            the int value to convert to a Roman numeral
 	 **************************************************************************/
@@ -281,7 +281,7 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * Accepts an integer and sets RomanNumeral to that value.
 	 * </p>
-	 * 
+	 *
 	 * @param v
 	 *            the value
 	 * @exception NumberFormatException
@@ -309,7 +309,7 @@ public class RomanNumeral extends Number {
 	 *<p>
 	 * Sets the value of the RomanNumeral.
 	 * </p>
-	 * 
+	 *
 	 * @param value
 	 *            A string representation of a Roman numeral
 	 * @exception NumberFormatException
@@ -352,11 +352,11 @@ public class RomanNumeral extends Number {
 	 * Allows the user to learn if the style of the Roman numeral is archaic (4
 	 * = IIII).
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * If it is not archaic, it is modern (4 = IV).
 	 * </p>
-	 * 
+	 *
 	 * @return <code>true</code> if the style of the Roman numeral is archaic,
 	 *         else return <code>false</code>
 	 **************************************************************************/
@@ -369,11 +369,11 @@ public class RomanNumeral extends Number {
 	 * Allows the user to learn if the style of the Roman numeral is modern (4 =
 	 * IV).
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * If it is not modern, it is archaic (4 = IIII).
 	 * </p>
-	 * 
+	 *
 	 * @return <code>true</code> if the style of the Roman numeral is modern,
 	 *         else return <code>false</code>
 	 **************************************************************************/
@@ -385,7 +385,7 @@ public class RomanNumeral extends Number {
 	 *<p>
 	 * Returns the string representation of the Roman numeral.
 	 * </p>
-	 * 
+	 *
 	 * @return a string representation of the Roman numeral
 	 **************************************************************************/
 	public String getNumber() {
@@ -396,12 +396,12 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * Determines if two RomanNumerals have equal values.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * The style of the RomanNumeral (modern or archaic) is irrelevant. Only the
 	 * actual integer values of the objects are compared.
 	 * </p>
-	 * 
+	 *
 	 * @param rn
 	 *            a RomanNumeral
 	 * @return <code>true</code> if the parameter has a value equal to the
@@ -421,11 +421,11 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An abstract method of Number.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Converts the RomanNumeral to a double.
 	 * </p>
-	 * 
+	 *
 	 * @return the double value of the Roman numeral
 	 **************************************************************************/
 	public double doubleValue() {
@@ -436,11 +436,11 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An abstract method of Number.
 	 * </p>
-	 * 
+	 *
 	 *<p>
 	 * Converts the RomanNumeral to a float.
 	 * </p>
-	 * 
+	 *
 	 * @return the float value of the Roman numeral
 	 **************************************************************************/
 	public float floatValue() {
@@ -451,11 +451,11 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An abstract method of Number.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Converts the RomanNumeral to an int.
 	 * </p>
-	 * 
+	 *
 	 * @return the int value of the Roman numeral
 	 **************************************************************************/
 	public int intValue() {
@@ -466,11 +466,11 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An abstract method of Number.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Converts the RomanNumeral to a long.
 	 * </p>
-	 * 
+	 *
 	 * @return the long value of the Roman numeral
 	 **************************************************************************/
 	public long longValue() {
@@ -481,11 +481,11 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An overridden method of Number.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Converts the RomanNumeral to a short.
 	 * </p>
-	 * 
+	 *
 	 * @return the short value of the Roman numeral
 	 **************************************************************************/
 	public short shortValue() {
@@ -496,9 +496,9 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An overridden method of Number.
 	 * </p>
-	 * 
+	 *
 	 * Converts the RomanNumeral to a byte.
-	 * 
+	 *
 	 * @return the byte value of the Roman numeral
 	 **************************************************************************/
 	public byte byteValue() {
@@ -509,9 +509,9 @@ public class RomanNumeral extends Number {
 	 * <p>
 	 * An overridden method from Object.
 	 * </p>
-	 * 
+	 *
 	 * The method getNumber is identical to this method.
-	 * 
+	 *
 	 * @return a string representation of the Roman numeral.
 	 **************************************************************************/
 	public String toString() {

@@ -2,21 +2,21 @@ package ugh.fileformats.excel;
 
 /*******************************************************************************
  * ugh.fileformats.exel / Excelfile.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -48,45 +48,45 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * <p>
  * Title: UGH - DMS tools and system utilities
  * </p>
- * 
+ *
  * <p>
  * Description: read and writes rdf/xml files from GDZ
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-18
  * @since 2002
  * @deprecated
- * 
+ *
  *             TODOLOG
- * 
+ *
  *             TODO Calculate shortcutdoc (ATS, TSL)
- * 
+ *
  *             TODO Calculate TIFF Header
- * 
+ *
  *             TODO Calculate image path (from PPN, TIFF Header, volume number)
- * 
+ *
  *             CHANGELOG
- *             
+ *
  *             18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- * 
+ *
  *             22.01.2010 --- Funk --- Minor improvements due to findbugs.
- * 
+ *
  *             18.01.2010 --- Funk --- Adapted class to changed
  *             DocStruct.getAllMetadataByType().
- * 
+ *
  *             21.12.2009 --- Funk --- Added some "? extends " to metadata
  *             things.
- * 
+ *
  *             09.12.2009 --- Funk --- Refactored some variable names.
- * 
+ *
  *             20.10.2009 --- Funk --- Deleted unneeded variable declarattion.
- * 
+ *
  *             09.10.2009 --- Funk --- Changed the deprecated anotations.
- * 
+ *
  *             05.10.2009 --- Funk --- Adapted metadata and person constructors.
- * 
+ *
  ******************************************************************************/
 @Deprecated
 public class Excelfile implements ugh.dl.Fileformat {
@@ -182,7 +182,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
 	/***************************************************************************
 	 * Update the current excel instance; write it to new filename
-	 * 
+	 *
 	 * @param filename
 	 **************************************************************************/
 	@Override
@@ -216,7 +216,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * Updates all metadata for a single logcical structure entity, but only, if
 	 * metadata needs to be updated The wasUpdated method is used for determine
 	 * the necessity.
-	 * 
+	 *
 	 * @param inStruct
 	 * @param reverse
 	 *            must be set to true, if metadata of all children should be
@@ -385,7 +385,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
 	@Override
@@ -395,7 +395,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
 	@Override
@@ -405,7 +405,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
 	@Override
@@ -416,7 +416,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#read(java.lang.String)
 	 */
 	@Override
@@ -974,7 +974,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	/***************************************************************************
 	 * Read paginiation sequences from Excel sheet and creates physical
 	 * docstruct entities (one for each page) and creates Image-instances
-	 * 
+	 *
 	 * @param inSheet
 	 *            single sheet of a whole excel file containing the pagination
 	 *            sequences
@@ -1362,13 +1362,13 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * Reads the logical structure of a work from spreadsheet table "Gliederung"
 	 * The content is attached to the "maindocstruct", which must already be
 	 * available e.g. be reading the Bibliography first
-	 * 
+	 *
 	 * @param inSheet
 	 *            of the table "Gliederung"
 	 * @return true, everything is okay; otherwise false
 	 * @throws TypeNotAllowedForParentException
 	 * @throws MetadataTypeNotAllowedException
-	 * 
+	 *
 	 **************************************************************************/
 	private boolean ReadGliederung(HSSFSheet inSheet)
 			throws TypeNotAllowedForParentException,
@@ -1899,7 +1899,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * this means, that we must have at least an uppermost logical structure and
 	 * a physical structure which contains all pages.
 	 * </p>
-	 * 
+	 *
 	 * @param inStruct
 	 *            parent structure entity
 	 * @return true, if everything was okay; otherwise false
@@ -2091,7 +2091,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
 	/***************************************************************************
 	 * Calculates the physical page number and read
-	 * 
+	 *
 	 * @param inSequence
 	 * @return physical page number as integer; or -1 if it cannot be
 	 **************************************************************************/
@@ -2334,7 +2334,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * Preferences are read from XML-file in which all preferences are. When
 	 * creating the Excelfile-instance, the preferences are read usually
 	 * Instance is created during start-up or by a factory class.
-	 * 
+	 *
 	 * @param inNode
 	 * @return
 	 * @throws PreferencesException
@@ -2502,7 +2502,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 	 * funny things happen when reading excel files, saved with OpenOffice 1.x
 	 * Strings may have funny characters at the end; this method removes those
 	 * characters...
-	 * 
+	 *
 	 * @param inString
 	 * @return trimmed String
 	 **************************************************************************/

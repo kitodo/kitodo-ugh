@@ -2,21 +2,21 @@ package ugh.fileformats.opac;
 
 /*******************************************************************************
  * ugh.fileformats.opac / PicaPlus.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -66,45 +66,45 @@ import ugh.exceptions.WriteException;
  * <p>
  * The PicaPLus import class.
  * </p>
- * 
+ *
  * <p>
  * PicaPlus is described here: <a
  * href="http://www.gbv.de/wikis/cls/PICA_XML_Version_1.0"
  * >http://www.gbv.de/wikis/cls/PICA_XML_Version_1.0</a>
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-09-19
- * 
+ *
  *          TODOLOG
- * 
+ *
  * 			 TODO add NormMetadata
- * 
+ *
  *          CHANGELOG
- * 
+ *
  *          19.09.2014 --- Ronge --- Add import into metadata groups
- * 
+ *
  *          15.02.2010 --- Funk --- Logging version information now.
- * 
+ *
  *          11.12.2009 --- Funk --- Re-added a continue in
  *          parsePicaPlusRecord().
- * 
+ *
  *          04.12.2009 --- Funk --- Added trim() to all PicaPlus prefs values'
  *          getTextNodeValue() calls.
- * 
+ *
  *          20.11.2009 --- Funk --- Added RegExp support for PicaPlus catalog
  *          entry value changes, and conditions for mapping PicaPlus fields to
  *          internal Metadata.
- * 
+ *
  *          17.11.2009 --- Funk --- Refactored some things for Sonar
  *          improvement.
- * 
+ *
  *          13.11.2009 --- Funk --- Minor changes to the log and Exception
  *          messages -- Removed the field of type FileSet: myImageset.
- * 
+ *
  ******************************************************************************/
 
 public class PicaPlus implements ugh.dl.Fileformat {
@@ -169,7 +169,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	// Contains all rules for metadata matching.
 	private final Set<MatchingMetadataObject>	mmoList							= new HashSet<MatchingMetadataObject>();
 
-	private final Map<String, String> metadataGroups = new HashMap<String,String>(); 
+	private final Map<String, String> metadataGroups = new HashMap<String,String>();
 
 	/***************************************************************************
 	 * @param inPrefs
@@ -249,7 +249,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * found in the given pica main tag will be grouped as a metadata group with
 	 * the given name. The metadata and person elements that shall go into the
 	 * group must independently have been defined.
-	 * 
+	 *
 	 * @param node
 	 *            rule set node to parse
 	 */
@@ -519,7 +519,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
 	@Override
@@ -529,7 +529,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
 	@Override
@@ -897,15 +897,15 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * Parse a singe PicaPlusField - this method may parse the old and new
 	 * version of a PicePlus field:
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Old: <picaplus field="001A"> <value subfield="0">Wert</value> </picaplus>
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * New: <field tag="001A"> <subfield code="0">Wert</subfield> </field>
 	 * </p>
-	 * 
+	 *
 	 * @param inNode
 	 * @return a HashSet containing, DocStruct, a Person or a Metadata instance,
 	 *         depending on the field which has been parsed.
@@ -1277,7 +1277,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * <p>
 	 * Finds an appropriate MatchingMetadataObject.
 	 * </p>
-	 * 
+	 *
 	 * @param theField
 	 * @param theSubField
 	 * @return The MatchingMetadataObject or null, if none was found.
@@ -1309,7 +1309,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	 * <p>
 	 * Finds an appropriate MatchingMetadataObject.
 	 * </p>
-	 * 
+	 *
 	 * @param theField
 	 * @param theSubField
 	 * @param content
@@ -1335,7 +1335,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#update(java.lang.String)
 	 */
 	@Override
@@ -1345,7 +1345,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
 	@Override
@@ -1354,7 +1354,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
 	}
 
 	/***************************************************************************
-     * 
+     *
      **************************************************************************/
 	private class MatchingMetadataGroup {
 

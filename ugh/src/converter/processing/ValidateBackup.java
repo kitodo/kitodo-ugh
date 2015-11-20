@@ -8,9 +8,9 @@ public class ValidateBackup implements Validatable {
 
 	String myID = null;
 	String myBaseFolder = null;
-	
-	
-	
+
+
+
 	public void setBaseFolder(String path) {
 		myBaseFolder = path;
 	}

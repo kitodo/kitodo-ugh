@@ -2,21 +2,21 @@ package ugh.fileformats.mets;
 
 /*******************************************************************************
  * ugh.fileformats.mets / MatchingDocStructObject.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -31,18 +31,18 @@ import ugh.exceptions.PreferencesException;
  * values (for &lt;div&gt; elements) and the internal type names used in
  * DocStructType attributes.
  * </p>
- * 
+ *
  * @author Stefan Funk
  * @author Robert Sehr
  * @version 2009-11-20
  * @since 2009-05-09
- * 
+ *
  *        TODOLOG
- * 
+ *
  *        CHANGELOG
- * 
+ *
  *        20.11.2009 --- Funk --- Changed all method modifiers to protected.
- * 
+ *
  ******************************************************************************/
 
 public class MatchingDocStructObject {

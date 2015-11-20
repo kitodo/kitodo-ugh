@@ -2,21 +2,21 @@ package ugh.fileformats.excel;
 
 /*******************************************************************************
  * ugh.fileformats.excel / PaginationSequence.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library;. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -37,21 +37,21 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * <p>
  * UGH - DMS tools and system utilities
  * </p>
- * 
+ *
  * @author Markus Enders
  * @version 2009-10-27
  * @since 2004-05-21
- * 
+ *
  *        CHANGELOG
- * 
+ *
  *        27.10.2009 --- Funk --- Changed from deprecated class to deprecated
  *        constructor, class must be still used for reading. --- Removed debug
  *        output.
- * 
+ *
  *        05.10.2009 --- Funk --- Adapted metadata and person constructors.
- * 
+ *
  *        23.09.2009 --- Funk --- Added LOGGER.
- * 
+ *
  ******************************************************************************/
 
 public class PaginationSequence {
@@ -73,7 +73,7 @@ public class PaginationSequence {
 	/***************************************************************************
 	 * @param myprefs
 	 **************************************************************************/
-	
+
 	public PaginationSequence(Prefs myprefs) {
 		this.mypreferences = myprefs;
 	}
@@ -84,7 +84,7 @@ public class PaginationSequence {
 	 * entities these entities can be added to a digital document etc...
 	 * strucutre entities (DocStruct-objects) are returned as a LinkedList.
 	 * </p>
-	 * 
+	 *
 	 * @param digdoc
 	 * @return
 	 **************************************************************************/

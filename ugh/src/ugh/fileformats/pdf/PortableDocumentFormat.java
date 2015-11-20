@@ -2,21 +2,21 @@ package ugh.fileformats.pdf;
 
 /*******************************************************************************
  * ugh.fileformats.pdf / PortableDocumentFormat.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -50,11 +50,11 @@ import com.sun.media.jai.codec.FileSeekableStream;
  * @version 2010-01-23
  * @since 2004-12-17
  * @deprecated
- * 
+ *
  *             CHANGELOG
- * 
+ *
  *             09.10.2009 --- Funk --- Changed the deprecated anotations.
- * 
+ *
  ******************************************************************************/
 
 @Deprecated
@@ -78,7 +78,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#getDigitalDocument()
 	 */
 	public ugh.dl.DigitalDocument getDigitalDocument() {
@@ -87,7 +87,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
 	 */
 	public boolean setDigitalDocument(ugh.dl.DigitalDocument inDoc) {
@@ -97,7 +97,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#read(java.lang.String)
 	 */
 	public boolean read(String filename) {
@@ -106,7 +106,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#update(java.lang.String)
 	 */
 	public boolean update(String filename) {
@@ -115,7 +115,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ugh.dl.Fileformat#write(java.lang.String)
 	 */
 	public boolean write(String filename) {

@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / ContentFile.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -36,7 +36,7 @@ import java.util.List;
  * to structure elements. Therefore references to <code>DocStruct</code> objects
  * exists.
  * </p>
- * 
+ *
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
@@ -44,19 +44,19 @@ import java.util.List;
  * @since 2009-09-23
  * @see FileSet#addFile
  * @see FileSet#removeFile
- * 
+ *
  *      CHANGELOG
- * 
+ *
  *      14.02.2010 --- Funk --- Added method toString().
- * 
+ *
  *      13.02.2010 --- Funk --- Minor changes.
- * 
+ *
  *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- * 
+ *
  *      16.11.2009 --- Funk --- Added some "private"'s to class attributes. ---
  *      Removed some unused private variables. --- Refactored the get and
  *      setMimetype method.
- * 
+ *
  ******************************************************************************/
 
 public class ContentFile implements Serializable {
@@ -83,7 +83,7 @@ public class ContentFile implements Serializable {
 	private String				identifier;
 	//the list of techMd sections referenced by this File
 	private List<Md> techMdList;
-	
+
     private boolean isRepresentative = false;
 
 	/***************************************************************************
@@ -126,9 +126,9 @@ public class ContentFile implements Serializable {
 	 * Sets the filename of the ContentFile; file must at least be readable from
 	 * this posision.
 	 * </p>
-	 * 
+	 *
 	 * TODO Check, if file is really available!
-	 * 
+	 *
 	 * @param in
 	 * @return always true
 	 **************************************************************************/
@@ -142,7 +142,7 @@ public class ContentFile implements Serializable {
 	 * Retrieves the filename of the ContentFile. The filename is always an
 	 * absolute file.
 	 * </p>
-	 * 
+	 *
 	 * @return filename
 	 **************************************************************************/
 	public String getLocation() {
@@ -211,7 +211,7 @@ public class ContentFile implements Serializable {
 	 * <p>
 	 * Adds a reference to the current DocStruct element.
 	 * </p>
-	 * 
+	 *
 	 * @param inStruct
 	 * @return true, if adding was successful
 	 **************************************************************************/
@@ -242,7 +242,7 @@ public class ContentFile implements Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -255,7 +255,7 @@ public class ContentFile implements Serializable {
 	 * Overloaded equals method compares this ContentFile with parameter
 	 * contentFile.
 	 * </p>
-	 * 
+	 *
 	 * @author Wulf Riebensahm
 	 * @return TRUE if type and value are the same.
 	 * @param ContentFile
@@ -318,11 +318,11 @@ public class ContentFile implements Serializable {
 
 		return true;
 	}
-	
+
 	public List<Md> getTechMds() {
 		return techMdList;
 	}
-	
+
 	public void addTechMd(Md techMd) {
 		if(techMdList == null) {
 			techMdList = new ArrayList<Md>();
@@ -331,9 +331,9 @@ public class ContentFile implements Serializable {
 			techMdList.add(techMd);
 		}
 	}
-	
+
 	public void setTechMds(List<Md> mds) {
-		if(mds != null) {			
+		if(mds != null) {
 			this.techMdList = mds;
 		}
 	}

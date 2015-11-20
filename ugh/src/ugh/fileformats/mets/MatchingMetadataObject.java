@@ -5,21 +5,21 @@ import java.util.Map;
 
 /*******************************************************************************
  * ugh.fileformats.mets / MatchingMetadataObject.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -29,15 +29,15 @@ import java.util.Map;
  * @author Robert Sehr
  * @version 2009-12-21
  * @since 2009-05-09
- * 
+ *
  *        TODOLOG
- * 
+ *
  *        CHANGELOG
- * 
+ *
  *        21.12.2009 --- Funk --- Added modsGrouping.
- * 
+ *
  *        20.11.2009 --- Funk --- Changed all method modifiers to protected.
- * 
+ *
  ******************************************************************************/
 
 public class MatchingMetadataObject {
@@ -83,9 +83,9 @@ public class MatchingMetadataObject {
 
 	// Used for grouping of MODS subtags.
 	private String	modsGrouping			= null;
-	
+
 	private Map<String, Map<String, String>> metadataGroupXQueries = new LinkedHashMap<String, Map<String, String>>();
-	
+
 	private String database = null;
 	private String identifier = null;
 
@@ -349,7 +349,7 @@ public class MatchingMetadataObject {
 	/***************************************************************************
 	 * Returns the write XQuery only, if available; otherwise the read XQuery is
 	 * returned
-	 * 
+	 *
 	 * @return the writexQuery
 	 **************************************************************************/
 	protected String getWriteXPath() {
@@ -381,23 +381,23 @@ public class MatchingMetadataObject {
 	protected void setAuthorityIDXquery(String authorityIDXquery) {
 		this.authorityIDXquery = authorityIDXquery;
 	}
-	
+
 	protected String getAuthorityURIXquery() {
         return this.authorityURIXquery;
     }
-    
+
     protected void setAuthorityURIXquery(String authorityURIXquery) {
         this.authorityURIXquery = authorityURIXquery;
     }
-	
+
 	protected String getAuthorityValueXquery() {
         return this.authorityValueXquery;
     }
-	
+
 	protected void setAuthorityValueXquery(String authorityValueXquery) {
         this.authorityValueXquery = authorityValueXquery;
     }
-	
+
 	/***************************************************************************
 	 * @return the displayNameXQuery
 	 **************************************************************************/
@@ -434,15 +434,15 @@ public class MatchingMetadataObject {
 	protected String getIdentifierXQuery() {
 		return this.identifierXQuery;
 	}
-	
+
 	protected void setDatabaseXQuery(String databaseXQuery) {
 		this.database = databaseXQuery;
 	}
-	
+
 	protected String getDatabaseXQuery() {
 		return database;
 	}
-	
+
 
 	/***************************************************************************
 	 * @param identifierXQuery
@@ -495,9 +495,9 @@ public class MatchingMetadataObject {
 	protected void setModsGrouping(String modsGrouping) {
 		this.modsGrouping = modsGrouping;
 	}
-	
 
-	
+
+
 
 	public Map<String, Map<String, String>> getMetadataGroupXQueries() {
         return metadataGroupXQueries;
@@ -510,7 +510,7 @@ public class MatchingMetadataObject {
     public void addToMap(String key, Map<String, String> value) {
         metadataGroupXQueries.put(key, value);
     }
-    
+
     /***************************************************************************
 	 * @param checkObject
 	 * @return

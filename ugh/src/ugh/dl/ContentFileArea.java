@@ -2,21 +2,21 @@ package ugh.dl;
 
 /*******************************************************************************
  * ugh.dl / ContentFileArea.java
- * 
+ *
  * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- * 
+ *
  * http://gdz.sub.uni-goettingen.de
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This Library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -45,17 +45,17 @@ import ugh.exceptions.ContentFileAreaTypeUnknownException;
  * addressed in the content file (e.g. a single pixel, a single second, a single
  * xml-element), the from and to fields must contain the same values.
  * </p>
- * 
+ *
  * @author Markus Enders
  * @version 2010-02-13
- * 
+ *
  *          CHANGELOG
- * 
+ *
  *          13.02.2010 --- Funk --- Minor changes.
- * 
+ *
  *          17.11.2009 --- Funk --- Refactored some things for Sonar
  *          improvement. --- Removed modifier "transient" from LOGGER.
- * 
+ *
  ******************************************************************************/
 
 public class ContentFileArea implements Serializable {
@@ -118,7 +118,7 @@ public class ContentFileArea implements Serializable {
 	 * exception is thrown.</li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @param type
 	 *            As a String.
 	 * @throws ContentFileAreaTypeUnknownException
@@ -141,7 +141,7 @@ public class ContentFileArea implements Serializable {
 	 * Overloaded method compares this ContentFileArea with parameter
 	 * contentFileArea.
 	 * </p>
-	 * 
+	 *
 	 * @author Wulf Riebensahm
 	 * @return TRUE if type and value are the same.
 	 * @param ContentFileArea

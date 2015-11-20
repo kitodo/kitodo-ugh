@@ -26,14 +26,14 @@ public class XmlCommentCleaner {
 				doc.getContent().remove(obj);
 			}
 		}
-		
+
 		runThroughChildren(doc.getRootElement());
 
 		doc.getRootElement().addContent(0,new Comment("Cleaned from Comments :)"));
 		/* --------------------------------
 		 * write clean xml to outFile
 		 * --------------------------------*/
-		
+
 		XMLOutputter outputter = new XMLOutputter();
 		Format format = Format.getPrettyFormat();
 		outputter.setFormat(format);
