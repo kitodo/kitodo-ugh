@@ -367,7 +367,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                             throw new PreferencesException(message);
                         }
 
-                        // Go throught all the identifier metadata of the
+                        // Go through all the identifier metadata of the
                         // parent struct and look for the XPath anchor
                         // reference.
                         for (Metadata md : parentStruct.getAllMetadataByType(identifierType)) {
@@ -412,7 +412,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     // DocStruct...
                     MetadataType mdt = this.myPreferences.getMetadataTypeByName(mmo.getInternalName());
 
-                    // ... go throught all the available metadata of that type.
+                    // ... go through all the available metadata of that type.
                     if (inStruct.hasMetadataType(mdt)) {
                         for (Metadata m : inStruct.getAllMetadataByType(mdt)) {
                             // Only if the metadata has a value, add it to the MODS!
@@ -439,7 +439,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     // Only if the metadata type does exist in the current DocStruct...
                     MetadataGroupType mdt = this.myPreferences.getMetadataGroupTypeByName(mmo.getInternalName());
 
-                    // ... go throught all the available metadata of that type.
+                    // ... go through all the available metadata of that type.
 
                     if (inStruct.hasMetadataGroupType(mdt)) {
                         for (MetadataGroup group : inStruct.getAllMetadataGroupsByType(mdt)) {
@@ -474,7 +474,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     // DocStruct...
                     MetadataType mdt = this.myPreferences.getMetadataTypeByName(mmo.getInternalName());
 
-                    // ... go throught all the available metadata of that type.
+                    // ... go through all the available metadata of that type.
                     if (inStruct.hasMetadataType(mdt) && inStruct.getAllPersonsByType(mdt) != null) {
 
                         for (Person p : inStruct.getAllPersonsByType(mdt)) {
@@ -601,7 +601,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                 // Only if the metadata type does exist in the current DocStruct...
                 MetadataGroupType mdt = this.myPreferences.getMetadataGroupTypeByName(mmo.getInternalName());
 
-                // ... go throught all the available metadata of that type.
+                // ... go through all the available metadata of that type.
 
                 if (inStruct.hasMetadataGroupType(mdt)) {
                     for (MetadataGroup group : inStruct.getAllMetadataGroupsByType(mdt)) {

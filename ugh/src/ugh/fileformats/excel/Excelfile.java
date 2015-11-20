@@ -1073,33 +1073,17 @@ public class Excelfile implements ugh.dl.Fileformat {
 			}
 
 			// Get cell values.
-			if ((countedstartpagecell != null)
-					&& (countedstartpagecell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC)) {
+			if (countedstartpagecell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 				countedstartpage = countedstartpagecell.getNumericCellValue();
 			} else {
-				if (countedstartpagecell != null) {
-					System.err
-							.println("WARNING: value for counted page start in Pagination sequences is NOT numeric ("
-									+ x + ")");
-				} else {
-					System.err
-							.println("WARNING: value for counted page start has no value in Pagination Sequence ("
-									+ x + ")");
-				}
+				System.err.println("WARNING: value for counted page start in Pagination sequences is NOT numeric ("
+							+ x + ")");
 			}
-			if ((countedendpagecell != null)
-					&& (countedendpagecell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC)) {
+			if (countedendpagecell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 				countedendpage = countedendpagecell.getNumericCellValue();
 			} else {
-				if (countedendpagecell != null) {
-					System.err
-							.println("WARNING: value for counted page end in Pagination sequences is NOT numeric ("
-									+ x + ")");
-				} else {
-					System.err
-							.println("WARNING: counted endpage has no value... ("
-									+ x + ")");
-				}
+				System.err.println("WARNING: value for counted page end in Pagination sequences is NOT numeric ("
+							+ x + ")");
 			}
 			if ((uncountedstartpagecell != null)
 					&& (uncountedstartpagecell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC)) {

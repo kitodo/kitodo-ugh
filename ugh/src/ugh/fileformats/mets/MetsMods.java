@@ -4334,7 +4334,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                         throw pe;
                     }
 
-                    // Go throught all the identifier metadata of the
+                    // Go through all the identifier metadata of the
                     // parent struct and look for the XPath anchor
                     // reference.
                     List<? extends Metadata> identifierMetadataList = parentStruct.getAllMetadataByType(identifierType);

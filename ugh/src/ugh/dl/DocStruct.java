@@ -3353,7 +3353,7 @@ public class DocStruct implements Serializable {
                 }
             }
 
-            // Go throught all metadata of the curretn DocStruct.
+            // Go through all metadata of the curretn DocStruct.
             List<Metadata> om = this.getAllMetadata();
             if (om != null && !om.isEmpty()) {
                 for (Metadata m : om) {
