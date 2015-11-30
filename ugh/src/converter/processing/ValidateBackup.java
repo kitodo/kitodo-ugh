@@ -24,9 +24,10 @@ public class ValidateBackup implements Validatable {
 	}
 
 	public void validate() throws ContentLibException {
+		FileReader f = null;
 		try {
-			if (new FileReader(myBaseFolder + myID + "/meta.xml.bak").read()>1){
-				return;
+			f = new FileReader(myBaseFolder + myID + "/meta.xml.bak");
+			if (f.read() > 1) {
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -34,6 +35,13 @@ public class ValidateBackup implements Validatable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new ContentLibException("Validate Error - backup of metafile not found, inconsistent data",e);
+		} finally {
+			if (f != null) {
+				try {
+					f.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 	}
 

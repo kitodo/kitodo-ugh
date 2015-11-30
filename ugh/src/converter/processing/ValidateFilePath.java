@@ -24,9 +24,10 @@ public class ValidateFilePath implements Validatable {
 	}
 
 	public void validate() throws ContentLibException {
+		FileReader f = null;
 		try {
-			if (new FileReader(myBaseFolder + myID + "/meta.xml").read()>1){
-				return;
+			f = new FileReader(myBaseFolder + myID + "/meta.xml");
+			if (f.read() > 1) {
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -34,8 +35,14 @@ public class ValidateFilePath implements Validatable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new ContentLibException("Validate Error - metafile not found - folder " + myID + " - inconsistent data",e);
+		} finally {
+			if (f != null) {
+				try {
+					f.close();
+				} catch (IOException e) {
+				}
+			}
 		}
-
 	}
 
 }
