@@ -308,7 +308,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 											.getStringCellValue();
 								}
 								if (currentValue != null) {
-									currentValue.trim();
+									currentValue = currentValue.trim();
 									MetadataType columnmdt = getMDTypeByName(
 											currentValue, "excelGliederung");
 									if ((columnmdt != null)
@@ -1420,7 +1420,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 				// Check metadata columns; these are configurable using the
 				// language excel:Gliederung.
 				if (currentValue != null) {
-					currentValue.trim();
+					currentValue = currentValue.trim();
 					MetadataType columnmdt = getMDTypeByName(currentValue,
 							"ExcelGliederung");
 					if (columnmdt != null) {
