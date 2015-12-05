@@ -4142,7 +4142,7 @@ public class MetsMods implements ugh.dl.Fileformat {
             // Get the Namespace instance for the given prefix.
             Namespace myNamespace = this.namespaces.get(ns[0]);
 
-            if (ns[0] == null || myNamespace == null || myNamespace.getPrefix() == null || myNamespace.getPrefix().equals("")) {
+            if (myNamespace == null || myNamespace.getPrefix() == null || myNamespace.getPrefix().equals("")) {
                 String message = "Namespace '" + ns[0] + "' not defined in prefs or empty! One of " + this.namespaces.keySet() + " is expected!";
                 LOGGER.error(message);
                 throw new PreferencesException(message);
