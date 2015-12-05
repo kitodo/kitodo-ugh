@@ -3508,7 +3508,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         // Set the AMDIDs if necessary
-        if (inStruct != null && inStruct.getAmdSec() != null) {
+        if (inStruct.getAmdSec() != null) {
             String amdid = inStruct.getAmdSec().getId();
             if (amdid != null && !amdid.isEmpty()) {
                 div.setAttribute(METS_ADMID_STRING, amdid);
