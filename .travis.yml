@@ -1,0 +1,5 @@
+# Travis continuous integration for goobi-ugh
+
+language: java
+
+script: cd ugh && ant all
