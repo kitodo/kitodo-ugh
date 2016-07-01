@@ -7,5 +7,5 @@ public class Version {
 	public final static String VERSION = "${dist.name}-${dist.version}";
 	public final static String BUILDVERSION = "${dist.name}-${dist.version}-${dist.revision}";
 	public final static String BUILDDATE = "${date}";
-	public static String PROGRAMNAME = "Goobi";
+	public static String PROGRAMNAME = "Kitodo";
 }
