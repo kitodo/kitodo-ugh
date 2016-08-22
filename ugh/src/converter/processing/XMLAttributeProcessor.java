@@ -124,14 +124,4 @@ public class XMLAttributeProcessor {
 
 	}
 
-	public void saveTo(String fileName) {
-		if (fileName == null)
-			fileName = myDocPath + ".bak";
-
-	}
-
-	public void saveChanges() {
-
-	}
-
 }
