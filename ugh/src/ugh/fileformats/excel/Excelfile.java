@@ -67,26 +67,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  *
  *             TODO Calculate image path (from PPN, TIFF Header, volume number)
  *
- *             CHANGELOG
- *
- *             18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- *
- *             22.01.2010 --- Funk --- Minor improvements due to findbugs.
- *
- *             18.01.2010 --- Funk --- Adapted class to changed
- *             DocStruct.getAllMetadataByType().
- *
- *             21.12.2009 --- Funk --- Added some "? extends " to metadata
- *             things.
- *
- *             09.12.2009 --- Funk --- Refactored some variable names.
- *
- *             20.10.2009 --- Funk --- Deleted unneeded variable declarattion.
- *
- *             09.10.2009 --- Funk --- Changed the deprecated anotations.
- *
- *             05.10.2009 --- Funk --- Adapted metadata and person constructors.
- *
  ******************************************************************************/
 @Deprecated
 public class Excelfile implements ugh.dl.Fileformat {

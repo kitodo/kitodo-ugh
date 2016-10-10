@@ -37,12 +37,6 @@ import ugh.exceptions.PreferencesException;
  * @version 2009-11-20
  * @since 2009-05-09
  *
- *        TODOLOG
- *
- *        CHANGELOG
- *
- *        20.11.2009 --- Funk --- Changed all method modifiers to protected.
- *
  ******************************************************************************/
 
 public class MatchingDocStructObject {

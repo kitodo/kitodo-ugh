@@ -42,16 +42,6 @@ import ugh.exceptions.TypeNotAllowedForParentException;
  * @version 2009-10-27
  * @since 2004-05-21
  *
- *        CHANGELOG
- *
- *        27.10.2009 --- Funk --- Changed from deprecated class to deprecated
- *        constructor, class must be still used for reading. --- Removed debug
- *        output.
- *
- *        05.10.2009 --- Funk --- Adapted metadata and person constructors.
- *
- *        23.09.2009 --- Funk --- Added LOGGER.
- *
  ******************************************************************************/
 
 public class PaginationSequence {

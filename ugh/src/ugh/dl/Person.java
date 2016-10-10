@@ -55,23 +55,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  * @version 2010-02-14
  * @see Metadata
  *
- *      CHANGELOG
- *
- *      14.02.2010 --- Funk --- Added method toString().
- *
- *      30.11.2009 --- Funk --- Again removed deprecated Person() constructor.
- *
- *      17.11.2009 --- Funk --- Changed method person() to constructor Person().
- *      --- Refactored some things for Sonar improvement.
- *
- *      10.11.2009 --- Funk --- Removed deprecated Person() constructor.
- *
- *      06.10.2009 --- Funk --- Adapted metadata and person constructors. Left
- *      the old constructors where they were, to not confuse the intranda
- *      peoples :-)
- *
- *      06.05.2009 --- Wulf Riebensahm --- Method equals() overloaded .
- *
  ******************************************************************************/
 
 public class Person extends Metadata {

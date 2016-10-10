@@ -62,24 +62,6 @@ import ugh.exceptions.PreferencesException;
  *
  *        TODO Remove the "p004" error codes? Where do they come from anyway??
  *
- *        CHANGELOG
- *
- *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- *
- *        13.02.2010 --- Funk --- Refactored some conditionals and loops.
- *
- *        14.12.2009 --- Funk --- Added the getAllAnchorDocStructTypes() method.
- *
- *        17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *        30.10.2009 --- Funk --- Added generated serialVersionUID.
- *
- *        24.10.2008 --- Funk --- Commented out the setting of: "current_DocStrctType.setMyPrefs(this);". Do we need that? I think not!
- *
- *        29.09.2008 --- Funk --- Added log4j logging, removed the debug level methods.
- *
- *        29.04.2008 --- Funk --- Added public setDebug() method.
- *
  ******************************************************************************/
 
 public class Prefs implements Serializable {

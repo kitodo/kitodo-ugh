@@ -107,67 +107,6 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  *
  *      TODO Maybe provide a possibility to change content file paths in addContentFileFromPhysicalPage()!!
  *
- *      CHANGELOG
- *
- *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- *
- *      29.03.2010 --- Funk --- Added this.setFileSet(null); to avoid adding multiple files with an XStream read (DPD-406).
- *
- *      23.02.2010 --- Sehr --- Changed XStream DOM driver against XStream Stax driver.
- *
- *      14.02.2010 --- Funk --- Remove all the Metadata, person, and ContentFile output lines and implement the toString() methods in the classes
- *      itself!!
- *
- *      28.01.2010 -- Funk --- Added some NPE checks to addAllContentFiles().
- *
- *      27.01.2010 --- Funk --- Re-added addAllCOntentFiles() for compatibility reasons.
- *
- *      22.01.2010 --- Funk --- Added method toString(). --- Improved things due to findbugs.
- *
- *      19.01.2010 --- Funk --- Fixed bug updating physical DocStruct with logical DocStruct.
- *
- *      21.12.2009 --- Funk --- Minor changes. --- Added VERSION to this class.
- *
- *      16.12.2009 --- Mahnke --- Marked print methods as deprecated.
- *
- *      14.12.2009 --- Funk --- Added TODO to the equals() method, must be fixed!
- *
- *      09.12.2009 --- Funk --- Maekrd addAllContentFiles() deprecated. --- Added addContentFileFromPhysicalPage() to add content files to a DocStruct
- *      "page".
- *
- *      08.12.2009 --- Funk --- Added FileSet printout method. --- VirtualFileGroup are preserved now before adding all content files. --- Slightly
- *      refactored some loops and conditionals.
- *
- *      03.12.2009 --- Funk --- Slightly improved printChildDocStruct().
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      30.10.2009 --- Funk --- Added generated serialVersionUID.
- *
- *      28.10.2009 --- Funk --- Slightly refactored PreferencesException throwing in readXStreamXml().
- *
- *      06.10.2009 --- Funk --- Changed printDocStruct underline character.
- *
- *      30.09.2009 --- Funk --- New public method sortMetadataRecursively, and alphabetically recursively. -- printAllLogDocStruct() and
- *      printAllPhysDocStruct() now really prints, and do not log again!
- *
- *      10.09.2009 --- Funk --- Updating DocStructTYPES and MetadataTYPES now! Correctly! Not only NAMES in a LIST! HMPF! --- Corrected the
- *      MetadataType sort algorithm, now the MetadataTypes are sorted as stated in the Prefs' DocStructTypes.
- *
- *      07.09.2009 --- Funk --- Added physical DocStruct to update mechanism.
- *
- *      08.06.2009 --- Funk --- Declared dome deprecated methods, deleted debug output.
- *
- *      11.12.2008 --- Funk --- Writing the XStream the content files are written to the Digital Document first.
- *
- *      03.12.2008 --- Funk --- Added updating the DigitalDocument from the Prefs after reading XStream.
- *
- *      24.10.2008 --- Funk --- Added XStream read and write methods.
- *
- *      14.10.2008 --- Funk --- read() and write() implemented to serialize and de-serialize.
- *
- *      29.09.2008 --- Funk --- Logging added.
- *
  ******************************************************************************/
 
 public class DigitalDocument implements Serializable {

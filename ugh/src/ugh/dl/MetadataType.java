@@ -77,14 +77,6 @@ import java.util.Map;
  * @see Metadata#setType
  * @see DocStructType#getMetadataTypeByType
  *
- *      CHANGELOG
- *
- *      13.02.2010 -- Funk --- Refactored some whiles and iterators.
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      06.05.2009 --- Wulf Riebensahm --- equals() method overloaded.
- *
  ******************************************************************************/
 
 public class MetadataType implements Serializable {

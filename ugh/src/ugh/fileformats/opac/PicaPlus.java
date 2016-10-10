@@ -83,28 +83,6 @@ import ugh.exceptions.WriteException;
  *
  * 			 TODO add NormMetadata
  *
- *          CHANGELOG
- *
- *          19.09.2014 --- Ronge --- Add import into metadata groups
- *
- *          15.02.2010 --- Funk --- Logging version information now.
- *
- *          11.12.2009 --- Funk --- Re-added a continue in
- *          parsePicaPlusRecord().
- *
- *          04.12.2009 --- Funk --- Added trim() to all PicaPlus prefs values'
- *          getTextNodeValue() calls.
- *
- *          20.11.2009 --- Funk --- Added RegExp support for PicaPlus catalog
- *          entry value changes, and conditions for mapping PicaPlus fields to
- *          internal Metadata.
- *
- *          17.11.2009 --- Funk --- Refactored some things for Sonar
- *          improvement.
- *
- *          13.11.2009 --- Funk --- Minor changes to the log and Exception
- *          messages -- Removed the field of type FileSet: myImageset.
- *
  ******************************************************************************/
 
 public class PicaPlus implements ugh.dl.Fileformat {

@@ -49,13 +49,6 @@ import ugh.exceptions.ContentFileAreaTypeUnknownException;
  * @author Markus Enders
  * @version 2010-02-13
  *
- *          CHANGELOG
- *
- *          13.02.2010 --- Funk --- Minor changes.
- *
- *          17.11.2009 --- Funk --- Refactored some things for Sonar
- *          improvement. --- Removed modifier "transient" from LOGGER.
- *
  ******************************************************************************/
 
 public class ContentFileArea implements Serializable {

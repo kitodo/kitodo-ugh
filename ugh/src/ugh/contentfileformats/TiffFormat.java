@@ -53,10 +53,6 @@ import com.sun.media.jai.codec.FileSeekableStream;
  *             TODO Get rid of this dependency on contentLib or koLibRI! (Is
  *             this still a TODO??)
  *
- *             CHANGELOG
- *
- *             13.02.1020 --- Funk --- Minor changes.
- *
  ******************************************************************************/
 @Deprecated
 public class TiffFormat implements ugh.dl.ContentFileFormat {

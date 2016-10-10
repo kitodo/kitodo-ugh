@@ -105,64 +105,6 @@ import ugh.exceptions.WriteException;
  *        TODO Get rid of deprecated Classes!! (Hm, we have here a deprecated
  *        class itself, so we maybe should leave it at is is!)
  *
- *        CHANGELOG
- *
- *        18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- *
- *        05.05.2010 --- Funk --- Just trying to solve some person and metadata
- *        reading bugs (see recent SLUB mails and DPD-408).
- *
- *        15.03.2010 --- Funk --- Added displayName to writing persons method.
- *
- *        10.03.2010 --- Funk --- Added FormatSourcePrint to <ImageSet> tag,
- *        will be created as metadata of BoundBook now. --- More persons are
- *        taken with displayname now.
- *
- *        25.02.2010 --- Funk --- Added some more logging.
- *
- *        15.02.2010 --- Funk --- Logging version information now.
- *
- *        14.02.2010 --- Funk --- Commented the whitespace things, trim() added
- *        to method getMDValueOfNode(). --- Using HIDDEN_METADATA_CHAR now. ---
- *        Refactored some error message strings. -- Slightly refactored the
- *        displayName retrieval, text content of the metadata nodes now are
- *        retrieved by the method getMDValueOfNode() to get the trim()
- *        everywhere.
- *
- *        03.02.2010 --- Funk --- Commmented out the whitespace diminishing in
- *        getMDValueOfNode() due to .
- *
- *        26.01.2010 --- Funk --- Handling text in person tags without FirstName
- *        and LastName tags is put into displayName now.
- *
- *        22.01.2010 --- Funk --- Handling text in person tags without FirstName
- *        and LastName tags as LastName. --- Some findbugs improvements.
- *
- *        18.01.2010 --- Funk --- Adapted class to changed
- *        DocStruct.getAllMetadataByType().
- *
- *        21.12.2009 --- Funk --- Added some "? extends " to metadata things.
- *
- *        03.12.2009 --- Funk --- Slightly improved the person extraction from
- *        the RDF file.
- *
- *        19.11.2009 --- Funk --- Improved class for Sonar.
- *
- *        30.10.2009 --- Funk --- Improved XML date and RDFFile version comment.
- *
- *        27.10.2009 --- Funk --- Changed the conditionals that caused DPD-359
- *        and DPD-361 from ">= -1" to "== -1". --- Removed debug output.
- *
- *        09.10.2009 --- Funk --- Removed some of the deprecated anotations,
- *        only WRITE should be deprecated!
- *
- *        05.10.2009 --- Funk --- Adapted metadata and person constructors.
- *
- *        30.09.2009 --- Funk --- Merged Wulf's thingsg into here.
- *
- *        29.04.2008 --- Funk --- All whitespaces of text nodes now are replaced
- *        with a single space in getMDValueOfNode().
- *
  ******************************************************************************/
 
 @Deprecated

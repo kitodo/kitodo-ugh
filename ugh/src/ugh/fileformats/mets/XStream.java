@@ -41,17 +41,6 @@ import ugh.exceptions.WriteException;
  *
  *        TODO Must we check the given Prefs object in the constructor?
  *
- *        CHANGELOG
- *
- *        15.02.2010 --- Funk --- Logging version information now.
- *
- *        28.10.2009 --- Funk --- Minor changes.
- *
- *        26.10.2009 --- Funk --- Fixed a NPE sorting the metadata if no prefs
- *        are set, hm... Prefs MUST be set anyway... --- Fixes Bug DPD-364.
- *
- *        09.10.2009 --- Funk --- Changed the deprecated annotations.
- *
  ******************************************************************************/
 
 public class XStream implements ugh.dl.Fileformat {
