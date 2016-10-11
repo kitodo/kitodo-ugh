@@ -42,24 +42,6 @@ import java.util.Map;
  * @version 2014-06-18
  * @see DocStruct#setType
  *
- *      CHANGELOG
- *
- *      18.06.2014 --- Ronge --- Change anchor to be string value & create more files when necessary
- *
- *      13.02.2010 --- Funk --- Refcatored some overloaded methods, and set some methods deprecated.
- *
- *      22.01.2010 --- Funk --- Improvements due to findbugs.
- *
- *      21.12.2009 --- Funk --- Added method toString().
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      20.10.2009 --- Funk --- Added some modifiers for class attributes.
- *
- *      11.09.2009 --- Wulf Riebensahm --- equals() method overloaded.
- *
- *      24.10.2008 --- Funk --- Commented out the field myPrefs and its getter and setter methods. We do not need that!
- *
  ******************************************************************************/
 
 public class DocStructType implements Serializable {

@@ -60,13 +60,6 @@ import org.w3c.dom.Node;
  *
  *        TODO Update the HelperTest class and use it for JUnit tests!
  *
- *        CHANGELOG
- *
- *        21.10.2009 --- Funk --- Refactored some conditionals.
- *
- *        20.10.2009 --- Funk --- Added method for retrieving DivTypes by
- *        DivType ID --- Corrected some typos.
- *
  ******************************************************************************/
 
 public class Helper {

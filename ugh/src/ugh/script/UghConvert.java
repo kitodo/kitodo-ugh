@@ -75,38 +75,6 @@ import ugh.fileformats.opac.PicaPlus;
  *
  *        TODO Handle "-" for -i and -o arguments as alias for Stdin and Stdout. This requires UGH to handle streams!!
  *
- *        CHANGELOG
- *
- *        07.10.2010 --- Sehr --- Added experimental metadata exchange switch.
- *
- *        05.05.2010 --- Funk --- Added LGPL header.
- *
- *        10.03.2010 --- Funk --- Added the rightsOwnerContact switch.
- *
- *        12.02.2010 --- Funk --- Repaired the AMD settings. Fixes bug DPD-399.
- *
- *        15.01.2010 --- Funk --- Added some null checks for logging.
- *
- *        08.12.2009 --- Funk --- Corrected some typos. ---Added content filed to log verbose output. --- Catching missing output filename and format
- *        now.
- *
- *        30.10.2009 --- Funk --- Added UghConvert version. --- Improved log output. --- Added finals for Fileformat strings.
- *
- *        14.10.2009 --- Funk --- Added virtual file group support for PRESENTATION and LOCAL.
- *
- *        13.10.2009 --- Funk --- Fixed a bug comncerning the Fileformat's versions.
- *
- *        06.10.2009 --- Funk --- Added the -q flag, some modifications for better usage. --- Removed internal metadata exchange code. --- Changed
- *        back return code numbers.
- *
- *        02.10.2009 --- Funk --- Added the anchor flags.
- *
- *        22.05.2009 --- Funk --- Added some correction implementation lines.
- *
- *        27.03.2009 --- Funk --- Added MetsModsImportExport.
- *
- *        16.02.2009 --- Funk --- copied from agora2mets.java.
- *
  ******************************************************************************/
 
 public class UghConvert {

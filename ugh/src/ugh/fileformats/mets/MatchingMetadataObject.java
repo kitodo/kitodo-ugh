@@ -29,15 +29,6 @@ import java.util.Map;
  * @author Robert Sehr
  * @version 2009-12-21
  * @since 2009-05-09
- *
- *        TODOLOG
- *
- *        CHANGELOG
- *
- *        21.12.2009 --- Funk --- Added modsGrouping.
- *
- *        20.11.2009 --- Funk --- Changed all method modifiers to protected.
- *
  ******************************************************************************/
 
 public class MatchingMetadataObject {

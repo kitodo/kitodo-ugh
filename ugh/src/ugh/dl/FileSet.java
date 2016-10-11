@@ -45,21 +45,6 @@ import java.util.List;
  * @since 2008-12-05
  * @see ContentFile
  *
- *      CHANGELOG
- *
- *      22.01.2010 --- Funk --- Nice check removed: this == null :-D ---
- *      findbugs improvement.
- *
- *      09.12.2009 --- Funk --- addFile() now checks if file already exist.
- *
- *      08.12.2009 --- Funk --- Added the setVirtualFileGroups() method.
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      30.10.2009 --- Funk --- Added generated serialVersionUID.
- *
- *      05-12-2009 --- Funk --- Added virtual file groups.
- *
  ******************************************************************************/
 
 public class FileSet implements Serializable {

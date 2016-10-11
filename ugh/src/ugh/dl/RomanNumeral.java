@@ -37,12 +37,6 @@ package ugh.dl;
  * @version 2009-11-17
  * @since 2004-05-21
  *
- *        CHANGELOG
- *
- *        17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *        30.10.2009 --- Funk --- Added generated serialVersionUID.
- *
  ******************************************************************************/
 
 public class RomanNumeral extends Number {

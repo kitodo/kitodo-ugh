@@ -34,14 +34,6 @@ import java.io.Serializable;
  * @since 2008-11-19
  * @see ContentFile
  *
- *      CHANGELOG
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      30.10.2009 --- Funk --- Added generated serialVersionUID.
- *
- *      16.01.2009 --- Funk --- Made the suffix input "." resistant!
- *
  ******************************************************************************/
 
 public class VirtualFileGroup implements Serializable {

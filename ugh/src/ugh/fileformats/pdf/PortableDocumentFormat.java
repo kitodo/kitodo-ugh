@@ -50,11 +50,6 @@ import com.sun.media.jai.codec.FileSeekableStream;
  * @version 2010-01-23
  * @since 2004-12-17
  * @deprecated
- *
- *             CHANGELOG
- *
- *             09.10.2009 --- Funk --- Changed the deprecated anotations.
- *
  ******************************************************************************/
 
 @Deprecated

@@ -44,20 +44,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  * @version 2010-02-14
  * @see MetadataType
  *
- *      CHANGELOG
- *
- *      14.02.2010 --- Funk --- Added method toString().
- *
- *      30.11.2009 --- Funk --- Again removed deprecated Metadata() constructor.
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      10.11.2009 --- Funk --- Removed deprecated Metadata() constructor.
- *
- *      06.10.2009 --- Funk --- Adapted metadata and person constructors.
- *
- *      06.05.2009 --- Wulf Riebensahm --- equals() method overloaded.
- *
  ******************************************************************************/
 
 public class Metadata implements Serializable {

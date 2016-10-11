@@ -45,18 +45,6 @@ import java.util.List;
  * @see FileSet#addFile
  * @see FileSet#removeFile
  *
- *      CHANGELOG
- *
- *      14.02.2010 --- Funk --- Added method toString().
- *
- *      13.02.2010 --- Funk --- Minor changes.
- *
- *      17.11.2009 --- Funk --- Refactored some things for Sonar improvement.
- *
- *      16.11.2009 --- Funk --- Added some "private"'s to class attributes. ---
- *      Removed some unused private variables. --- Refactored the get and
- *      setMimetype method.
- *
  ******************************************************************************/
 
 public class ContentFile implements Serializable {

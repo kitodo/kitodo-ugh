@@ -55,10 +55,6 @@ package ugh.dl;
  *             Saselan (http://commons.apache.org/sanselan/)! (Is this still a
  *             TODO??)
  *
- *             CHANGELOG
- *
- *             13.02.2010 --- Funk --- Minor changes.
- *
  **************************************************************************/
 @Deprecated
 public interface ContentFileFormat {
