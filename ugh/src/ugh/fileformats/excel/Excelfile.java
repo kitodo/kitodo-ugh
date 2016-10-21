@@ -2021,7 +2021,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 								// (physical struct).
 								List<Reference> refs = currentchild
 										.getAllReferences("to");
-								if (refs.size() == 0) {
+								if (refs == null || refs.size() == 0) {
 									// No references set, so set one to the
 									// bound book.
 									DocStruct topphys = this.mydoc
