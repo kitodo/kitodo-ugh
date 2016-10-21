@@ -412,11 +412,8 @@ public class Excelfile implements ugh.dl.Fileformat {
 			return false;
 		}
 
-		// Open file.
-		FileInputStream excelFile;
 		// Get output stream.
-		try {
-			excelFile = new FileInputStream(filename);
+		try (FileInputStream excelFile = new FileInputStream(filename)) {
 			this.excelworkbook = new org.apache.poi.hssf.usermodel.HSSFWorkbook(
 					excelFile);
 		} catch (Exception e) {
