@@ -84,7 +84,7 @@ public class RulesetReader {
 
 		for (Iterator<Element> i = myDoc.getDescendants(); i.hasNext();) {
 			try {
-				ele = (Element) i.next();
+				ele = i.next();
 				ele = (Element) ele.clone();
 			} catch (Exception e) {
 				// setting ele didn't work, keep looping
