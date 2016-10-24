@@ -805,7 +805,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                             displaynamevalue = getValueForUnambigiousXQuery(node, mmo.getDisplayNameXQuery());
                         }
                         if (mmo.getPersontypeXQuery() != null) {
-                            persontypevalue = getValueForUnambigiousXQuery(node, mmo.getDisplayNameXQuery());
+                            persontypevalue = getValueForUnambigiousXQuery(node, mmo.getPersontypeXQuery());
                         }
 
 
