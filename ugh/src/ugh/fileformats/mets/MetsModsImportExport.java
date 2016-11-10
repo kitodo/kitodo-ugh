@@ -492,11 +492,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                 // Write logical page number into div, if current metadata value
                 // is not METADATA_PAGE_UNCOUNTED_VALUE.
                 else if (currentMd.getType().getName().equals(METADATA_LOGICAL_PAGE_NUMBER)) {
-                    if (!currentMd.getValue().equals(METADATA_PAGE_UNCOUNTED_VALUE)) {
-                        divElement.setAttribute(METS_ORDERLABEL_STRING, currentMd.getValue());
-                    } else {
-                        divElement.setAttribute(METS_ORDERLABEL_STRING, " - ");
-                    }
+                    divElement.setAttribute(METS_ORDERLABEL_STRING, currentMd.getValue()
+                            .replace(METADATA_PAGE_UNCOUNTED_VALUE, " - "));
 
                     notMappedMetadataAndPersons.remove(currentMd);
                 } else {
