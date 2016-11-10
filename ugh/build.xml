@@ -6,8 +6,8 @@
 	<property name="build.javac.source" value="1.7"/>
 
 	<!-- Distribution specific settings. -->
-	<property name="dist.name" value="UGH" />
-	<property name="dist.version" value="1.11.1" />
+	<property name="dist.name" value="kitodo-ugh" />
+	<property name="dist.version" value="2.0.0" />
 
 	<!-- Directory settings -->
 	<property name="dir.lib" value="./lib" />
@@ -53,12 +53,12 @@
 
 	<!-- Build of ugh jar file. -->
 	<target name="jar" depends="compile" description="Build of ugh jar file.">
-		<jar destfile="${dir.dist}/ugh-${dist.version}.jar" basedir="${dir.build.classes}" />
+		<jar destfile="${dir.dist}/${dist.name}-${dist.version}.jar" basedir="${dir.build.classes}" />
 	</target>
 
 	<!-- Build single ugh jar file. -->
 	<target name="dist" depends="clean, jar" description="Build single ugh jar file.">
-		<echo>Alles ist gut</echo>
+		<echo>Build was successful.</echo>
 	</target>
 
 	<!-- Build all, not really needed yet. -->
