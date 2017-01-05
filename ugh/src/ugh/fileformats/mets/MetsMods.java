@@ -1258,7 +1258,9 @@ public class MetsMods implements ugh.dl.Fileformat {
             parseMetadataForLogicalDocStruct(newDocStruct, true);
 
             // If the top DocStruct is an anchor, get its child's MODS section.
-            if (newDocStruct.getType().getAnchorClass() != null && newDocStruct.getAllChildren().get(0).getAnchorClass() == null) {
+            if (newDocStruct.getType().getAnchorClass() != null && newDocStruct.getAllChildren() != null &&
+            		newDocStruct.getAllChildren().get(0).getAnchorClass() == null) {
+
                 String modsdata = getMODSSection(newDocStruct.getAllChildren().get(0));
 
                 // If a MODS section is existing, look for anchor references. A
