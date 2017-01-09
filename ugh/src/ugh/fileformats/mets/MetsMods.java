@@ -1339,9 +1339,14 @@ public class MetsMods implements ugh.dl.Fileformat {
 
 					// when done, write the origen document back
 					this.getDigitalDocument().setLogicalDocStruct(origen);
-				} catch (UGHException caught) {
-					throw caught instanceof ReadException ? (ReadException) caught : new ReadException(
-							caught.getMessage(), caught);
+				} catch (ReadException canBeThrownDirectly) {
+					throw canBeThrownDirectly ;
+				} catch (UGHException|IndexOutOfBoundsException wrappedException) {
+					String reason = wrappedException.getClass().getSimpleName();
+					if (wrappedException.getMessage() != null) {
+						reason += ": " + wrappedException.getMessage();
+					}
+					throw new ReadException(reason, wrappedException);
 				}
 			}
 
