@@ -3967,6 +3967,9 @@ public class DocStruct implements Serializable {
 	 *             if the child indicated cannot be reached
 	 */
 	public DocStruct getChild(String reference) {
+		if(children == null) {
+			throw new IndexOutOfBoundsException(reference);
+		}
 		int fieldSeparator;
 		if ((fieldSeparator = reference.indexOf(',')) > -1) {
 			int index = Integer.parseInt(reference.substring(0, fieldSeparator));
