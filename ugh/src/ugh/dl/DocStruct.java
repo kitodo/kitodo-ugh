@@ -1465,7 +1465,7 @@ public class DocStruct implements Serializable {
     /**
      * Retrieves all Metadata object, which belong to this DocStruct and have a special type. Can be used to get all titles, authors etc... includes
      * Persons!
-     *
+     * <p>
      * PLEASE NOTE This method no longer returns NULL, if no MetadataTypes are available! An empty list is returned now!
      *
      * @param inType MetadataType we are looking for.
@@ -1705,7 +1705,7 @@ public class DocStruct implements Serializable {
     /**
      * Retrieves all Metadata object, which belong to this DocStruct and have a special type. Can be used to get all titles, authors etc... includes
      * Persons!
-     *
+     * <p>
      * PLEASE NOTE This method no longer returns NULL, if no MetadataTypes are available! An empty list is returned now!
      *
      * @param inType MetadataType we are looking for.
@@ -1797,8 +1797,8 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Gets all MetadataTypes, which shall ALWAYS be displayed, even though they have no value.<br/>
-     *
+     * Gets all MetadataTypes, which shall ALWAYS be displayed, even though they have no value.
+     * <p>
      * Includes all metadata with attributes defaultDisplay="true" in the prefs. Hidden metadata, which start with the HIDDEN_METADATA_CHAR, will not
      * be included.
      *
@@ -1846,10 +1846,6 @@ public class DocStruct implements Serializable {
         return getDefaultDisplayMetadataGroupTypes();
     }
 
-    /**
-     * @param metadataTypeName
-     * @return
-     */
     private boolean hasMetadataGroup(String metadataGroupTypeName) {
 
         if (this.allMetadataGroups != null) {
@@ -1869,8 +1865,8 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Gets all MetadataTypes, which shall ALWAYS be displayed, even though they have no value.<br/>
-     *
+     * Gets all MetadataTypes, which shall ALWAYS be displayed, even though they have no value.
+     * <p>
      * Includes all metadata with attributes defaultDisplay="true" in the prefs. Hidden metadata, which start with the HIDDEN_METADATA_CHAR, will not
      * be included.
      *
@@ -1918,10 +1914,6 @@ public class DocStruct implements Serializable {
         return getDefaultDisplayMetadataTypes();
     }
 
-    /**
-     * @param metadataTypeName
-     * @return
-     */
     private boolean hasMetadata(String metadataTypeName) {
 
         if (this.allMetadata != null) {
@@ -2004,8 +1996,8 @@ public class DocStruct implements Serializable {
 
     /**
      * Get all metadatatypes, which can be added to a DocStruct. This method considers already added metadata (and persons!); e.g. metadata types
-     * which can only be available once cannot be added a second time. Therefore this metadata type will not be included in this list.<br/>
-     *
+     * which can only be available once cannot be added a second time. Therefore this metadata type will not be included in this list.
+     * <p>
      * "Internal" metadata, which start with the HIDDEN_METADATA_CHAR, will also not be included.
      *
      * @return List containing MetadataType objects.
@@ -2099,8 +2091,8 @@ public class DocStruct implements Serializable {
 
     /**
      * Get all metadatatypes, which can be added to a DocStruct. This method considers already added metadata (and persons!); e.g. metadata types
-     * which can only be available once cannot be added a second time. Therefore this metadata type will not be included in this list.<br/>
-     *
+     * which can only be available once cannot be added a second time. Therefore this metadata type will not be included in this list.
+     * <p>
      * "Internal" metadata, which start with the HIDDEN_METADATA_CHAR, will also not be included.
      *
      * @return List containing MetadataType objects.
