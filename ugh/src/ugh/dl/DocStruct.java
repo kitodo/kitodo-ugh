@@ -153,14 +153,6 @@ public class DocStruct implements Serializable {
         // We have to check, if this type is allowed here, this depends on the
         // parent DocStruct.
        setType(inType);
-
-        //        // This conditional can never be reached, because the result ALWAYS
-        //        // is true! See setType()! Check again and take it out!
-        //        if (!result) {
-        //            TypeNotAllowedForParentException tnae = new TypeNotAllowedForParentException();
-        //            LOGGER.error("The type '" + inType.getName() + "' is not allowed as a child of '" + this.getType().getName() + "'");
-        //            throw tnae;
-        //        }
     }
 
     /**
