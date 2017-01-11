@@ -76,7 +76,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
- * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
+ * @author Matthias Ronge
  * @version 2014-06-26
  * @see DigitalDocument
  */
