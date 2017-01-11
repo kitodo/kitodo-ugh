@@ -70,6 +70,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * @author Markus Enders
  * @author Stefan E. Funk
  * @author Robert Sehr
+ * @author Wulf Riebensahm
  * @author Matthias Ronge
  * @see DigitalDocument
  */
@@ -3135,7 +3136,6 @@ public class DocStruct implements Serializable {
      * Used to register a signature the first time a DocStruct Object runs into the non hierarchial branch of referenced DocStruct Objects by way of
      * the equals method.
      *
-     * @author Wulf Riebensahm
      * @param docStruct
      */
     private boolean registerToRef(DocStruct docStruct) {
@@ -3157,9 +3157,7 @@ public class DocStruct implements Serializable {
     /**
      * Used to register a signature the first time a DocStruct Object runs into the non hierarchial branch of DocStruct Objects referencing this
      * DocStruct by way of the equals method.
-     * </p>
      *
-     * @author Wulf Riebensahm
      * @param docStruct
      */
     private boolean registerFromRef(DocStruct docStruct) {
@@ -3179,7 +3177,6 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * @author Wulf Riebensahm
      * @param docStruct
      */
     private void unregisterToRefs(DocStruct docStruct) {
@@ -3192,7 +3189,6 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * @author Wulf Riebensahm
      * @param docStruct
      */
     private void unregisterFromRefs(DocStruct docStruct) {
@@ -3205,7 +3201,6 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * @author Wulf Riebensahm
      * @param docStruct
      * @return
      */
@@ -3494,9 +3489,7 @@ public class DocStruct implements Serializable {
 
     /**
      * The metadata comparator. Simply compares metadata (and persons) according to their type names alphabetically.
-     *
-     * @author funk
-     **************************************************************************/
+     */
     class MetadataComparator implements Comparator<Object> {
 
         /*
@@ -3521,8 +3514,6 @@ public class DocStruct implements Serializable {
 
     /**
      * The metadata comparator. Simply compares metadata (and persons) according to their type names alphabetically.
-     *
-     * @author funk
      */
     class MetadataGroupComparator implements Comparator<Object> {
 
