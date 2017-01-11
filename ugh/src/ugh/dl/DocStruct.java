@@ -79,20 +79,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * @author Matthias Ronge &lt;matthias.ronge@zeutschel.de&gt;
  * @version 2014-06-26
  * @see DigitalDocument
- *
- *      TODOLOG
- *
- *      TODO Remove databaseid and unreachable code
- *
- *      TODO Remove all the boolean results that always are TRUE!!
- *
- *      TODO Maybe use the equals() method for comparing the things from the ruleset and the things from the DigitalDocument?? This may only be
- *      interesting for XStream serialisation!!
- *
- *      TODO Shall the metadata given by getMetadata() and similar methods already be sorted? Do we need public sorting methods here? Do we need
- *      different getMetadata methods like getMetadataAlphabetically and getMetadataInRulesetOrder?
- *
- ******************************************************************************/
+ */
 
 public class DocStruct implements Serializable {
 
