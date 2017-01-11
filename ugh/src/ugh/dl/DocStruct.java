@@ -91,38 +91,71 @@ public class DocStruct implements Serializable {
 					MetsModsImportExport.CREATE_LABEL_ATTRIBUTE_TYPE,
 					MetsModsImportExport.CREATE_ORDERLABEL_ATTRIBUTE_TYPE }));
 
-    // List containing all Metadata instances.
+    /**
+     *  List containing all Metadata instances.
+     */
     private List<Metadata> allMetadata;
 
     private List<MetadataGroup> allMetadataGroups;
 
-    // List containing all DocStrct-instances being children of this instance.
+    /**
+     * List containing all DocStrct-instances being children of this instance.
+     */
     private List<DocStruct> children;
-    // List containing all references to Contentfile objects.
+    
+    /**
+     * List containing all references to Contentfile objects.
+     */
     private List<ContentFileReference> contentFileReferences = new LinkedList<ContentFileReference>();
-    // List of all persons; list containing all Person objects.
+    
+    /**
+     * List of all persons; list containing all Person objects.
+     */
     private List<Person> persons;
 
     private DocStruct parent;
-    // All references to other DocStrct instances (containing References
-    // objects).
+    
+    /**
+     * All references to other DocStrct instances (containing References
+     * objects).
+     */
     private final List<Reference> docStructRefsTo = new LinkedList<Reference>();
-    // All references from another DocStruct to this one.
+    
+    /**
+     * All references from another DocStruct to this one.
+     */
     private final List<Reference> docStructRefsFrom = new LinkedList<Reference>();
-    // Type of this instance.
+    
+    /**
+     * Type of this instance.
+     */
     private DocStructType type;
-    // Local identifier of this docstruct.
+    
+    /**
+     * Local identifier of this docstruct.
+     */
     private String identifier = null;
-    // Digital document, to which this DocStruct belongs.
+    
+    /**
+     * Digital document, to which this DocStruct belongs.
+     */
     private DigitalDocument digdoc;
     private Object origObject = null;
     private boolean logical = false;
     private boolean physical = false;
-    // String containing an identifier or a URL to the anchor.
+    
+    /**
+     * String containing an identifier or a URL to the anchor.
+     */
     private String referenceToAnchor;
-    //the amdSec referenced by this docStruct, if any
+    
+    /**
+     * the amdSec referenced by this docStruct, if any
+     */
     private AmdSec amdSec;
-    //the list of techMd sections referenced by this docStruct, if any
+    /**
+     * the list of techMd sections referenced by this docStruct, if any
+     */
     private List<Md> techMdList;
 
     /**
