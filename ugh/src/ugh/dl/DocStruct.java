@@ -51,6 +51,8 @@ import ugh.exceptions.UGHException;
 import ugh.fileformats.mets.MetsModsImportExport;
 
 /**
+ * One node of a tree depicting the structure of the document.
+ * <p>
  * A DocStruct object represents a structure entity in work. Every document consists of a structure, which can be separated into several structure
  * entities, which build hierarchical structure. Usually a {@link DigitalDocument} contains two structures; a logical and a physical one. Each
  * structure consists of a top DocStruct element that is embedded in some kind of structure. This structure is represented by parent and children of
@@ -159,7 +161,7 @@ public class DocStruct implements Serializable {
     private List<Md> techMdList;
 
     /**
-     * This is needed so we can exclude the possibility to run eternal loops with non hierarchial references, will be filled with super()toString
+     * This is needed so we can exclude the possibility to run eternal loops with non hierarchial references, will be filled with {@code super.toString()}
      * signature of the compared DocStruct.
      */
     private HashMap<String, Object> signaturesForEqualsMethodRefsFrom;
@@ -176,10 +178,10 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Constructs a new DocStruct object of a given type. The type can be changed later using the {@link #setType(DocStructType)} method.
+     * Creates a new DocStruct with a given type. The type can be changed later using the method {@link #setType(DocStructType)}.
      *
-     * @param inType type of this DocStruct instance
-     * @throws TypeNotAllowedForParentException is thrown, if this docstruct is not allowed for a parent
+     * @param inType type of this DocStruct
+     * @throws TypeNotAllowedForParentException is never thrown
      */
     protected DocStruct(DocStructType inType) throws TypeNotAllowedForParentException {
 
@@ -193,10 +195,10 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Sets the type of this DocStruct instance. When changing the type, the allowed metadata elements and children are NOT checked. Therefore it is
-     * possible to create documents, that are not valid against the current preferences file.
+     * Sets the type of this DocStruct. When changing the type, the allowed metadata elements and children are <i>not</i> checked. Therefore it is
+     * possible to create documents that are not valid against the current preferences file.
      *
-     * @param inType DocStructType to be set
+     * @param inType type to set
      * @return always true
      */
     public boolean setType(DocStructType inType) {
@@ -209,18 +211,18 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Get the type of an instance.
+     * Get the type of this DocStruct.
      *
-     * @return DocStructType of this DocStruct
+     * @return the type of this DocStruct
      */
     public DocStructType getType() {
         return this.type;
     }
 
     /**
-     * Returns all Children of an instance.
+     * Returns a list containing all children of this DocStruct. If this instance has no children, {@code null} is returned.
      *
-     * @return List containing DocStruct instances; if this instance has no children, null is returned.
+     * @return all children of this DocStruct
      */
     public List<DocStruct> getAllChildren() {
 
@@ -235,9 +237,10 @@ public class DocStruct implements Serializable {
 	 * Returns all real successors, i.e. all child nodes that are of a different
 	 * or no anchor class at all, of an instance as a flat list. Doesn’t return
 	 * unreal successors; that are those who are nothing but METS pointers.
+	 * <p>
+	 * If this instance has no children, an empty list is returned.
 	 *
-	 * @return List containing DocStruct instances; if this instance has no
-	 *         children, an empty list is returned.
+	 * @return all child nodes that are of a different or no anchor class at all
 	 */
 	public List<DocStruct> getAllRealSuccessors() {
 		LinkedList<DocStruct> result = new LinkedList<DocStruct>();
@@ -258,12 +261,23 @@ public class DocStruct implements Serializable {
         return getReferenceToAnchor();
     }
 
-    /**
-     * Retrieves the identifier/URN/URL of the anchor. The anchor is another DocStruct which is stored in another DigitalDocument; e.g. a "Journal"
-     * can be the anchor for PeriodicalVolumes. Both DocStructs are stored in different DigitalDocuments (different mets files) and are linked
-     * together by an identifier. The identifier of the anchor should be stored here. On the side of the anchor, this identifier is stored as a normal
-     * metadata field...
-     */
+	/**
+	 * Returns the identifier of the {@link DigitalDocument} this instance is
+	 * anchored on.
+	 * <p>
+	 * A {@code DocStruct} can be anchored on another {@code DocStruct} which is
+	 * located in a different {@code DigitalDocument} (different METS file). For
+	 * example, a periodical volume can be anchored on a journal. Both
+	 * {@code DocStruct}s are stored in different {@code DigitalDocument}s and
+	 * are linked by the identifier of the {@code DigitalDocument} that an
+	 * instance is anchored on (in the example, the identifier of the journal).
+	 * The identifier of that other {@code DocStruct} should be stored here, if
+	 * this instance is anchored on it. In the {@code DigitalDocument} that this
+	 * instance is anchored on, the identifier is stored as a {@link Metadata}
+	 * field.
+	 * 
+	 * @return the identifier of the {@code DigitalDocument} this instance is anchored on
+	 */
     public String getReferenceToAnchor() {
         return this.referenceToAnchor;
     }
@@ -273,22 +287,33 @@ public class DocStruct implements Serializable {
         setReferenceToAnchor(in);
     }
 
-    /**
-     * Sets the identifier of the anchor.
-     */
+	/**
+	 * Sets the identifier of the {@link DigitalDocument} this instance is
+	 * anchored on.
+	 * 
+	 * @param in
+	 *            the identifier of the {@code DigitalDocument} this instance is
+	 *            anchored on
+	 * @see #getReferenceToAnchor()
+	 */
     public void setReferenceToAnchor(String in) {
         this.referenceToAnchor = in;
     }
 
-    /**
-     * Gets all Children for a DocStruct instance, which are of a special type, and which have a special type of metadata. E.g. you can get all
-     * Articles wihch have an author. It is possible to use "*" as a parameter value for MetadataType and DocStructType. In this case, the "*" is a
-     * wildcard.
-     *
-     * @param theDocTypeName internal name of the structure type (as String)
-     * @param theMDTypeName internal name of metadata type (as String)
-     * @return List containing DocStruct instances; ; if this instance has no children, null is returned
-     */
+	/**
+	 * Returns all children of this instance which are of a given type and have
+	 * a given type of meta-data attached. For example, you can get all articles
+	 * which have an author. It is possible to use "{@code *}" as wildcard
+	 * character value for {@code theDocTypeName} and {@code theMDTypeName}.
+	 * <p>
+	 * If this instance has no children, null is returned.
+	 *
+	 * @param theDocTypeName
+	 *            name of the structural type
+	 * @param theMDTypeName
+	 *            name of the meta-data type
+	 * @return all children of the given type and with the given meta-data
+	 */
     public List<DocStruct> getAllChildrenByTypeAndMetadataType(String theDocTypeName, String theMDTypeName) {
 
         List<DocStruct> resultList = new LinkedList<DocStruct>();
@@ -359,11 +384,14 @@ public class DocStruct implements Serializable {
         return resultList;
     }
 
-    /**
-     * Sets the local identifier; currently there is no automatic check, if the identifier is used for another docstruct or metadata element.
-     *
-     * @return always true
-     */
+	/**
+	 * Sets the local identifier.
+	 * <p>
+	 * Currently there is no check, if the identifier is used for another
+	 * {@code DocStruct} or {@link Metadata} element.
+	 *
+	 * @return always true
+	 */
     public boolean setIdentifier(String in) {
         this.identifier = in;
 
@@ -374,11 +402,15 @@ public class DocStruct implements Serializable {
         return this.identifier;
     }
 
-    /**
-     * Extracts a list with all Metadata objects which are identifiers (their MetadataType has the identifier flag set).
-     *
-     * @return a List containing Metadata instances; if none were found null is returned.
-     */
+	/**
+	 * Returns all {@code Metadata} objects which are identifiers. Identifiers
+	 * are all {@link Metadata} objects whose {@link MetadataType#isIdentifier}
+	 * flag is set to {@code true}.
+	 * <p>
+	 * If none were found, {@code null} is returned.
+	 *
+	 * @return all {@code Metadata} objects which are identifiers
+	 */
     public List<Metadata> getAllIdentifierMetadata() {
 
         List<Metadata> result = new LinkedList<Metadata>();
@@ -400,18 +432,18 @@ public class DocStruct implements Serializable {
         return result;
     }
 
-    /**
-     * Copies a DocStruct element with all the associated Metadata and Person objects.
-     *
-     * @param cpmetadata copies Metadata if set to true
+	/**
+	 * Creates a copy of this instance, with some or all {@code Metadata} and
+	 * {@code Person} objects attached.
+	 *
+	 * @param cpmetadata
+	 *            if true, copies {@link Metadata} objects
 	 * @param recursive
 	 *            if true, copies all children as well; if null, copies all
 	 *            children which are of the same anchor class; if false, doesn’t
 	 *            copy any children
-     * @return a new DocStruct instance
-     * @throws TypeNotAllowedForParentException
-     * @throws MetadataTypeNotAllowedException
-     */
+	 * @return a new DocStruct instance
+	 */
 	public DocStruct copy(boolean cpmetadata, Boolean recursive) {
 
         DocStruct newStruct = null;
@@ -584,28 +616,28 @@ public class DocStruct implements Serializable {
     }
 
 	/**
-	 * The function copyTruncated() returns a partial copy the structural tree
-	 * with all structural elements down to one level below the given anchor
-	 * class and meta data attached only to elements of the given anchor class.
+	 * Returns a partial copy the structural tree with all structural elements
+	 * down to one level below the given anchor class, and meta-data attached
+	 * only to elements of the given anchor class.
 	 *
 	 * @param anchorClass
 	 *            anchor class below which the copy shall be truncated
-	 * @return a paritial copy of the structure tree
+	 * @return a partial copy of the structure tree
 	 */
 	public DocStruct copyTruncated(String anchorClass) {
 		return copyTruncated(anchorClass, parent);
 	}
 
 	/**
-	 * The function copyTruncated() returns a partial copy the structural tree
-	 * with all structural elements down to one level below the given anchor
-	 * class and meta data attached only to elements of the given anchor class.
+	 * Returns a partial copy the structural tree with all structural elements
+	 * down to one level below the given anchor class, and meta-data attached
+	 * only to elements of the given anchor class.
 	 *
 	 * @param anchorClass
 	 *            anchor class below which the copy shall be truncated
 	 * @param parent
 	 *            parent class of the copy to create
-	 * @return a paritial copy of the structure tree
+	 * @return a partial copy of the structure tree
 	 */
 	private DocStruct copyTruncated(String anchorClass, DocStruct parent) {
 
@@ -767,9 +799,8 @@ public class DocStruct implements Serializable {
 	}
 
 	/**
-	 * Returns whether this is a DocStruct that contains METS pointers himself
-	 * or whose children are, without exception, METS pointers in the same
-	 * sense.
+	 * Returns whether this instance contains METS pointers by itself or whose
+	 * children are, without exception, METS pointers in the same sense.
 	 *
 	 * @return whether this contains only METS pointers
 	 */
@@ -789,12 +820,12 @@ public class DocStruct implements Serializable {
 	}
 
 	/**
-     * Returns all References; parameter must be "to" or "from"; otherwise all references are returned a List is returned, containing "References"
-     * instances.
-     *
-     * @param in can be "to" or "from"
-     * @return List containing Reference objects
-     */
+	 * Returns incoming or outgoing {@code Reference}s.
+	 *
+	 * @param in
+	 *            can be "{@code to}" or "{@code from}"
+	 * @return incoming or outgoing {@code Reference}s
+	 */
     public List<Reference> getAllReferences(String in) {
 
         if (in == null) {
@@ -810,21 +841,25 @@ public class DocStruct implements Serializable {
         return null;
     }
 
-    /**
-     * Retrieves all References from this DocStruct to another—in other words: All {@link Reference}s, in which this DocStruct is the Source.
-     *
-     * @return List containing {@code Reference} objects
-     */
+	/**
+	 * Returns all references that are directed from this instance to another.
+	 * This are all {@code Reference}s in which this instance is the source.
+	 *
+	 * @return all outgoing {@code Reference}s
+	 */
     public List<Reference> getAllToReferences() {
         return this.docStructRefsTo;
     }
 
-    /**
-     * Returns all References (just to-References from this DocStruct to another) of a specific type.
-     *
-     * @param theType Type of the reference; e.g. "logical_physical" for references from logical structures to physical ones
-     * @return List containing {@code Reference} objects
-     */
+	/**
+	 * Returns all references that are directed from this instance to another
+	 * and have a given type. For example, the type "{@code logical_physical}"
+	 * refers to references from logical structures to physical structures.
+	 *
+	 * @param theType
+	 *            type of the references to return
+	 * @return all outgoing {@code Reference}s of the given type
+	 */
     public List<Reference> getAllToReferences(String theType) {
 
         List<Reference> refs = new LinkedList<Reference>();
@@ -844,21 +879,24 @@ public class DocStruct implements Serializable {
         return refs;
     }
 
-    /**
-     * Retrieves all References from this DocStruct from another—in other words: All References, in which this DocStruct is the target.
-     *
-     * @return List containing {@code Reference} objects
-     */
+	/**
+	 * Returns all references that are directed from another instance to this
+	 * instance. This are all {@code Reference}s in which this instance is the
+	 * target.
+	 *
+	 * @return all incoming {@code Reference}s
+	 */
     public List<Reference> getAllFromReferences() {
         return this.docStructRefsFrom;
     }
 
-    /**
-     * Returns all References (just from-References from this DocStruct to another) of a specific type.
-     *
-     * @param theType Type of the reference; e.g. "logical_physical" for references from logical structures to physical ones
-     * @return List containing {@code Reference} objects
-     */
+	/**
+	 * Returns all references that are directed from another instance to this
+	 * instance and have a given type. For example, the type "{@code logical_physical}"
+	 * refers to references from logical structures to physical structures.
+	 *
+	 * @return all incoming {@code Reference}s of the given type
+	 */
     public List<Reference> getAllFromReferences(String theType) {
 
         List<Reference> refs = new LinkedList<Reference>();
@@ -879,7 +917,7 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Sets the parent; usually not necessary as the parent is set automatically, if a DocStruct instance is added as a child.
+     * Sets the parent. Usually, setting the parent is not necessary as the parent is set automatically when an instance is added as a child.
      *
      * @return true, if parent was set successfully
      */
@@ -899,15 +937,22 @@ public class DocStruct implements Serializable {
         return true;
     }
 
+	/**
+	 * Returns the parent of this instance. Returns {@code null} if this
+	 * instance is the root of the tree.
+	 * 
+	 * @return the parent, if any
+	 */
     public DocStruct getParent() {
         return this.parent;
     }
 
-    /**
-     * Gets all MetadataGroups for this DocStruct instance.
-     *
-     * @return List containing MetadataGroup instances; if no MetadataGroup is available, null is returned.
-     */
+	/**
+	 * Returns all meta-data groups from this instance. If no
+	 * {@link MetadataGroup} is available, null is returned.
+	 *
+	 * @return all meta-data groups from this instance
+	 */
     public List<MetadataGroup> getAllMetadataGroups() {
 
         if (this.allMetadataGroups == null || this.allMetadataGroups.isEmpty()) {
@@ -917,24 +962,27 @@ public class DocStruct implements Serializable {
         return this.allMetadataGroups;
     }
 
-    /**
-     * Allows to set all MetadataGroup. The MetadataGroup objects are contained in a List. This method sets all MetadataGroup; they are NOT added.
-     * MetadataGroup which is already available will be overwritten.
-     *
-     * @param inList List containing MetadataGroup objects.
-     * @return always true
-     */
+	/**
+	 * Replaces all meta-data groups on this instance. {@link MetadataGroup}s
+	 * which are already members of this instance will be overwritten, they are
+	 * not added. The meta-data groups are contained in a List.
+	 *
+	 * @param inList
+	 *            list of meta-data groups to set
+	 * @return always true
+	 */
     public boolean setAllMetadataGroups(List<MetadataGroup> inList) {
         this.allMetadataGroups = inList;
 
         return true;
     }
 
-    /**
-     * Gets all Metadata for this DocStruct instance.
-     *
-     * @return List containing Metadata instances; if no metadata is available, null is returned.
-     */
+	/**
+	 * Returns all meta-data from this instance. If no {@link Metadata} is
+	 * available, {@code null} is returned.
+	 *
+	 * @return all meta-data from this instance
+	 */
     public List<Metadata> getAllMetadata() {
 
         if (this.allMetadata == null || this.allMetadata.isEmpty()) {
@@ -944,13 +992,15 @@ public class DocStruct implements Serializable {
         return this.allMetadata;
     }
 
-    /**
-     * Allows to set all Metadata. The Metadata objects are contained in a List. This method sets all Metadata; they are NOT added. Metadata which is
-     * already available will be overwritten.
-     *
-     * @param inList List containing Metadata objects.
-     * @return always true
-     */
+	/**
+	 * Replaces all meta-data on this instance. {@link Metadata} which is
+	 * already members of this instance will be overwritten, the elements passed
+	 * in are not added. The meta-data is contained in a List.
+	 *
+	 * @param inList
+	 *            list of meta-data to set
+	 * @return always true
+	 */
     public boolean setAllMetadata(List<Metadata> inList) {
         this.allMetadata = inList;
 
@@ -958,9 +1008,9 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Retrieves all ContentFile objects, which belong to this instance.
+     * Returns all content files from this instance. If no {@link ContentFile} is available, {@code null} is returned.
      *
-     * @return List containing ContentFile objects; if no content files are available null is returned.
+     * @return the content files from this instance
      */
     public List<ContentFile> getAllContentFiles() {
 
@@ -981,11 +1031,13 @@ public class DocStruct implements Serializable {
         return contentFiles;
     }
 
-    /**
-     * This method checks, if an instance of the DocStruct has a Metadata- or Person object of the given type.
-     *
-     * @return true, if available; otherwise false
-     */
+	/**
+	 * Returns whether this instance has a meta-data group of the given type.
+	 *
+	 * @param inMDT
+	 *            type to look for
+	 * @return whether this has an object of that type
+	 */
     public boolean hasMetadataGroupType(MetadataGroupType inMDT) {
 
         // Check metadata.
@@ -1002,11 +1054,14 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * This method checks, if an instance of the DocStruct has a Metadata- or Person object of the given type.
-     *
-     * @return true, if available; otherwise false
-     */
+	/**
+	 * Returns whether this instance has a meta-data or person object of the
+	 * given type.
+	 *
+	 * @param inMDT
+	 *            type to look for
+	 * @return whether this has an object of that type
+	 */
     public boolean hasMetadataType(MetadataType inMDT) {
 
         // Check metadata.
@@ -1034,21 +1089,23 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * Retrieves all References to ContentFiles.
-     *
-     * @return List containing ContentFileReference objects
-     * @see ContentFileReference
-     **/
+	/**
+	 * Returns all references to content files.
+	 *
+	 * @return all references to content files
+	 * @see ContentFileReference
+	 */
     public List<ContentFileReference> getAllContentFileReferences() {
         return this.contentFileReferences;
     }
 
     /**
-     * Adds a new ContentFileReference to this DocStruct and adds the file to the FileSet.
+     * Adds a new reference to a content file, and adds the content file to the file set.
      *
-     * @param theFile ContentFile object to be added
+     * @param theFile content file to add
      * @return always true
+     * @see ContentFile
+     * @see ContentFileReference
      * @see FileSet
      */
     public void addContentFile(ContentFile theFile) {
@@ -1066,7 +1123,6 @@ public class DocStruct implements Serializable {
         fs.addFile(theFile);
 
         if (this.contentFileReferences == null) {
-            // Re-added this line, maybe was it's deletion an error?
             this.contentFileReferences = new LinkedList<ContentFileReference>();
         }
         // Now we can add the reference to the ContentFile, if the reference is
@@ -1080,15 +1136,19 @@ public class DocStruct implements Serializable {
 
     }
 
-    /**
-     * Adds a new ContentFile object to this DocStruct object; there is no check, if a ContentFile is already linked to this DocStruct.
-     * <p>
-     * Before adding ContentFile objects to a DocStruct, make sure they are already added to the FileSet.
-     *
-     * @param inCF ContentFile object to be added
-     * @return always true
-     * @see FileSet
-     */
+	/**
+	 * Adds an area reference to a content file to this instance. There is no
+	 * check, if a {@link ContentFile} is already linked to this instance.
+	 * Before adding the content file, make sure it has been added to the
+	 * {@link FileSet}.
+	 *
+	 * @param inCF
+	 *            file reference to add
+	 * @param inArea
+	 *            selected area in the file
+	 * @return always true
+	 * @see ContentFileArea
+	 */
     public void addContentFile(ContentFile inCF, ContentFileArea inArea) {
 
         if (this.contentFileReferences == null) {
@@ -1114,15 +1174,18 @@ public class DocStruct implements Serializable {
 
     }
 
-    /**
-     * Removes links between a ContentFile object and this DocStruct object. If a single ContentFile is referenced more than once from this DocStruct
-     * all links are removed.
-     * For that reason all attached ContentFileReference objects are searched.
-     *
-     * @throws ContentFileNotLinkedException if ContentFile is not linked to this DocStruct
-     * @param inCF to be removed
-     * @return true, if succeeded; otherwise false
-     */
+	/**
+	 * Removes all links from this instance to a given content file. If the
+	 * given {@link ContentFile} is referenced more than once from this
+	 * instance, all links are removed. For that reason, all attached
+	 * {@link ContentFileReference} objects are searched.
+	 *
+	 * @param theContentFile
+	 *            the content file to be removed
+	 * @return true, if successful
+	 * @throws ContentFileNotLinkedException
+	 *             if the {@code ContentFile} is not linked to this instance
+	 */
     public boolean removeContentFile(ContentFile theContentFile) throws ContentFileNotLinkedException {
 
         boolean removed = false;
@@ -1153,16 +1216,23 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Adds a new reference to this DocStruct instance. References are always linked both ways. Both docstruct instances are storing a reference to
-     * the other DocStruct instance. This methods stores the To-Reference. The DocStruct instance given as a parameter is the target of the Reference
-     * (to which is linked to). The appropriate From-Reference (from the target to the source—this DocStruct instance) is set automatically. Each
-     * Reference can contain a type (string).
-     *
-     * @param inDocStruct Target of the Reference
-     * @param theType String containing any information about the type of reference
-     * @return a newly created References object containing information about linking both DocStructs
-     */
+	/**
+	 * Adds an outgoing reference to another {@code DocStruct} instance.
+	 * {@link Reference}s are always linked both ways. Both {@code DocStruct}
+	 * instances are storing a reference to the other {@code DocStruct}
+	 * instance. This methods stores the outgoing reference. The
+	 * {@code DocStruct} instance given as a parameter is the target of the
+	 * Reference (to which is linked). The corresponding back-reference (from
+	 * the target to the source—this instance) is set automatically. Each
+	 * reference can contain a type.
+	 *
+	 * @param inDocStruct
+	 *            target to link to
+	 * @param theType
+	 *            the type of reference
+	 * @return a newly created References object containing information about
+	 *         linking both DocStructs
+	 */
     public Reference addReferenceTo(DocStruct inDocStruct, String theType) {
 
         Reference ref = new Reference();
@@ -1174,14 +1244,20 @@ public class DocStruct implements Serializable {
         return ref;
     }
 
-    /**
-     * Adds a From-Reference. The current DocStruct instance is the target of the Reference. The appropriate To-Reference is added automatically to
-     * the Source-DocStruct. For more detailed information, see addReferenceTo method.
-     *
-     * @param inDocStruct DocStruct object, which is the source of the reference.
-     * @param theType any kind of linking information
-     * @return a newly created References object containing information about linking both DocStructs
-     */
+	/**
+	 * Adds an incoming reference from another {@code DocStruct} instance. The
+	 * current instance is the target of the {@link Reference}. The
+	 * corresponding forward reference is added automatically to the source
+	 * {@code DocStruct}. For more details, see
+	 * {@link #addReferenceTo(DocStruct, String)} method.
+	 *
+	 * @param inDocStruct
+	 *            DocStruct object which is the source of the reference
+	 * @param theType
+	 *            linking information
+	 * @return a newly created References object containing information about
+	 *         linking both DocStructs
+	 */
     public Reference addReferenceFrom(DocStruct inDocStruct, String theType) {
 
         Reference ref = new Reference();
@@ -1193,13 +1269,15 @@ public class DocStruct implements Serializable {
         return ref;
     }
 
-    /**
-     * Removes a To-Reference (a reference to another docstruct instance). The corresponding From-Reference in the Target-Docstruct object is also
-     * deleted. The References object is not used anymore and will be deleted at the next garbage collection.
-     *
-     * @param inStruct target-DocStruct
-     * @return true, if successful
-     */
+	/**
+	 * Removes an outgoing reference. An outgoing reference is a reference to
+	 * another {@code DocStruct} instance. The corresponding incoming
+	 * {@code Reference} in the target {@code DocStruct} is also deleted.
+	 *
+	 * @param target
+	 *            {@code DocStruct}
+	 * @return true, if successful
+	 */
     public boolean removeReferenceTo(DocStruct inStruct) {
 
         List<Reference> ll = new LinkedList<Reference>(this.docStructRefsTo);
@@ -1220,13 +1298,16 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Removes a From-Reference (a reference from another docstruct instance to this one). The corresponding To-Reference in this DocStruct
-     * (source-Docstruct object) is also deleted. The References object is not used anymore and will be deleted at the next garbage collection.
-     *
-     * @param inStruct Source-DocStruct
-     * @return true, if successful
-     */
+	/**
+	 * Removes an incoming reference. An incoming {@link Reference} is a
+	 * reference from another {@code DocStruct} to this instance. The
+	 * corresponding outgoing reference in the source {@code DocStruct} object
+	 * is also deleted.
+	 *
+	 * @param inStruct
+	 *            source {@code DocStruct}
+	 * @return true, if successful
+	 */
     public boolean removeReferenceFrom(DocStruct inStruct) {
 
         List<Reference> ll = new LinkedList<Reference>(this.docStructRefsFrom);
@@ -1247,24 +1328,34 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Adds a metadata object to this instance; The method checks, if it is allowed to add one (based on the configuration). If so, the object is
-     * added and returns true; otherwise it returns false.
-     * <p>
-     * The Metadata object must already include all necessary information as MetadataType and value.
-     * <p>
-     * For internal reasons this method changes the MetadataType object against a local copy, which is retrieved from the appropriate DocStructType of
-     * this DocStruct instance. The internal name of both MetadataType objects must be identical. If a local copy cannot be found (which means, the
-     * metadata type is NOT valid for this kind of DocStruct object), false is returned.
-     *
-     * @param theMetadataGroup Metadata object to be added.
-     * @return TRUE if metadata was added successfully, FALSE otherwise.
-     * @throws MetadataTypeNotAllowedException If the DocStructType of this DocStruct instance does not allow the MetadataType or if the maximum
-     *             number of Metadata (of this type) is already available.
-     * @throws DocStructHasNoTypeException If no DocStruct Type is set for the DocStruct object; for this reason the metadata can't be added, because
-     *             we cannot check, wether if the metadata type is allowed or not.
-     * @see Metadata
-     */
+	/**
+	 * Adds a meta-data group to this instance. The method checks, if it is
+	 * allowed to add it, based on the configuration. If so, the object is added
+	 * and the method returns {@code true}, otherwise it returns {@code false}.
+	 * The {@link MetadataGroup} object must already include all necessary
+	 * information, such as {@link MetadataGroupType} and value.
+	 * <p>
+	 * For internal reasons, this method replaces the {@code MetadataGroupType}
+	 * object by a local copy, which is retrieved from the {@link DocStructType}
+	 * of this instance. The internal name of both {@code MetadataGroupType}
+	 * objects will still be identical afterwards. If a local copy cannot be
+	 * found, which means that the meta-data type is invalid on this instance,
+	 * false is returned.
+	 *
+	 * @param theMetadataGroup
+	 *            meta-data group to be added
+	 * @return true, if the meta-data group was successfully added, false
+	 *         otherwise
+	 * @throws MetadataTypeNotAllowedException
+	 *             if the {@code DocStructType} of this instance does not allow
+	 *             the {@code MetadataGroupType}, or if the maximum number of
+	 *             meta-data groups of this type has already been added
+	 * @throws DocStructHasNoTypeException
+	 *             if no {@code DocStructType} is set on this instance. In this
+	 *             case, the meta-data group cannot be added because we cannot
+	 *             check whether the the meta-data group type is allowed or not.
+	 * @see MetadataGroup
+	 */
     public boolean addMetadataGroup(MetadataGroup theMetadataGroup) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 
         MetadataGroupType inMdType = theMetadataGroup.getType();
@@ -1350,18 +1441,25 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
-     * (according to configuration), the metadata is NOT removed. By setting the second parameter to true, this behaviour can be influenced. This can
-     * be necessary e.g. when programming user interfaces etc.
-     * <p>
-     * If you want to remove Metadata of a specific type temporarily (e.g. to replace it), use the changeMetadata method instead.
-     *
-     * @param theMd Metadata object which should be removed
-     * @param force set to true, the Metadata is removed even if it is not allowed to. You can create not validateable documents.
-     * @return true, if data can be removed; otherwise false
-     * @see #canMetadataBeRemoved
-     */
+	/**
+	 * Removes a meta-data group from this instance. If (according to
+	 * configuration) at least one meta-data group of this type is required on
+	 * this instance, the meta-data group will <i>not be removed</i>. By setting
+	 * the parameter {@code force} to {@code true}, this behaviour can be
+	 * overridden. Thus, you can create documents that cannot be validated.
+	 * <p>
+	 * If you want to remove a meta-data group just to replace it, use the
+	 * method {{@link #changeMetadataGroup(MetadataGroup, MetadataGroup)}
+	 * instead.
+	 *
+	 * @param theMd
+	 *            meta-data group which should be removed
+	 * @param force
+	 *            if true, the meta-data group is removed even if the count
+	 *            falls below the required amount
+	 * @return true, if the meta-data group was removed, false otherwise
+	 * @see #canMetadataGroupBeRemoved(MetadataGroupType)
+	 */
     public boolean removeMetadataGroup(MetadataGroup theMd, boolean force) {
 
         MetadataGroupType inMdType;
@@ -1393,33 +1491,40 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
-     * (according to configuration), the metadata is NOT removed.
-     * <p>
-     * If you want to remove Metadata of a specific type temporarily (e.g. to replace it), use the changeMetadata method instead.
-     *
-     * @param inMD Metadata object which should be removed
-     * @return true, if data can be removed; otherwise false
-     * @see #canMetadataBeRemoved
-     */
+	/**
+	 * Removes a meta-data group from this instance. If (according to
+	 * configuration) at least one meta-data group of this type is required on
+	 * this instance, the meta-data group will <i>not be removed</i>.
+	 * <p>
+	 * If you want to remove a meta-data group just to replace it, use the
+	 * method {{@link #changeMetadataGroup(MetadataGroup, MetadataGroup)}
+	 * instead.
+	 *
+	 * @param theMd
+	 *            meta-data group which should be removed
+	 * @return true, if the meta-data group was removed, false otherwise
+	 * @see #canMetadataGroupBeRemoved(MetadataGroupType)
+	 */
     public boolean removeMetadataGroup(MetadataGroup inMD) {
-        // Just calls removeMetadata with force set to false.
         return removeMetadataGroup(inMD, false);
     }
 
-    /**
-     * Exchanges a Metadata object against an old one. Only metadata objects of the same type (of the same MetadataType object) can be exchanged. The
-     * Metadata-Type object of the new Metadata object is copied locally (as it is done, when adding metadata).
-     * <p>
-     * OLD COMMENT? : exchanges two metadata objects; can be used instead of doing a remove and an add later on. Must be used, if a Metadata object
-     * cannot be removed because of DTD (there must always be at least one object). Therefore we can only change Metadata objects of the same
-     * MetadataType.
-     *
-     * @param theOldMd Metadata object which should be replaced.
-     * @param theNewMd New Metadata object.
-     * @return True, if Metadata object could be exchanged; otherwise false.
-     **************************************************************************/
+	/**
+	 * Replaces a meta-data group. Only {@link MetadataGroup}s of the same
+	 * {@link MetadataGroupType} can be exchanged. This method can be used
+	 * instead of doing a remove and a later add. This method must be used, if a
+	 * meta-data group cannot be removed because the {@link Preferences} state
+	 * that there must always be at least one.
+	 * <p>
+	 * The meta-data group type of the new meta-data group is copied locally, as
+	 * it is done in {@link #addMetadataGroup(MetadataGroup)}.
+	 *
+	 * @param theOldMd
+	 *            meta-data group which shall be replaced
+	 * @param theNewMd
+	 *            new meta-data group
+	 * @return true, if the meta-data group could be replaced
+	 */
     public boolean changeMetadataGroup(MetadataGroup theOldMd, MetadataGroup theNewMd) {
 
         MetadataGroupType oldMdt;
@@ -1463,13 +1568,12 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Retrieves all Metadata object, which belong to this DocStruct and have a special type. Can be used to get all titles, authors etc... includes
-     * Persons!
+     * Returns all meta-data groups of a given type.
      * <p>
-     * PLEASE NOTE This method no longer returns NULL, if no MetadataTypes are available! An empty list is returned now!
+     * If no {@link MetadataGroup}s are available, an empty list is returned.
      *
      * @param inType MetadataType we are looking for.
-     * @return List containing Metadata objects; if no metadata ojects are available, an empty list is returned.
+     * @return all meta-data groups of that type
      */
     public List<MetadataGroup> getAllMetadataGroupsByType(MetadataGroupType inType) {
 
@@ -1487,24 +1591,34 @@ public class DocStruct implements Serializable {
         return resultList;
     }
 
-    /**
-     * Adds a metadata object to this instance; The method checks, if it is allowed to add one (based on the configuration). If so, the object is
-     * added and returns true; otherwise it returns false.
-     * <p>
-     * The Metadata object must already include all necessary information as MetadataType and value.
-     * <p>
-     * For internal reasons this method changes the MetadataType object against a local copy, which is retrieved from the appropriate DocStructType of
-     * this DocStruct instance. The internal name of both MetadataType objects must be identical. If a local copy cannot be found (which means, the
-     * metadata type is NOT valid for this kind of DocStruct object), false is returned.
-     *
-     * @param theMetadata Metadata object to be added.
-     * @return TRUE if metadata was added successfully, FALSE otherwise.
-     * @throws MetadataTypeNotAllowedException If the DocStructType of this DocStruct instance does not allow the MetadataType or if the maximum
-     *             number of Metadata (of this type) is already available.
-     * @throws DocStructHasNoTypeException If no DocStruct Type is set for the DocStruct object; for this reason the metadata can't be added, because
-     *             we cannot check, wether if the metadata type is allowed or not.
-     * @see Metadata
-     */
+	/**
+	 * Adds a meta-data object to this instance. The method checks, if it is
+	 * allowed to add it, based on the configuration. If so, the object is added
+	 * and the method returns {@code true}, otherwise it returns {@code false}.
+	 * <p>
+	 * The {@link Metadata} object must already include all necessary
+	 * information, such as {@link MetadataType} and value.
+	 * <p>
+	 * For internal reasons, this method replaces the {@code MetadataType}
+	 * object by a local copy, which is retrieved from the {@link DocStructType}
+	 * of this instance. The internal name of both {@code MetadataType} objects
+	 * will still be identical afterwards. If a local copy cannot be found,
+	 * which means that the meta-data type is invalid on this instance, false is
+	 * returned.
+	 *
+	 * @param theMetadata
+	 *            meta-data object to add
+	 * @return true, if the meta-data object could be added
+	 * @throws MetadataTypeNotAllowedException
+	 *             if this instance does not allow the meta-data type to be
+	 *             added, or if the maximum allowed number of meta-data of this
+	 *             type has already been added
+	 * @throws DocStructHasNoTypeException
+	 *             if no {@code DocStructType} is set on this instance. In this
+	 *             case, the meta-data element cannot be added because we cannot
+	 *             check whether the the meta-data type is allowed or not.
+	 * @see Metadata
+	 */
     public boolean addMetadata(Metadata theMetadata) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 
         MetadataType inMdType = theMetadata.getType();
@@ -1590,18 +1704,24 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
-     * (according to configuration), the metadata is NOT removed. By setting the second parameter to true, this behaviour can be influenced. This can
-     * be necessary e.g. when programming user interfaces etc.
-     * <p>
-     * If you want to remove Metadata of a specific type temporarily (e.g. to replace it), use the changeMetadata method instead.
-     *
-     * @param theMd Metadata object which should be removed
-     * @param force set to true, the Metadata is removed even if it is not allowed to. You can create not validateable documents.
-     * @return true, if data can be removed; otherwise false
-     * @see #canMetadataBeRemoved
-     */
+	/**
+	 * Removes a meta-datum from this instance. If (according to configuration)
+	 * at least one {@link Metadata} of this type is required on this instance,
+	 * the meta-datum will <i>not be removed</i>. By setting the parameter
+	 * {@code force} to {@code true}, this behaviour can be overridden. Thus,
+	 * you can create documents that cannot be validated.
+	 * <p>
+	 * If you want to remove a meta-data group just to replace it, use the
+	 * method {@link #changeMetadata(Metadata, Metadata)} instead.
+	 *
+	 * @param theMd
+	 *            meta-datum which should be removed
+	 * @param force
+	 *            if true, the meta-datum is removed even if the count falls
+	 *            below the required amount
+	 * @return true, if the meta-datum removed, false otherwise
+	 * @see #canMetadataBeRemoved(MetadataType)
+	 */
     public boolean removeMetadata(Metadata theMd, boolean force) {
 
         MetadataType inMdType;
@@ -1633,33 +1753,39 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
-     * (according to configuration), the metadata is NOT removed.
-     * <p>
-     * If you want to remove Metadata of a specific type temporarily (e.g. to replace it), use the changeMetadata method instead.
-     *
-     * @param inMD Metadata object which should be removed
-     * @return true, if data can be removed; otherwise false
-     * @see #canMetadataBeRemoved
-     */
+	/**
+	 * Removes a meta-datum from this instance. If (according to configuration)
+	 * at least one {@link Metadata} of this type is required on this instance,
+	 * the meta-datum will <i>not be removed</i>.
+	 * <p>
+	 * If you want to remove a meta-data group just to replace it, use the
+	 * method {@link #changeMetadata(Metadata, Metadata)} instead.
+	 *
+	 * @param theMd
+	 *            meta-datum which should be removed
+	 * @return true, if the meta-datum removed, false otherwise
+	 * @see #canMetadataBeRemoved(MetadataType)
+	 */
     public boolean removeMetadata(Metadata inMD) {
-        // Just calls removeMetadata with force set to false.
         return removeMetadata(inMD, false);
     }
 
-    /**
-     * Exchanges a Metadata object against an old one. Only metadata objects of the same type (of the same MetadataType object) can be exchanged. The
-     * Metadata-Type object of the new Metadata object is copied locally (as it is done, when adding metadata).
-     * <p>
-     * OLD COMMENT? : exchanges two metadata objects; can be used instead of doing a remove and an add later on. Must be used, if a Metadata object
-     * cannot be removed because of DTD (there must always be at least one object). Therefore we can only change Metadata objects of the same
-     * MetadataType.
-     *
-     * @param theOldMd Metadata object which should be replaced.
-     * @param theNewMd New Metadata object.
-     * @return True, if Metadata object could be exchanged; otherwise false.
-     */
+	/**
+	 * Replaces a meta-datum by another. Only {@link Metadata} of the same
+	 * {@link MetadataType} can be exchanged. This method can be used
+	 * instead of doing a remove and a later add. This method must be used, if a
+	 * meta-datum cannot be removed because the {@link Preferences} state
+	 * that there must always be at least one.
+	 * <p>
+	 * The meta-data type of the new meta-datum is copied locally, as
+	 * it is done in {@link #addMetadata(Metadata)}.
+	 *
+	 * @param theOldMd
+	 *            meta-data group which shall be replaced
+	 * @param theNewMd
+	 *            new meta-data group
+	 * @return true, if the meta-data group could be replaced
+	 */
     public boolean changeMetadata(Metadata theOldMd, Metadata theNewMd) {
 
         MetadataType oldMdt;
@@ -1702,15 +1828,16 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Retrieves all Metadata object, which belong to this DocStruct and have a special type. Can be used to get all titles, authors etc... includes
-     * Persons!
-     * <p>
-     * PLEASE NOTE This method no longer returns NULL, if no MetadataTypes are available! An empty list is returned now!
-     *
-     * @param inType MetadataType we are looking for.
-     * @return List containing Metadata objects; if no metadata ojects are available, an empty list is returned.
-     */
+	/**
+	 * Returns all meta-data of a given type, including persons. Can be used to get all titles,
+	 * authors, etc.
+	 * <p>
+	 * If no {@link MetadataGroup}s are available, an empty list is returned.
+	 *
+	 * @param inType
+	 *            meta-data type to look for
+	 * @return all meta-data of the given type
+	 */
     public List<? extends Metadata> getAllMetadataByType(MetadataType inType) {
 
         List<Metadata> resultList = new LinkedList<Metadata>();
@@ -1736,12 +1863,15 @@ public class DocStruct implements Serializable {
         return resultList;
     }
 
-    /**
-     * Retrieves all Person object, which belong to this DocStruct and have a special type. Persons only!
-     *
-     * @param inType MetadataType we are looking for.
-     * @return List containing Metadata objects; if no metadata ojects are available, null is returned.
-     */
+	/**
+	 * Returns all persons of a given type. {@link Person}s only.
+	 * <p>
+	 * If no {@code Person} objects are available, null is returned.
+	 *
+	 * @param inType
+	 *            meta-data type to look for
+	 * @return all meta-data of the given type
+	 */
     public List<Person> getAllPersonsByType(MetadataType inType) {
 
         List<Person> resultList = new LinkedList<Person>();
@@ -1767,12 +1897,13 @@ public class DocStruct implements Serializable {
         return resultList;
     }
 
-    /**
-     * Gets all Metadata for the current DocStruct, which shall be displayed, what includes all metadata that are not starting with the
-     * HIDDEN_METADATA_CHAR.
-     *
-     * @return List containing MetadataType objects
-     */
+	/**
+	 * Returns all meta-data for this instance that shall be displayed. This
+	 * excludes all {@link Metadata} whose {@link MetadataType} starts with the
+	 * {@link #HIDDEN_METADATA_CHAR}.
+	 *
+	 * @return all meta-data that shall be displayed
+	 */
     public List<Metadata> getAllVisibleMetadata() {
 
         // Start with the list of all metadata.
@@ -1796,14 +1927,17 @@ public class DocStruct implements Serializable {
         return result;
     }
 
-    /**
-     * Gets all MetadataTypes, which shall ALWAYS be displayed, even though they have no value.
-     * <p>
-     * Includes all metadata with attributes defaultDisplay="true" in the prefs. Hidden metadata, which start with the HIDDEN_METADATA_CHAR, will not
-     * be included.
-     *
-     * @return List containing MetadataType objects
-     */
+	/**
+	 * Returns all meta-data group types that shall be displayed even if they
+	 * have no value.
+	 * <p>
+	 * Comprises all meta-data group types whose attribute
+	 * {@code defaultDisplay="true"} is set in the {@link Preferences}. Hidden
+	 * meta-data groups, whose {@link MetadataGroupType} starts with the
+	 * {@link #HIDDEN_METADATA_CHAR}, will not be included.
+	 *
+	 * @return all meta-data group types that shall always be displayed
+	 */
     public List<MetadataGroupType> getDefaultDisplayMetadataGroupTypes() {
 
         List<MetadataGroupType> result = new LinkedList<MetadataGroupType>();
@@ -1835,12 +1969,19 @@ public class DocStruct implements Serializable {
         return result;
     }
 
-    /**
-     * See getDefaultDisplayMetadataTypes().
-     *
-     * @deprecated
-     * @return List containing MetadataType objects
-     */
+	/**
+	 * Returns all meta-data group types that shall be displayed even if they
+	 * have no value.
+	 * <p>
+	 * Includes all meta-data group with attribute {@code defaultDisplay="true"}
+	 * in the {@link Preferences}. Hidden meta-data, whose
+	 * {@link MetadataGroupType} starts with the {@link #HIDDEN_METADATA_CHAR},
+	 * will not be included.
+	 *
+	 * @return all meta-data group types that shall always be displayed
+	 * @deprecated This is a misnomer and will be deleted. Use
+	 *             {@link #getDefaultDisplayMetadataGroupTypes()}.
+	 */
     @Deprecated
     public List<MetadataGroupType> getDisplayMetadataGroupTypes() {
         return getDefaultDisplayMetadataGroupTypes();
@@ -1864,14 +2005,17 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * Gets all MetadataTypes, which shall ALWAYS be displayed, even though they have no value.
-     * <p>
-     * Includes all metadata with attributes defaultDisplay="true" in the prefs. Hidden metadata, which start with the HIDDEN_METADATA_CHAR, will not
-     * be included.
-     *
-     * @return List containing MetadataType objects
-     */
+	/**
+	 * Returns all meta-data types that shall be displayed even if they have no
+	 * value.
+	 * <p>
+	 * Comprises all meta-data types whose attribute
+	 * {@code defaultDisplay="true"} is set in the {@link Preferences}. Hidden
+	 * meta-data, whose {@link MetadataType} starts with the
+	 * {@link #HIDDEN_METADATA_CHAR}, will not be included.
+	 *
+	 * @return all meta-data group types that shall always be displayed
+	 */
     public List<MetadataType> getDefaultDisplayMetadataTypes() {
 
         List<MetadataType> result = new LinkedList<MetadataType>();
@@ -1903,12 +2047,19 @@ public class DocStruct implements Serializable {
         return result;
     }
 
-    /**
-     * See getDefaultDisplayMetadataTypes().
-     *
-     * @deprecated
-     * @return List containing MetadataType objects
-     */
+	/**
+	 * Returns all meta-data types that shall be displayed even if they have no
+	 * value.
+	 * <p>
+	 * Comprises all meta-data types whose attribute
+	 * {@code defaultDisplay="true"} is set in the {@link Preferences}. Hidden
+	 * meta-data, whose {@link MetadataType} starts with the
+	 * {@link #HIDDEN_METADATA_CHAR}, will not be included.
+	 *
+	 * @return all meta-data group types that shall always be displayed
+	 * @deprecated This is a misnomer and will be deleted. Use
+	 *             {@link #getDefaultDisplayMetadataTypes()}.
+	 */
     @Deprecated
     public List<MetadataType> getDisplayMetadataTypes() {
         return getDefaultDisplayMetadataTypes();
@@ -1945,16 +2096,18 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * Gives number of Metadata elements belonging to this DocStruct of a specific type. The type must be given by the unique (internal) name as it is
-     * retrievable from MetadataType's getName method.
-     * <p>
-     * This method does not only get the number of Metadata elements, but also the number of person objects belonging to one {@code DocStruct}
-     * object.
-     *
-     * @param inTypeName Internal name of object as String
-     * @return Number of metadata as integer
-     */
+	/**
+	 * Returns number of meta-data elements of the given type associated with
+	 * this instance. The type must be given as its internal name, as it is
+	 * returned from {@link MetadataType#getName()}.
+	 * <p>
+	 * This method does not only get the number of {@link Metadata} elements,
+	 * but also the number of {@link Person} objects belonging to this instance.
+	 *
+	 * @param inTypeName
+	 *            meta-data type name
+	 * @return number of meta-data elements
+	 */
     public int countMDofthisType(String inTypeName) {
 
         MetadataType testtype;
@@ -1994,14 +2147,18 @@ public class DocStruct implements Serializable {
         return counter;
     }
 
-    /**
-     * Get all metadatatypes, which can be added to a DocStruct. This method considers already added metadata (and persons!); e.g. metadata types
-     * which can only be available once cannot be added a second time. Therefore this metadata type will not be included in this list.
-     * <p>
-     * "Internal" metadata, which start with the HIDDEN_METADATA_CHAR, will also not be included.
-     *
-     * @return List containing MetadataType objects.
-     */
+	/**
+	 * Returns all meta-data group types that can be added to this instance and
+	 * shall be visible to the user. This method considers already added
+	 * {@link MetadataGroup}s, so meta-data group types which can only be
+	 * available once cannot be added a second time. Therefore these
+	 * {@link MetadataGroupType}s will not be included in this list.
+	 * <p>
+	 * Internal meta-data groups, whose {@code MetadataGroupType} starts with
+	 * the {@link #HIDDEN_METADATA_CHAR}, will also not be included.
+	 *
+	 * @return all meta-data group types that users can add to this instance
+	 */
     public List<MetadataGroupType> getAddableMetadataGroupTypes() {
 
         // If e.g. the topstruct has no Metadata, or something...
@@ -2046,6 +2203,18 @@ public class DocStruct implements Serializable {
         return addableMetadata;
     }
 
+	/**
+	 * Returns all meta-data group types that can be added to this instance.
+	 * Includes meta-data groups, whose {@code MetadataGroupType} starts with
+	 * the {@link #HIDDEN_METADATA_CHAR}.
+	 * <p>
+	 * This method considers already added {@link MetadataGroup}s, so meta-data
+	 * group types which can only be available once cannot be added a second
+	 * time. Therefore these {@link MetadataGroupType}s will not be included in
+	 * this list.
+	 *
+	 * @return all meta-data group types that can be added to this instance
+	 */
     public List<MetadataGroupType> getPossibleMetadataGroupTypes() {
         // If e.g. the topstruct has no Metadata, or something...
         if (this.type == null) {
@@ -2060,9 +2229,6 @@ public class DocStruct implements Serializable {
         // if they are still addable.
         for (MetadataGroupType mdt : allTypes) {
 
-            // Metadata beginning with the HIDDEN_METADATA_CHAR are internal
-            // metadata are not user addable.
-            // if (!mdt.getName().startsWith(HIDDEN_METADATA_CHAR)) {
             String maxnumber = this.type.getNumberOfMetadataGroups(mdt);
 
             // Metadata can only be available once; so we have to check if
@@ -2089,14 +2255,19 @@ public class DocStruct implements Serializable {
         return addableMetadata;
     }
 
-    /**
-     * Get all metadatatypes, which can be added to a DocStruct. This method considers already added metadata (and persons!); e.g. metadata types
-     * which can only be available once cannot be added a second time. Therefore this metadata type will not be included in this list.
-     * <p>
-     * "Internal" metadata, which start with the HIDDEN_METADATA_CHAR, will also not be included.
-     *
-     * @return List containing MetadataType objects.
-     */
+
+	/**
+	 * Returns all meta-data types that can be added to this instance and shall
+	 * be visible to the user. This method considers already added
+	 * {@link Metadata}, so meta-data types which can only be available once
+	 * cannot be added a second time. Therefore these {@link MetadataType}s will
+	 * not be included in this list.
+	 * <p>
+	 * Internal meta-data groups, whose {@code MetadataGroupType} starts with
+	 * the {@link #HIDDEN_METADATA_CHAR}, will also not be included.
+	 *
+	 * @return all meta-data types that users can add to this instance
+	 */
     public List<MetadataType> getAddableMetadataTypes() {
 
         // If e.g. the topstruct has no Metadata, or something...
@@ -2159,6 +2330,17 @@ public class DocStruct implements Serializable {
         return addableMetadata;
     }
 
+	/**
+	 * Returns all meta-data types that can be added to this instance. Includes
+	 * meta-data groups, whose {@code MetadataGroupType} starts with the
+	 * {@link #HIDDEN_METADATA_CHAR}.
+	 * <p>
+	 * This method considers already added {@link Metadata}, so meta-data types
+	 * which can only be available once cannot be added a second time. Therefore
+	 * these {@link MetadataType}s will not be included in this list.
+	 *
+	 * @return all meta-data types that can be added to this instance
+	 */
     public List<MetadataType> getPossibleMetadataTypes() {
         // If e.g. the topstruct has no Metadata, or something...
         if (this.type == null) {
@@ -2173,9 +2355,6 @@ public class DocStruct implements Serializable {
         // if they are still addable.
         for (MetadataType mdt : allTypes) {
 
-            // Metadata beginning with the HIDDEN_METADATA_CHAR are internal
-            // metadata are not user addable.
-            // if (!mdt.getName().startsWith(HIDDEN_METADATA_CHAR)) {
             String maxnumber = this.type.getNumberOfMetadataType(mdt);
 
             // Metadata can only be available once; so we have to check if
@@ -2220,22 +2399,21 @@ public class DocStruct implements Serializable {
         return addableMetadata;
     }
 
-    //
-    // Handle children.
-    //
-    // All methods to add, remove, modify or change the position of children in
-    // the tree are in here.
-    //
-
-    /**
-     * Adds a DocStruct object as a child to this instance. The new child will automatically become the last child in the list. When adding a
-     * DocStruct, configuration is checked, wether a DocStruct of this type can be added. If not, a TypeNotAllowedAsChildException is thrown. The parent of
-     * this child (this instance) is set automatically.
-     *
-     * @param inchild DocStruct to be added
-     * @return wether inchild isn’t null and its type isn’t null
-     * @throws TypeNotAllowedAsChildException if a child should be added, but it's DocStruct type isn't member of this instance's DocStruct type
-     */
+	/**
+	 * Adds another {@code DocStruct} as a child to this instance. The new child
+	 * will automatically become the last child in the list. When adding a
+	 * {@code DocStruct}, configuration is checked, whether a {@code DocStruct}
+	 * of this type can be added. If not, a
+	 * {@link TypeNotAllowedAsChildException} is thrown. The parent of this
+	 * child (this instance) is set automatically.
+	 *
+	 * @param inchild
+	 *            DocStruct to be added
+	 * @return whether inchild isn’t null and its type isn’t null
+	 * @throws TypeNotAllowedAsChildException
+	 *             if a child should be added, but it's DocStruct type isn't
+	 *             member of this instance's DocStruct type
+	 */
     public boolean addChild(DocStruct inchild) throws TypeNotAllowedAsChildException {
     	return addChild((Integer) null, inchild);
     }
@@ -2340,9 +2518,9 @@ public class DocStruct implements Serializable {
 	}
 
     /**
-     * Removes a child from this DocStruct object.
+     * Removes a child from this instance.
      *
-     * @return true, if child was returned; false, if it was (e.g. didn't belong to the children of this DocStruct instance).
+     * @return true, if child was removed, otherwise false
      */
     public boolean removeChild(DocStruct inchild) {
 
@@ -2366,13 +2544,16 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * Moves a child to another position in the list of all children. The DocStruct to be moved must already be child of this DocStruct.
-     *
-     * @param inchild DocStruct to be moved
-     * @param position first child has position 1
-     * @return true, if successful; otherwise false
-     */
+	/**
+	 * Moves a child to another position in the list of children. The DocStruct
+	 * to be moved must already be child of this DocStruct.
+	 *
+	 * @param inchild
+	 *            DocStruct to be moved
+	 * @param position
+	 *            first child has position 1
+	 * @return true, if successful; otherwise false
+	 */
     public boolean moveChild(DocStruct inchild, int position) {
 
         if (position < 0) {
@@ -2400,22 +2581,24 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Moves a child to another position in the list of all children. Moves the DocStruct after another child. Both DocStruct objects must already be
-     * child of this docstruct object.
-     *
-     * @param inchild DocStruct to be moved
-     * @param afterchild child after which the DocStruct should be moved to.
-     * @return true, if it worked; otherwise false
-     */
-    public boolean moveChildafter(DocStruct inchild, DocStruct afterchild) {
+	/**
+	 * Moves a child below another child in the list of all children. Both
+	 * {@code DocStruct} objects must already be children of this instance.
+	 *
+	 * @param inchild
+	 *            DocStruct to be moved
+	 * @param below
+	 *            child below which the DocStruct in question should be moved
+	 * @return true, if it worked, otherwise false
+	 */
+    public boolean moveChildafter(DocStruct inchild, DocStruct below) {
 
         DocStruct test;
 
         for (int i = 0; i < this.children.size(); ++i) {
             test = this.children.get(i);
             // Child found.
-            if (test.equals(afterchild)) {
+            if (test.equals(below)) {
                 if (moveChild(inchild, i + 1)) {
                     return true;
                 }
@@ -2426,22 +2609,24 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * Moves a child to another position in the list of all children. Moves the DocStruct before another child. Both DocStruct objects must already be
-     * child of this docstruct object.
-     *
-     * @param inchild DocStruct to be moved
-     * @param beforechild child before the DocStruct should be moved to.
-     * @return true, if it worked; otherwise false
-     */
-    public boolean moveChildbefore(DocStruct inchild, DocStruct beforechild) {
+	/**
+	 * Moves a child right above another child in the list of all children. Both
+	 * {@code DocStruct} objects must already be children of this object.
+	 *
+	 * @param inchild
+	 *            DocStruct to be moved
+	 * @param above
+	 *            child above which the DocStruct should be moved
+	 * @return true, if it worked; otherwise false
+	 */
+    public boolean moveChildbefore(DocStruct inchild, DocStruct above) {
 
         DocStruct test;
 
         for (int i = 0; i < this.children.size(); ++i) {
             test = this.children.get(i);
             // Child found.
-            if (test.equals(beforechild)) {
+            if (test.equals(above)) {
                 if (moveChild(inchild, i)) {
                     return true;
                 }
@@ -2453,10 +2638,10 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Retrieves the position of a child in the list of all children.
+     * Returns the position of a child in the list of all children.
      *
-     * @param inchild DocStruct object, whose position should be retrieved
-     * @return position as an integer or -1 if child is not in the list
+     * @param inchild {@code DocStruct} whose position should be returned 
+     * @return position, or {@code -1} if child is not in the list
      */
     public int getPositionofChild(DocStruct inchild) {
 
@@ -2473,13 +2658,16 @@ public class DocStruct implements Serializable {
         return -1;
     }
 
-    /**
-     * Get the next Child in the list of all children. If the given DocStruct object is NOT a child of the current DocStruct instance, null is
-     * returned.
-     *
-     * @param inChild DocStruct object
-     * @return the next DocStruct object after inChild; if none is available null is returned
-     */
+	/**
+	 * Returns the next child in the list of all children. If the given
+	 * {@code DocStruct} isn’t a child of the current instance, {@code null} is
+	 * returned.
+	 *
+	 * @param inChild
+	 *            {@code DocStruct} whose successor shall be returned
+	 * @return the next {@code DocStruct} after {@code inChild}, {@code null}
+	 *         otherwise
+	 */
     public DocStruct getNextChild(DocStruct inChild) {
 
         DocStruct nextchild;
@@ -2503,11 +2691,16 @@ public class DocStruct implements Serializable {
         return null;
     }
 
-    /**
-     * getPreviousChild returns the previous child.
-     *
-     * If there is no previous child or given DocStruct object isn't a child at all null is returned
-     */
+	/**
+	 * Returns the previous child in the list of all children. If the given
+	 * {@code DocStruct} isn’t a child of the current instance, {@code null} is
+	 * returned.
+	 *
+	 * @param inChild
+	 *            {@code DocStruct} whose predecessor shall be returned
+	 * @return the next {@code DocStruct} before {@code inChild}, {@code null}
+	 *         otherwise
+	 */
     public DocStruct getPreviousChild(DocStruct inChild) {
 
         DocStruct prevchild;
@@ -2531,12 +2724,15 @@ public class DocStruct implements Serializable {
         return null;
     }
 
-    /**
-     * Checks if this structure entity can have another entity of a special kind as a child. The child is NOT added by this method.
-     *
-     * @param inType the {@code DocStructType} of the child
-     * @return true, if it can be added; otherwise false
-     */
+	/**
+	 * Returns whether a {@code DocStruct} of the given {@code DocStructType} is
+	 * allowed to be added to this instance.
+	 *
+	 * @param inType
+	 *            the {@code DocStructType} in question
+	 * @return true, if {@code DocStruct} of this type can be added; otherwise
+	 *         false
+	 */
     public boolean isDocStructTypeAllowedAsChild(DocStructType inType) {
 
         List<String> allTypes = this.type.getAllAllowedDocStructTypes();
@@ -2554,16 +2750,15 @@ public class DocStruct implements Serializable {
         return false;
     }
 
-    /**
-     * Checks, if Metadata of a special kind can be removed. There is ni special function, to check wether persons can be removed. As the
-     * {@link Person} object is just inheirited from the {@link Metadata} it has a {@link MetadataType}. Therefor this method can be
-     * used, to check if a person is removable or not.
-     *
-     * @see #removeMetadata
-     * @see #removePerson
-     * @param inMDType MetadataType object
-     * @return true, if it can be removed; otherwise false
-     */
+	/**
+	 * Returns whether a meta-data group of the given type can be removed from
+	 * this instance.
+	 *
+	 * @see #removeMetadataGroup(MetadataGroup, boolean)
+	 * @param inMDType
+	 *            meta-data group type in question
+	 * @return true, if it can be removed, otherwise false
+	 */
     public boolean canMetadataGroupBeRemoved(MetadataGroupType inMDType) {
 
         // How many metadata of this type do we have already.
@@ -2584,16 +2779,19 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Checks, if Metadata of a special kind can be removed. There is ni special function, to check wether persons can be removed. As the
-     * {@link Person} object is just inheirited from the {@link Metadata} it has a {@link MetadataType}. Therefor this method can be
-     * used, to check if a person is removable or not.
-     *
-     * @see #removeMetadata
-     * @see #removePerson
-     * @param inMDType MetadataType object
-     * @return true, if it can be removed; otherwise false
-     */
+	/**
+	 * Returns whether a meta-datum of the given type can be removed from this
+	 * instance. There is no separate function to check whether persons can be
+	 * removed. As the {@link Person} inherits from the {@link Metadata} it has
+	 * a {@link MetadataType}. Therefore, this method can be used to check if a
+	 * person is removable or not as well.
+	 *
+	 * @see #removeMetadata(Metadata)
+	 * @see #removePerson(Person)
+	 * @param inMDType
+	 *            meta-data type in question
+	 * @return true, if it can be removed, otherwise false
+	 */
     public boolean canMetadataBeRemoved(MetadataType inMDType) {
 
         // How many metadata of this type do we have already.
@@ -2679,14 +2877,20 @@ public class DocStruct implements Serializable {
         throw mtnae;
     }
 
-    /**
-     * Removes a Person object.
-     *
-     * @param in Person object to be removed
-     * @param force if set to true, person is removed, even if invalid document is the result
-     * @return true, if removed; otherwise false
-     * @throws IncompletePersonObjectException if the first parameter is not a complete person object
-     */
+	/**
+	 * Removes a person from this instance. If (according to configuration) at
+	 * least one {@link Person} of this type is required on this instance, the
+	 * meta-datum will <i>not be removed</i>. By setting the parameter
+	 * {@code force} to {@code true}, this behaviour can be overridden. Thus,
+	 * you can create documents that cannot be validated.
+	 *
+	 * @param in
+	 *            person which should be removed
+	 * @param force
+	 *            if true, the person is not removed if the count falls below
+	 *            the required amount
+	 * @return true, if the person could be removed, false otherwise
+	 */
     public boolean removePerson(Person in, boolean force) throws IncompletePersonObjectException {
 
         if (this.persons == null) {
@@ -2720,18 +2924,24 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * @return true, if removed; otherwise false
-     */
+	/**
+	 * Removes a person from this instance. If (according to configuration) at
+	 * least one {@link Person} of this type is required on this instance, the
+	 * meta-datum will <i>not be removed</i>.
+	 *
+	 * @param in
+	 *            person which should be removed
+	 * @return true, if the person could be removed, false otherwise
+	 */
     public boolean removePerson(Person in) throws IncompletePersonObjectException {
         return removePerson(in, false);
     }
 
     /**
-     * Get a list of all Person objects.
+     * Returns a list of all persons. If no {@link Person} objects are available, {@code null} is returned.
      *
-     * @return List containing Person objects; if no such objects are available null is returned.
-     **/
+     * @return all persons
+     */
     public List<Person> getAllPersons() {
 
         if (this.persons == null || this.persons.isEmpty()) {
@@ -2757,11 +2967,17 @@ public class DocStruct implements Serializable {
         }
     }
 
+    /**
+     * @deprecated This is a misnomer and will be removed. Use {@link #getOrigObject()}.
+     */
     @Deprecated
     public Object getOrig_object() {
         return this.origObject;
     }
 
+    /**
+     * @deprecated This is a misnomer and will be removed. Use {@link #setOrigObject(Object)}.
+     */
     @Deprecated
     public void setOrig_object(Object theOrigObject) {
         this.origObject = theOrigObject;
@@ -2791,18 +3007,26 @@ public class DocStruct implements Serializable {
         }
     }
 
-    /**
-     * Creates a list of metadata and persons to be displayed in a MetadataForm. The list is based on the {@code DefaultDisplay} attribute in the
-     * preference file (in each metadata element). This list includes metadata and person objects which already exist (and have content) and empty
-     * objects (objects without any content), which are created by this method. These emtpy objects are not only added to the list, but also to the
-     * internal Metadata list and person list of the this DocStruct instance. After the form has been displayed an processed, you may want to call the
-     * method {@link #deleteUnusedPersonsAndMetadata()} to delete unused objects created by this method.
-     *
-     * @param lang language name to be used for sorting the list
-     * @param personsTop if true, person objects are at the beginning of the list, otherwise at the end
-     * @return a List containing Metadata and Person objects
-     * @throws MetadataTypeNotAllowedException
-     */
+	/**
+	 * Creates a list of meta-data and persons to be displayed in a meta-data
+	 * form. The list is based on the {@code defaultDisplay} attribute in the
+	 * {@link Preferences} file. This list includes {@link Metadata} and
+	 * {@link Person} objects which already exist (and have content) and empty
+	 * objects (objects without any content), which are created by this method.
+	 * These empty objects are not only added to the list, but also to the
+	 * internal meta-data and person lists of the this instance.
+	 * <p>
+	 * After the form has been displayed an processed, you may want to call the
+	 * method {@link #deleteUnusedPersonsAndMetadata()} to delete unused objects
+	 * created by this method.
+	 *
+	 * @param lang
+	 *            language whose rules are to use for sorting the list
+	 * @param personsTop
+	 *            if true, persons will appear are at the beginning of the list,
+	 *            otherwise at the end
+	 * @return meta-data and persons
+	 */
     public List<Metadata> showMetadataForm(String lang, boolean personsTop) throws MetadataTypeNotAllowedException {
 
         // Get all MetadataType elements which have the DefaultDisplay attribute
@@ -2919,17 +3143,21 @@ public class DocStruct implements Serializable {
         return resultList;
     }
 
-    /**
-     * This method cleans the metadata list and person list of instances which do not have a value (empty objects). This method is usually used in
-     * connection with the {@link #showMetadataForm(String, boolean)} method. After the {@linkplain #showMetadataForm(String, boolean)} has been called and the form has been
-     * displayed, this method should be called to delete the created empty metadata instances by the {@linkplain #showMetadataForm(String, boolean)} method.
-     * <p>
-     * An empty metadata instance is:
-     * <ul>
-     * <li>A metadata object with a value of null.</li>
-     * <li>A person object with neither a lastname nor a firstname nor an identifier nor an institution.</li>
-     * </ul>
-     */
+	/**
+	 * This method cleans the meta-data and person list of instances which do
+	 * not have a value. This method is usually used in conjunction with the
+	 * method {@link #showMetadataForm(String, boolean)}. After
+	 * {@code showMetadataForm()} has been called and the form has been
+	 * displayed, this method should be called to delete the created empty
+	 * meta-data instances.
+	 * <p>
+	 * An empty metadata instance is:
+	 * <ul>
+	 * <li>A meta-data object with a value of null.</li>
+	 * <li>A person object with neither a lastname, nor a firstname, an
+	 * identifier, nor an institution.</li>
+	 * </ul>
+	 */
     public void deleteUnusedPersonsAndMetadata() {
 
         // Handle Persons first: Person objects are available.
@@ -2983,11 +3211,12 @@ public class DocStruct implements Serializable {
         }
     }
 
-    /**
-     * Sorts the metadata and persons in the current DocStruct according to their occurrence in the preferences file.
-     *
-     * @param thePrefs
-     */
+	/**
+	 * Sorts the meta-data and persons in this instance according to their
+	 * occurrence in the {@code Preferences} file.
+	 * 
+	 * @param thePrefs preferences file to use for sorting
+	 */
     public synchronized void sortMetadata(Prefs thePrefs) {
 
         List<Metadata> newMetadata = new LinkedList<Metadata>();
@@ -3058,9 +3287,9 @@ public class DocStruct implements Serializable {
         // TODO groups
     }
 
-    /**
-     * Sorts the metadata and persons in the current DocStruct alphabetically.
-     */
+	/**
+	 * Sorts the meta-data and persons in this instance alphabetically.
+	 */
     public synchronized void sortMetadataAbcdefg() {
 
         // Create empty (sorted) TreeSets and lists.
@@ -3087,12 +3316,11 @@ public class DocStruct implements Serializable {
         // TODO groups
     }
 
-    /**
-     * Used to register a signature the first time a DocStruct Object runs into the non hierarchial branch of referenced DocStruct Objects by way of
-     * the equals method.
-     *
-     * @param docStruct
-     */
+	/**
+	 * Used to register a signature the first time a DocStruct Object runs into
+	 * the non hierarchial branch of referenced DocStruct Objects by way of the
+	 * equals method.
+	 */
     private boolean registerToRef(DocStruct docStruct) {
 
         if (this.signaturesForEqualsMethodRefsTo == null) {
@@ -3109,12 +3337,11 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * Used to register a signature the first time a DocStruct Object runs into the non hierarchial branch of DocStruct Objects referencing this
-     * DocStruct by way of the equals method.
-     *
-     * @param docStruct
-     */
+	/**
+	 * Used to register a signature the first time a DocStruct Object runs into
+	 * the non hierarchial branch of DocStruct Objects referencing this
+	 * DocStruct by way of the equals method.
+	 */
     private boolean registerFromRef(DocStruct docStruct) {
 
         if (this.signaturesForEqualsMethodRefsFrom == null) {
@@ -3432,16 +3659,12 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * The metadata comparator. Simply compares metadata (and persons) according to their type names alphabetically.
-     */
+	/**
+	 * Compares meta-data (and persons) according to their type names
+	 * alphabetically.
+	 */
     class MetadataComparator implements Comparator<Object> {
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
         @Override
 		public int compare(Object o1, Object o2) {
 
@@ -3457,16 +3680,11 @@ public class DocStruct implements Serializable {
 
     }
 
-    /**
-     * The metadata comparator. Simply compares metadata (and persons) according to their type names alphabetically.
-     */
+	/**
+	 * Compares meta-data groups according to their type names alphabetically.
+	 */
     class MetadataGroupComparator implements Comparator<Object> {
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
         @Override
 		public int compare(Object o1, Object o2) {
 
