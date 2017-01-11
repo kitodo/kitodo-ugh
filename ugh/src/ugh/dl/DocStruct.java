@@ -188,9 +188,6 @@ public class DocStruct implements Serializable {
        setType(inType);
     }
 
-    /**
-     * @param dd
-     */
     protected void setDigitalDocument(DigitalDocument dd) {
         this.digdoc = dd;
     }
@@ -256,10 +253,6 @@ public class DocStruct implements Serializable {
 		return result;
 	}
 
-    /**
-     * @deprecated
-     * @return
-     */
     @Deprecated
     public String getreferenceToAnchor() {
         return getReferenceToAnchor();
@@ -270,18 +263,11 @@ public class DocStruct implements Serializable {
      * can be the anchor for PeriodicalVolumes. Both DocStructs are stored in different DigitalDocuments (different mets files) and are linked
      * together by an identifier. The identifier of the anchor should be stored here. On the side of the anchor, this identifier is stored as a normal
      * metadata field...
-     * </p>
-     *
-     * @return
      */
     public String getReferenceToAnchor() {
         return this.referenceToAnchor;
     }
 
-    /**
-     * @param in
-     * @deprecated
-     */
     @Deprecated
     public void setreferenceToAnchor(String in) {
         setReferenceToAnchor(in);
@@ -289,9 +275,6 @@ public class DocStruct implements Serializable {
 
     /**
      * Sets the identifier of the anchor.
-     * </p>
-     *
-     * @param in
      */
     public void setReferenceToAnchor(String in) {
         this.referenceToAnchor = in;
@@ -301,8 +284,6 @@ public class DocStruct implements Serializable {
      * Gets all Children for a DocStruct instance, which are of a special type, and which have a special type of metadata. E.g. you can get all
      * Articles wihch have an author. It is possible to use "*" as a parameter value for MetadataType and DocStructType. In this case, the "*" is a
      * wildcard.
-     * </p>
-     *
      *
      * @param theDocTypeName internal name of the structure type (as String)
      * @param theMDTypeName internal name of metadata type (as String)
@@ -381,7 +362,6 @@ public class DocStruct implements Serializable {
     /**
      * Sets the local identifier; currently there is no automatic check, if the identifier is used for another docstruct or metadata element.
      *
-     * @param in
      * @return always true
      */
     public boolean setIdentifier(String in) {
@@ -390,9 +370,6 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * @return
-     */
     public String getIdentifier() {
         return this.identifier;
     }
@@ -903,9 +880,7 @@ public class DocStruct implements Serializable {
 
     /**
      * Sets the parent; usually not necessary as the parent is set automatically, if a DocStruct instance is added as a child.
-     * </p>
      *
-     * @param inParent
      * @return true, if parent was set successfully
      */
     public boolean setParent(DocStruct inParent) {
@@ -924,9 +899,6 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * @return
-     */
     public DocStruct getParent() {
         return this.parent;
     }
@@ -1012,7 +984,6 @@ public class DocStruct implements Serializable {
     /**
      * This method checks, if an instance of the DocStruct has a Metadata- or Person object of the given type.
      *
-     * @param inMDT
      * @return true, if available; otherwise false
      */
     public boolean hasMetadataGroupType(MetadataGroupType inMDT) {
@@ -1034,7 +1005,6 @@ public class DocStruct implements Serializable {
     /**
      * This method checks, if an instance of the DocStruct has a Metadata- or Person object of the given type.
      *
-     * @param inMDT
      * @return true, if available; otherwise false
      */
     public boolean hasMetadataType(MetadataType inMDT) {
@@ -1800,7 +1770,6 @@ public class DocStruct implements Serializable {
     /**
      * Gets all Metadata for the current DocStruct, which shall be displayed, what includes all metadata that are not starting with the
      * HIDDEN_METADATA_CHAR.
-     * </p>
      *
      * @return List containing MetadataType objects
      */
@@ -2546,9 +2515,6 @@ public class DocStruct implements Serializable {
      * getPreviousChild returns the previous child.
      *
      * If there is no previous child or given DocStruct object isn't a child at all null is returned
-     *
-     * @param inChild
-     * @return
      */
     public DocStruct getPreviousChild(DocStruct inChild) {
 
@@ -2763,9 +2729,7 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * @param in
      * @return true, if removed; otherwise false
-     * @throws IncompletePersonObjectException
      */
     public boolean removePerson(Person in) throws IncompletePersonObjectException {
         return removePerson(in, false);
@@ -2785,16 +2749,10 @@ public class DocStruct implements Serializable {
         return this.persons;
     }
 
-    /**
-     * @return the logical
-     */
     public boolean isLogical() {
         return this.logical;
     }
 
-    /**
-     * @param logical the logical to set
-     */
     public void setLogical(boolean logical) {
 
         this.logical = logical;
@@ -2807,48 +2765,28 @@ public class DocStruct implements Serializable {
         }
     }
 
-    /**
-     * @deprecated
-     * @return the orig_object
-     */
     @Deprecated
     public Object getOrig_object() {
         return this.origObject;
     }
 
-    /**
-     * @param orig_object the orig_object to set
-     * @deprecated
-     */
     @Deprecated
     public void setOrig_object(Object theOrigObject) {
         this.origObject = theOrigObject;
     }
 
-    /**
-     * @return theOrigObject
-     */
     public Object getOrigObject() {
         return this.origObject;
     }
 
-    /**
-     * @param theOrigObject theOrigObject to set
-     */
     public void setOrigObject(Object theOrigObject) {
         this.origObject = theOrigObject;
     }
 
-    /**
-     * @return the physical
-     **/
     public boolean isPhysical() {
         return this.physical;
     }
 
-    /**
-     * @param physical the physical to set
-     */
     public void setPhysical(boolean physical) {
 
         this.physical = physical;
@@ -3201,9 +3139,6 @@ public class DocStruct implements Serializable {
         return true;
     }
 
-    /**
-     * @param docStruct
-     */
     private void unregisterToRefs(DocStruct docStruct) {
 
         this.signaturesForEqualsMethodRefsTo.remove(docStruct.toString());
@@ -3213,9 +3148,6 @@ public class DocStruct implements Serializable {
         }
     }
 
-    /**
-     * @param docStruct
-     */
     private void unregisterFromRefs(DocStruct docStruct) {
 
         this.signaturesForEqualsMethodRefsFrom.remove(docStruct.toString());
@@ -3225,10 +3157,6 @@ public class DocStruct implements Serializable {
         }
     }
 
-    /**
-     * @param docStruct
-     * @return
-     */
     public boolean equals(DocStruct docStruct) {
 
         LOGGER.debug("\r\n" + this.getClass() + " ->id:" + this.getType().getName() + " other:" + docStruct.getType().getName() + "\r\n");
