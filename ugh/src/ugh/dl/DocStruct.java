@@ -1,5 +1,3 @@
-package ugh.dl;
-
 /*******************************************************************************
  * ugh.dl / DocStruct.java
  *
@@ -20,6 +18,7 @@ package ugh.dl;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package ugh.dl;
 
 import java.io.File;
 import java.io.Serializable;
