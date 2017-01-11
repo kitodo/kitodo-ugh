@@ -811,7 +811,7 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Retrieves all References from this DocStruct to another - in other words: All References, in which this DocStruct is the Source.
+     * Retrieves all References from this DocStruct to another—in other words: All References, in which this DocStruct is the Source.
      *
      * @return List containing <code>References</code> objects
      */
@@ -845,7 +845,7 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Retrieves all References from this DocStruct from another - in other words: All References, in which this DocStruct is the target.
+     * Retrieves all References from this DocStruct from another—in other words: All References, in which this DocStruct is the target.
      *
      * @return List containing <code>References</code> objects
      */
@@ -1156,7 +1156,7 @@ public class DocStruct implements Serializable {
     /**
      * Adds a new reference to this DocStruct instance. References are always linked both ways. Both docstruct instances are storing a reference to
      * the other DocStruct instance. This methods stores the To-Reference. The DocStruct instance given as a parameter is the target of the Reference
-     * (to which is linked to). The appropriate From-Reference (from the target to the source - this DocStruct instance) is set automatically. Each
+     * (to which is linked to). The appropriate From-Reference (from the target to the source—this DocStruct instance) is set automatically. Each
      * Reference can contain a type (string).
      *
      * @param inDocStruct Target of the Reference
