@@ -113,13 +113,8 @@ public class DocStruct implements Serializable {
 
     // List containing all Metadata instances.
     private List<Metadata> allMetadata;
-    // List containing Metadata instances which has been removed; this instances
-    // must be deleted from database etc.
-    private List<Metadata> removedMetadata;
 
     private List<MetadataGroup> allMetadataGroups;
-
-    private List<MetadataGroup> removedMetadataGroups;
 
     // List containing all DocStrct-instances being children of this instance.
     private List<DocStruct> children;
@@ -1508,11 +1503,6 @@ public class DocStruct implements Serializable {
 
         theMd.myDocStruct = null;
 
-        if (this.removedMetadataGroups == null) {
-            this.removedMetadataGroups = new LinkedList<MetadataGroup>();
-        }
-
-        this.removedMetadataGroups.add(theMd);
         this.allMetadataGroups.remove(theMd);
 
         return true;
@@ -1769,11 +1759,6 @@ public class DocStruct implements Serializable {
 
         theMd.myDocStruct = null;
 
-        if (this.removedMetadata == null) {
-            this.removedMetadata = new LinkedList<Metadata>();
-        }
-
-        this.removedMetadata.add(theMd);
         this.allMetadata.remove(theMd);
 
         return true;
