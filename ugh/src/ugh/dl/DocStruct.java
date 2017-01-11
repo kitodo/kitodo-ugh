@@ -77,7 +77,6 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * @author Stefan E. Funk
  * @author Robert Sehr
  * @author Matthias Ronge
- * @version 2014-06-26
  * @see DigitalDocument
  */
 
