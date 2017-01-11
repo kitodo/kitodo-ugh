@@ -52,9 +52,9 @@ import ugh.fileformats.mets.MetsModsImportExport;
 
 /**
  * A DocStruct object represents a structure entity in work. Every document consists of a structure, which can be separated into several structure
- * entities, which build hierarchical structure. Usually a <code>DigitalDocument</code> contains two structures; a logical and a physical one. Each
+ * entities, which build hierarchical structure. Usually a {@link DigitalDocument} contains two structures; a logical and a physical one. Each
  * structure consists of a top DocStruct element that is embedded in some kind of structure. This structure is represented by parent and children of
- * <code>DocStruct</code> objects.
+ * {@code DocStruct} objects.
  * <p>
  * This class contains methods to:
  * <ul>
@@ -64,7 +64,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * <li>handle content files, which are linked to a structure entity.
  * </ul>
  * 
- * Every structure entity is of a special kind. The kind of entity is stored in a <code>DocStructType</code> element. Depending on the type of
+ * Every structure entity is of a special kind. The kind of entity is stored in a {@link DocStructType} element. Depending on the type of
  * structure entities certain metadata and children a permitted or forbidden.
  *
  * @author Markus Enders
@@ -176,7 +176,7 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Constructs a new DocStruct object of a given type. The type can be changed later using the <code>setType</code> method.
+     * Constructs a new DocStruct object of a given type. The type can be changed later using the {@link #setType(DocStructType)} method.
      *
      * @param inType type of this DocStruct instance
      * @throws TypeNotAllowedForParentException is thrown, if this docstruct is not allowed for a parent
@@ -811,9 +811,9 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Retrieves all References from this DocStruct to another—in other words: All References, in which this DocStruct is the Source.
+     * Retrieves all References from this DocStruct to another—in other words: All {@link Reference}s, in which this DocStruct is the Source.
      *
-     * @return List containing <code>References</code> objects
+     * @return List containing {@code Reference} objects
      */
     public List<Reference> getAllToReferences() {
         return this.docStructRefsTo;
@@ -823,7 +823,7 @@ public class DocStruct implements Serializable {
      * Returns all References (just to-References from this DocStruct to another) of a specific type.
      *
      * @param theType Type of the reference; e.g. "logical_physical" for references from logical structures to physical ones
-     * @return List containing <code>References</code> objects
+     * @return List containing {@code Reference} objects
      */
     public List<Reference> getAllToReferences(String theType) {
 
@@ -847,7 +847,7 @@ public class DocStruct implements Serializable {
     /**
      * Retrieves all References from this DocStruct from another—in other words: All References, in which this DocStruct is the target.
      *
-     * @return List containing <code>References</code> objects
+     * @return List containing {@code Reference} objects
      */
     public List<Reference> getAllFromReferences() {
         return this.docStructRefsFrom;
@@ -857,7 +857,7 @@ public class DocStruct implements Serializable {
      * Returns all References (just from-References from this DocStruct to another) of a specific type.
      *
      * @param theType Type of the reference; e.g. "logical_physical" for references from logical structures to physical ones
-     * @return List containing <code>References</code> objects
+     * @return List containing {@code Reference} objects
      */
     public List<Reference> getAllFromReferences(String theType) {
 
@@ -1949,7 +1949,7 @@ public class DocStruct implements Serializable {
      * Gives number of Metadata elements belonging to this DocStruct of a specific type. The type must be given by the unique (internal) name as it is
      * retrievable from MetadataType's getName method.
      * <p>
-     * This method does not only get the number of Metadata elements, but also the number of person objects belonging to one <code>DocStruct</code>
+     * This method does not only get the number of Metadata elements, but also the number of person objects belonging to one {@code DocStruct}
      * object.
      *
      * @param inTypeName Internal name of object as String
@@ -2534,7 +2534,7 @@ public class DocStruct implements Serializable {
     /**
      * Checks if this structure entity can have another entity of a special kind as a child. The child is NOT added by this method.
      *
-     * @param inType the <code>DocStructType</code> of the child
+     * @param inType the {@code DocStructType} of the child
      * @return true, if it can be added; otherwise false
      */
     public boolean isDocStructTypeAllowedAsChild(DocStructType inType) {
@@ -2556,7 +2556,7 @@ public class DocStruct implements Serializable {
 
     /**
      * Checks, if Metadata of a special kind can be removed. There is ni special function, to check wether persons can be removed. As the
-     * <code>Person</code> object is just inheirited from the <code>Metadata</code> it has a <code>MetadataType</code>. Therefor this method can be
+     * {@link Person} object is just inheirited from the {@link Metadata} it has a {@link MetadataType}. Therefor this method can be
      * used, to check if a person is removable or not.
      *
      * @see #removeMetadata
@@ -2586,7 +2586,7 @@ public class DocStruct implements Serializable {
 
     /**
      * Checks, if Metadata of a special kind can be removed. There is ni special function, to check wether persons can be removed. As the
-     * <code>Person</code> object is just inheirited from the <code>Metadata</code> it has a <code>MetadataType</code>. Therefor this method can be
+     * {@link Person} object is just inheirited from the {@link Metadata} it has a {@link MetadataType}. Therefor this method can be
      * used, to check if a person is removable or not.
      *
      * @see #removeMetadata
@@ -2792,11 +2792,11 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Creates a list of metadata and persons to be displayed in a MetadataForm. The list is based on the <code>DefaultDisplay</code> attribute in the
+     * Creates a list of metadata and persons to be displayed in a MetadataForm. The list is based on the {@code DefaultDisplay} attribute in the
      * preference file (in each metadata element). This list includes metadata and person objects which already exist (and have content) and empty
      * objects (objects without any content), which are created by this method. These emtpy objects are not only added to the list, but also to the
      * internal Metadata list and person list of the this DocStruct instance. After the form has been displayed an processed, you may want to call the
-     * method <code>deleteUnusedPersonsAndMetadata()</code> to delete unused objects created by this method.
+     * method {@link #deleteUnusedPersonsAndMetadata()} to delete unused objects created by this method.
      *
      * @param lang language name to be used for sorting the list
      * @param personsTop if true, person objects are at the beginning of the list, otherwise at the end
@@ -2921,8 +2921,8 @@ public class DocStruct implements Serializable {
 
     /**
      * This method cleans the metadata list and person list of instances which do not have a value (empty objects). This method is usually used in
-     * connection with the <code>showMetadataForm</code> method. After the <code>showMetadataForm</code> has been called and the form has been
-     * displayed, this method should be called to delete the created empty metadata instances by the <code>showMetadataForm</code> method.
+     * connection with the {@link #showMetadataForm(String, boolean)} method. After the {@linkplain #showMetadataForm(String, boolean)} has been called and the form has been
+     * displayed, this method should be called to delete the created empty metadata instances by the {@linkplain #showMetadataForm(String, boolean)} method.
      * <p>
      * An empty metadata instance is:
      * <ul>
