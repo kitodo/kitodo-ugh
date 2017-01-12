@@ -1447,52 +1447,6 @@ public class DocStruct implements Serializable {
     /***************************************************************************
      * <p>
      * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
-     * (according to configuration), the metadata is NOT removed. By setting the second parameter to true, this behaviour can be influenced. This can
-     * be necessary e.g. when programming user interfaces etc.
-     * </p>
-     * <p>
-     * If you want to remove Metadata of a specific type temporarily (e.g. to replace it), use the changeMetadata method instead.
-     * </p>
-     *
-     * @param theMd Metadata object which should be removed
-     * @param force set to true, the Metadata is removed even if it is not allowed to. You can create not validateable documents.
-     * @return true, if data can be removed; otherwise false
-     * @see #canMetadataBeRemoved
-     **************************************************************************/
-    public boolean removeMetadataGroup(MetadataGroup theMd, boolean force) {
-
-        MetadataGroupType inMdType;
-        String maxnumbersallowed;
-        int typesavailable;
-
-        // Get Type of inMD.
-        inMdType = theMd.getType();
-
-        // How many metadata of this type do we have already.
-        typesavailable = countMDofthisType(inMdType.getName());
-
-        // How many types must be at least available.
-        maxnumbersallowed = this.type.getNumberOfMetadataGroups(inMdType);
-
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("+")) {
-            // There must be at least one.
-            return false;
-        }
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("1m")) {
-            // There must be at least one.
-            return false;
-        }
-
-        theMd.myDocStruct = null;
-
-        this.allMetadataGroups.remove(theMd);
-
-        return true;
-    }
-
-    /***************************************************************************
-     * <p>
-     * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
      * (according to configuration), the metadata is NOT removed.
      * </p>
      * <p>
@@ -1504,8 +1458,9 @@ public class DocStruct implements Serializable {
      * @see #canMetadataBeRemoved
      **************************************************************************/
     public boolean removeMetadataGroup(MetadataGroup inMD) {
-        // Just calls removeMetadata with force set to false.
-        return removeMetadataGroup(inMD, false);
+        inMD.myDocStruct = null;
+        this.allMetadataGroups.remove(inMD);
+        return true;
     }
 
     /***************************************************************************
@@ -1703,52 +1658,6 @@ public class DocStruct implements Serializable {
     /***************************************************************************
      * <p>
      * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
-     * (according to configuration), the metadata is NOT removed. By setting the second parameter to true, this behaviour can be influenced. This can
-     * be necessary e.g. when programming user interfaces etc.
-     * </p>
-     * <p>
-     * If you want to remove Metadata of a specific type temporarily (e.g. to replace it), use the changeMetadata method instead.
-     * </p>
-     *
-     * @param theMd Metadata object which should be removed
-     * @param force set to true, the Metadata is removed even if it is not allowed to. You can create not validateable documents.
-     * @return true, if data can be removed; otherwise false
-     * @see #canMetadataBeRemoved
-     **************************************************************************/
-    public boolean removeMetadata(Metadata theMd, boolean force) {
-
-        MetadataType inMdType;
-        String maxnumbersallowed;
-        int typesavailable;
-
-        // Get Type of inMD.
-        inMdType = theMd.getType();
-
-        // How many metadata of this type do we have already.
-        typesavailable = countMDofthisType(inMdType.getName());
-
-        // How many types must be at least available.
-        maxnumbersallowed = this.type.getNumberOfMetadataType(inMdType);
-
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("+")) {
-            // There must be at least one.
-            return false;
-        }
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("1m")) {
-            // There must be at least one.
-            return false;
-        }
-
-        theMd.myDocStruct = null;
-
-        this.allMetadata.remove(theMd);
-
-        return true;
-    }
-
-    /***************************************************************************
-     * <p>
-     * Removes Metadata from this DocStruct object. If there must be at least one Metadata object of this kind, attached to this DocStruct instance
      * (according to configuration), the metadata is NOT removed.
      * </p>
      * <p>
@@ -1760,8 +1669,9 @@ public class DocStruct implements Serializable {
      * @see #canMetadataBeRemoved
      **************************************************************************/
     public boolean removeMetadata(Metadata inMD) {
-        // Just calls removeMetadata with force set to false.
-        return removeMetadata(inMD, false);
+        inMD.myDocStruct = null;
+        this.allMetadata.remove(inMD);
+        return true;
     }
 
     /***************************************************************************
@@ -2854,17 +2764,11 @@ public class DocStruct implements Serializable {
     }
 
     /***************************************************************************
-     * <p>
-     * Removes a Person object.
-     * </p>
-     *
-     * @param in Person object to be removed
-     * @param force if set to true, person is removed, even if invalid document is the result
+     * @param in
      * @return true, if removed; otherwise false
-     * @throws IncompletePersonObjectException if the first parameter is not a complete person object
+     * @throws IncompletePersonObjectException
      **************************************************************************/
-    public boolean removePerson(Person in, boolean force) throws IncompletePersonObjectException {
-
+    public boolean removePerson(Person in) throws IncompletePersonObjectException {
         if (this.persons == null) {
             return false;
         }
@@ -2877,32 +2781,9 @@ public class DocStruct implements Serializable {
             throw ipoe;
         }
 
-        // How many metadata of this type do we have already.
-        int typesavailable = countMDofthisType(inMDType.getName());
-        // How many types must be at least available.
-        String maxnumbersallowed = this.type.getNumberOfMetadataType(inMDType);
-
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("+")) {
-            // There must be at least one.
-            return false;
-        }
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("1m")) {
-            // There must be at least one.
-            return false;
-        }
-
         this.persons.remove(in);
 
         return true;
-    }
-
-    /***************************************************************************
-     * @param in
-     * @return true, if removed; otherwise false
-     * @throws IncompletePersonObjectException
-     **************************************************************************/
-    public boolean removePerson(Person in) throws IncompletePersonObjectException {
-        return removePerson(in, false);
     }
 
     /***************************************************************************
