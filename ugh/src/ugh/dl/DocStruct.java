@@ -2773,12 +2773,8 @@ public class DocStruct implements Serializable {
             return false;
         }
 
-        MetadataType inMDType = in.getType();
-        // Incomplete person.
-        if (inMDType == null) {
-            IncompletePersonObjectException ipoe = new IncompletePersonObjectException();
-            LOGGER.error("Incomplete data for person metadata '" + in.getType().getName() + "'");
-            throw ipoe;
+        if (in.getType() == null) {
+            throw new IncompletePersonObjectException("Incomplete person: MetadataType is null");
         }
 
         this.persons.remove(in);
