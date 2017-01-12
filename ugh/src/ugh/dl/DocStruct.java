@@ -113,13 +113,8 @@ public class DocStruct implements Serializable {
 
     // List containing all Metadata instances.
     private List<Metadata> allMetadata;
-    // List containing Metadata instances which has been removed; this instances
-    // must be deleted from database etc.
-    private List<Metadata> removedMetadata;
 
     private List<MetadataGroup> allMetadataGroups;
-
-    private List<MetadataGroup> removedMetadataGroups;
 
     // List containing all DocStrct-instances being children of this instance.
     private List<DocStruct> children;
@@ -140,8 +135,6 @@ public class DocStruct implements Serializable {
     private String identifier = null;
     // Digital document, to which this DocStruct belongs.
     private DigitalDocument digdoc;
-    // ID in database table (4 byte long).
-    private final long databaseid = 0;
     private Object origObject = null;
     private boolean logical = false;
     private boolean physical = false;
@@ -1257,16 +1250,8 @@ public class DocStruct implements Serializable {
     public Reference addReferenceTo(DocStruct inDocStruct, String theType) {
 
         Reference ref = new Reference();
-        if (this.databaseid == 0) {
-            ref.setSource(this);
-        } else {
-            ref.setSourceID(this.databaseid);
-        }
-        if (inDocStruct.databaseid == 0) {
-            ref.setTarget(inDocStruct);
-        } else {
-            ref.setTargetID(inDocStruct.databaseid);
-        }
+        ref.setSource(this);
+        ref.setTarget(inDocStruct);
         ref.setType(theType);
         this.docStructRefsTo.add(ref);
         inDocStruct.docStructRefsFrom.add(ref);
@@ -1286,16 +1271,8 @@ public class DocStruct implements Serializable {
     public Reference addReferenceFrom(DocStruct inDocStruct, String theType) {
 
         Reference ref = new Reference();
-        if (this.databaseid == 0) {
-            ref.setTarget(this);
-        } else {
-            ref.setTargetID(this.databaseid);
-        }
-        if (inDocStruct.databaseid == 0) {
-            ref.setSource(inDocStruct);
-        } else {
-            ref.setSourceID(inDocStruct.databaseid);
-        }
+        ref.setTarget(this);
+        ref.setSource(inDocStruct);
         ref.setType(theType);
         this.docStructRefsFrom.add(ref);
         inDocStruct.docStructRefsTo.add(ref);
@@ -1508,11 +1485,6 @@ public class DocStruct implements Serializable {
 
         theMd.myDocStruct = null;
 
-        if (this.removedMetadataGroups == null) {
-            this.removedMetadataGroups = new LinkedList<MetadataGroup>();
-        }
-
-        this.removedMetadataGroups.add(theMd);
         this.allMetadataGroups.remove(theMd);
 
         return true;
@@ -1769,11 +1741,6 @@ public class DocStruct implements Serializable {
 
         theMd.myDocStruct = null;
 
-        if (this.removedMetadata == null) {
-            this.removedMetadata = new LinkedList<Metadata>();
-        }
-
-        this.removedMetadata.add(theMd);
         this.allMetadata.remove(theMd);
 
         return true;
