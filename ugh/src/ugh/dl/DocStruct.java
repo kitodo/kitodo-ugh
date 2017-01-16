@@ -1454,56 +1454,6 @@ public class DocStruct implements Serializable {
     /**
      * Removes a meta-data group from this instance. If (according to
      * configuration) at least one meta-data group of this type is required on
-     * this instance, the meta-data group will <i>not be removed</i>. By setting
-     * the parameter {@code force} to {@code true}, this behaviour can be
-     * overridden. Thus, you can create documents that cannot be validated.
-     * <p>
-     * If you want to remove a meta-data group just to replace it, use the
-     * method {{@link #changeMetadataGroup(MetadataGroup, MetadataGroup)}
-     * instead.
-     *
-     * @param theMd
-     *            meta-data group which should be removed
-     * @param force
-     *            if true, the meta-data group is removed even if the count
-     *            falls below the required amount
-     * @return true, if the meta-data group was removed, false otherwise
-     * @see #canMetadataGroupBeRemoved(MetadataGroupType)
-     */
-    public boolean removeMetadataGroup(MetadataGroup theMd, boolean force) {
-
-        MetadataGroupType inMdType;
-        String maxnumbersallowed;
-        int typesavailable;
-
-        // Get Type of inMD.
-        inMdType = theMd.getType();
-
-        // How many metadata of this type do we have already.
-        typesavailable = countMDofthisType(inMdType.getName());
-
-        // How many types must be at least available.
-        maxnumbersallowed = this.type.getNumberOfMetadataGroups(inMdType);
-
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("+")) {
-            // There must be at least one.
-            return false;
-        }
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("1m")) {
-            // There must be at least one.
-            return false;
-        }
-
-        theMd.myDocStruct = null;
-
-        this.allMetadataGroups.remove(theMd);
-
-        return true;
-    }
-
-    /**
-     * Removes a meta-data group from this instance. If (according to
-     * configuration) at least one meta-data group of this type is required on
      * this instance, the meta-data group will <i>not be removed</i>.
      * <p>
      * If you want to remove a meta-data group just to replace it, use the
@@ -1516,7 +1466,9 @@ public class DocStruct implements Serializable {
      * @see #canMetadataGroupBeRemoved(MetadataGroupType)
      */
     public boolean removeMetadataGroup(MetadataGroup inMD) {
-        return removeMetadataGroup(inMD, false);
+        inMD.myDocStruct = null;
+        this.allMetadataGroups.remove(inMD);
+        return true;
     }
 
     /**
@@ -1718,55 +1670,6 @@ public class DocStruct implements Serializable {
     /**
      * Removes a meta-datum from this instance. If (according to configuration)
      * at least one {@link Metadata} of this type is required on this instance,
-     * the meta-datum will <i>not be removed</i>. By setting the parameter
-     * {@code force} to {@code true}, this behaviour can be overridden. Thus,
-     * you can create documents that cannot be validated.
-     * <p>
-     * If you want to remove a meta-data group just to replace it, use the
-     * method {@link #changeMetadata(Metadata, Metadata)} instead.
-     *
-     * @param theMd
-     *            meta-datum which should be removed
-     * @param force
-     *            if true, the meta-datum is removed even if the count falls
-     *            below the required amount
-     * @return true, if the meta-datum removed, false otherwise
-     * @see #canMetadataBeRemoved(MetadataType)
-     */
-    public boolean removeMetadata(Metadata theMd, boolean force) {
-
-        MetadataType inMdType;
-        String maxnumbersallowed;
-        int typesavailable;
-
-        // Get Type of inMD.
-        inMdType = theMd.getType();
-
-        // How many metadata of this type do we have already.
-        typesavailable = countMDofthisType(inMdType.getName());
-
-        // How many types must be at least available.
-        maxnumbersallowed = this.type.getNumberOfMetadataType(inMdType);
-
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("+")) {
-            // There must be at least one.
-            return false;
-        }
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("1m")) {
-            // There must be at least one.
-            return false;
-        }
-
-        theMd.myDocStruct = null;
-
-        this.allMetadata.remove(theMd);
-
-        return true;
-    }
-
-    /**
-     * Removes a meta-datum from this instance. If (according to configuration)
-     * at least one {@link Metadata} of this type is required on this instance,
      * the meta-datum will <i>not be removed</i>.
      * <p>
      * If you want to remove a meta-data group just to replace it, use the
@@ -1778,7 +1681,9 @@ public class DocStruct implements Serializable {
      * @see #canMetadataBeRemoved(MetadataType)
      */
     public boolean removeMetadata(Metadata inMD) {
-        return removeMetadata(inMD, false);
+        inMD.myDocStruct = null;
+        this.allMetadata.remove(inMD);
+        return true;
     }
 
     /**
@@ -2889,63 +2794,26 @@ public class DocStruct implements Serializable {
     }
 
     /**
-     * Removes a person from this instance. If (according to configuration) at
-     * least one {@link Person} of this type is required on this instance, the
-     * meta-datum will <i>not be removed</i>. By setting the parameter
-     * {@code force} to {@code true}, this behaviour can be overridden. Thus,
-     * you can create documents that cannot be validated.
+     * Removes a person from this instance.
      *
      * @param in
      *            person which should be removed
-     * @param force
-     *            if true, the person is not removed if the count falls below
-     *            the required amount
-     * @return true, if the person could be removed, false otherwise
+     * @return true, if {@code in} is not {@code null}
+     * @throws IncompletePersonObjectException
+     *            if {@code in} does not have a {@link MetadataType}
      */
-    public boolean removePerson(Person in, boolean force) throws IncompletePersonObjectException {
-
+    public boolean removePerson(Person in) throws IncompletePersonObjectException {
         if (this.persons == null) {
             return false;
         }
 
-        MetadataType inMDType = in.getType();
-        // Incomplete person.
-        if (inMDType == null) {
-            IncompletePersonObjectException ipoe = new IncompletePersonObjectException();
-            LOGGER.error("Incomplete data for person metadata '" + in.getType().getName() + "'");
-            throw ipoe;
-        }
-
-        // How many metadata of this type do we have already.
-        int typesavailable = countMDofthisType(inMDType.getName());
-        // How many types must be at least available.
-        String maxnumbersallowed = this.type.getNumberOfMetadataType(inMDType);
-
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("+")) {
-            // There must be at least one.
-            return false;
-        }
-        if (force && typesavailable == 1 && maxnumbersallowed.equals("1m")) {
-            // There must be at least one.
-            return false;
+        if (in.getType() == null) {
+            throw new IncompletePersonObjectException("Incomplete person: MetadataType is null");
         }
 
         this.persons.remove(in);
 
         return true;
-    }
-
-    /**
-     * Removes a person from this instance. If (according to configuration) at
-     * least one {@link Person} of this type is required on this instance, the
-     * meta-datum will <i>not be removed</i>.
-     *
-     * @param in
-     *            person which should be removed
-     * @return true, if the person could be removed, false otherwise
-     */
-    public boolean removePerson(Person in) throws IncompletePersonObjectException {
-        return removePerson(in, false);
     }
 
     /**
