@@ -3534,6 +3534,12 @@ public class MetsMods implements ugh.dl.Fileformat {
                     currentPath += "/" + element;
                 }
             }
+            // Check, if the element name starts with a "@", if so, an attribute
+            // needs to be created.
+            else if (element.startsWith("@")) {
+                // Get out of loop.
+                break;
+            }
             // We are requesting an element.
             else {
                 requestingElement = true;
@@ -4223,6 +4229,11 @@ public class MetsMods implements ugh.dl.Fileformat {
             throw new PreferencesException(message);
         }
 
+        // Add value to attribute.
+        if(createdNode instanceof Attr){
+            ((Attr) createdNode).setValue(theMetadata.getValue());
+            return;
+        }
         // Add value to node.
         Node valueNode = theDocument.createTextNode(theMetadata.getValue());
         createdNode.appendChild(valueNode);
