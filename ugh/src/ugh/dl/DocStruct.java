@@ -843,7 +843,7 @@ public class DocStruct implements Serializable {
 		if (getMetadataByType(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE).size() > 0) {
 			return true;
 		}
-		if (children == null) {
+		if (children == null || children.isEmpty()) {
 			return false;
 		}
 		for (DocStruct child : children) {
