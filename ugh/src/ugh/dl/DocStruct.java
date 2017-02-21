@@ -102,7 +102,26 @@ public class DocStruct implements Serializable {
      */
     private List<Metadata> allMetadata;
 
+    /**
+     * List containing meta-data instances which have been removed. These
+     * instances must be deleted from database etc.
+     * 
+     * @deprecated This field is decommissioned. However, it must remain in
+     *             place to allow deserialization XStream files created in days
+     *             of yore.
+     */
+    @SuppressWarnings("unused")
+    private List<Metadata> removedMetadata;
+
     private List<MetadataGroup> allMetadataGroups;
+
+    /**
+     * @deprecated This field is decommissioned. However, it must remain in
+     *             place to allow deserialization XStream files created in days
+     *             of yore.
+     */
+    @SuppressWarnings("unused")
+    private List<MetadataGroup> removedMetadataGroups;
 
     /**
      * List containing all DocStrct-instances being children of this instance.
@@ -147,6 +166,17 @@ public class DocStruct implements Serializable {
      */
     private DigitalDocument digdoc;
     private Object origObject = null;
+
+    /**
+     * ID in database table, 4 bytes long.
+     * 
+     * @deprecated This field is decommissioned. However, it must remain in
+     *             place to allow deserialization XStream files created in days
+     *             of yore.
+     */
+    @SuppressWarnings("unused")
+    private final long databaseid = 0;
+
     private boolean logical = false;
     private boolean physical = false;
     
