@@ -28,35 +28,35 @@ package ugh.exceptions;
 
 public class ImportException extends RuntimeException {
 
-	private static final long	serialVersionUID	= -2920242451655849453L;
+    private static final long    serialVersionUID    = -2920242451655849453L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public ImportException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public ImportException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inMessage
-	 **************************************************************************/
-	public ImportException(String inMessage) {
-		super(inMessage);
-	}
+    /***************************************************************************
+     * @param inMessage
+     **************************************************************************/
+    public ImportException(String inMessage) {
+        super(inMessage);
+    }
 
-	/***************************************************************************
-	 * @param exp
-	 **************************************************************************/
-	public ImportException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param exp
+     **************************************************************************/
+    public ImportException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inMessage
-	 * @param exp
-	 **************************************************************************/
-	public ImportException(String inMessage, Exception e) {
-		super(inMessage, e);
-	}
+    /***************************************************************************
+     * @param inMessage
+     * @param exp
+     **************************************************************************/
+    public ImportException(String inMessage, Exception e) {
+        super(inMessage, e);
+    }
 
 }

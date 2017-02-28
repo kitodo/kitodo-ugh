@@ -1,8 +1,8 @@
 /*
  * This file is part of the ContentServer  project.
  * Visit the websites for more information.
- * 		- http://gdz.sub.uni-goettingen.de
- * 		- http://www.intranda.com
+ *         - http://gdz.sub.uni-goettingen.de
+ *         - http://www.intranda.com
  *
  * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
  * intranda software.
@@ -30,10 +30,10 @@ package converter.processing;
  ************************************************************************************/
 public interface Validatable{
 
-	public void validate() throws ContentLibException;
+    public void validate() throws ContentLibException;
 
-	public void setBaseFolder(String path);
-	public void setID(String id);
-	public void setSearchString(String searchExpression);
+    public void setBaseFolder(String path);
+    public void setID(String id);
+    public void setSearchString(String searchExpression);
 
 }

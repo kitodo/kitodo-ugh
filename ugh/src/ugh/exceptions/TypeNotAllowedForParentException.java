@@ -31,58 +31,58 @@ import ugh.dl.DocStructType;
 
 public class TypeNotAllowedForParentException extends UGHException {
 
-	private static final long	serialVersionUID	= -4288773248662868878L;
+    private static final long    serialVersionUID    = -4288773248662868878L;
 
-	ugh.dl.DocStructType		docStructType;
+    ugh.dl.DocStructType        docStructType;
 
-	/***************************************************************************
-	 * Constructor.
-	 **************************************************************************/
-	public TypeNotAllowedForParentException() {
-		super();
-	}
+    /***************************************************************************
+     * Constructor.
+     **************************************************************************/
+    public TypeNotAllowedForParentException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public TypeNotAllowedForParentException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public TypeNotAllowedForParentException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public TypeNotAllowedForParentException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public TypeNotAllowedForParentException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public TypeNotAllowedForParentException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public TypeNotAllowedForParentException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public TypeNotAllowedForParentException(DocStructType in) {
-		this.docStructType = in;
-	}
+    /***************************************************************************
+     * @param in
+     **************************************************************************/
+    public TypeNotAllowedForParentException(DocStructType in) {
+        this.docStructType = in;
+    }
 
-	/**************************************************************************
-	 * @return
-	 **************************************************************************/
-	public ugh.dl.DocStructType getDocStructType() {
-		return this.docStructType;
-	}
+    /**************************************************************************
+     * @return
+     **************************************************************************/
+    public ugh.dl.DocStructType getDocStructType() {
+        return this.docStructType;
+    }
 
-	/**************************************************************************
-	 * @param docStructType
-	 **************************************************************************/
-	public void setDocStructType(ugh.dl.DocStructType docStructType) {
-		this.docStructType = docStructType;
-	}
+    /**************************************************************************
+     * @param docStructType
+     **************************************************************************/
+    public void setDocStructType(ugh.dl.DocStructType docStructType) {
+        this.docStructType = docStructType;
+    }
 
 }

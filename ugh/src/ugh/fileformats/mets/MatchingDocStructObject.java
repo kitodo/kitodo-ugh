@@ -41,67 +41,67 @@ import ugh.exceptions.PreferencesException;
 
 public class MatchingDocStructObject {
 
-	private String			metstype		= null;
-	private DocStructType	internaltype	= null;
+    private String            metstype        = null;
+    private DocStructType    internaltype    = null;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	protected MatchingDocStructObject() {
-		// None.
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    protected MatchingDocStructObject() {
+        // None.
+    }
 
-	/***************************************************************************
-	 * @param metstype
-	 * @param internaltype
-	 * @throws PreferencesException
-	 **************************************************************************/
-	protected MatchingDocStructObject(Prefs myPreferences, String metstype,
-			String internaltype) throws PreferencesException {
+    /***************************************************************************
+     * @param metstype
+     * @param internaltype
+     * @throws PreferencesException
+     **************************************************************************/
+    protected MatchingDocStructObject(Prefs myPreferences, String metstype,
+            String internaltype) throws PreferencesException {
 
-		this.setMetstype(metstype);
+        this.setMetstype(metstype);
 
-		DocStructType dstype = myPreferences
-				.getDocStrctTypeByName(internaltype);
-		if (dstype == null) {
-			// Throw exception.
-			PreferencesException pe = new PreferencesException(
-					"MatchingDocStructObject: Internal DocStructType with name '"
-							+ internaltype + "' is not defined!");
-			throw pe;
-		}
+        DocStructType dstype = myPreferences
+                .getDocStrctTypeByName(internaltype);
+        if (dstype == null) {
+            // Throw exception.
+            PreferencesException pe = new PreferencesException(
+                    "MatchingDocStructObject: Internal DocStructType with name '"
+                            + internaltype + "' is not defined!");
+            throw pe;
+        }
 
-		setInternaltype(dstype);
-	}
+        setInternaltype(dstype);
+    }
 
-	/***************************************************************************
-	 * @return the internaltype
-	 **************************************************************************/
-	protected DocStructType getInternaltype() {
-		return this.internaltype;
-	}
+    /***************************************************************************
+     * @return the internaltype
+     **************************************************************************/
+    protected DocStructType getInternaltype() {
+        return this.internaltype;
+    }
 
-	/***************************************************************************
-	 * @param internaltype
-	 *            the internaltype to set
-	 **************************************************************************/
-	protected void setInternaltype(DocStructType internaltype) {
-		this.internaltype = internaltype;
-	}
+    /***************************************************************************
+     * @param internaltype
+     *            the internaltype to set
+     **************************************************************************/
+    protected void setInternaltype(DocStructType internaltype) {
+        this.internaltype = internaltype;
+    }
 
-	/***************************************************************************
-	 * @return the metstype
-	 **************************************************************************/
-	protected String getMetstype() {
-		return this.metstype;
-	}
+    /***************************************************************************
+     * @return the metstype
+     **************************************************************************/
+    protected String getMetstype() {
+        return this.metstype;
+    }
 
-	/***************************************************************************
-	 * @param metstype
-	 *            the metstype to set
-	 **************************************************************************/
-	protected void setMetstype(String metstype) {
-		this.metstype = metstype;
-	}
+    /***************************************************************************
+     * @param metstype
+     *            the metstype to set
+     **************************************************************************/
+    protected void setMetstype(String metstype) {
+        this.metstype = metstype;
+    }
 
 }

@@ -37,35 +37,35 @@ package ugh.exceptions;
 
 public class ContentFileNotLinkedException extends UGHException {
 
-	private static final long	serialVersionUID	= -3208509348842876202L;
+    private static final long    serialVersionUID    = -3208509348842876202L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public ContentFileNotLinkedException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public ContentFileNotLinkedException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public ContentFileNotLinkedException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public ContentFileNotLinkedException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public ContentFileNotLinkedException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public ContentFileNotLinkedException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public ContentFileNotLinkedException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public ContentFileNotLinkedException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
 }

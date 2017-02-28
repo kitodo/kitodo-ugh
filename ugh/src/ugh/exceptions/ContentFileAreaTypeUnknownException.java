@@ -28,35 +28,35 @@ package ugh.exceptions;
 
 public class ContentFileAreaTypeUnknownException extends UGHException {
 
-	private static final long	serialVersionUID	= -4541820439500544332L;
+    private static final long    serialVersionUID    = -4541820439500544332L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public ContentFileAreaTypeUnknownException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public ContentFileAreaTypeUnknownException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public ContentFileAreaTypeUnknownException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public ContentFileAreaTypeUnknownException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public ContentFileAreaTypeUnknownException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public ContentFileAreaTypeUnknownException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public ContentFileAreaTypeUnknownException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public ContentFileAreaTypeUnknownException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
 }

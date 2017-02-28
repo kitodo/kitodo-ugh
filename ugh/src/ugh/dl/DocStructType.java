@@ -50,14 +50,14 @@ public class DocStructType implements Serializable {
 
     private String name;
 
-	/**
-	 * The field anchorClass may name an anchor (abstract super structure) class
-	 * that logical structure instances of this type belong to. There may be
-	 * multiple classes and several DocStructTypes may belong to one class. In
-	 * this case, they must share the same anchorClass value. If the anchorClass
-	 * is null, this DocStructType is a common element, not an anchor.
-	 */
-	private String anchorClass = null;
+    /**
+     * The field anchorClass may name an anchor (abstract super structure) class
+     * that logical structure instances of this type belong to. There may be
+     * multiple classes and several DocStructTypes may belong to one class. In
+     * this case, they must share the same anchorClass value. If the anchorClass
+     * is null, this DocStructType is a common element, not an anchor.
+     */
+    private String anchorClass = null;
     // Preferences, which created this instance.
     private boolean hasfileset = true;
     private boolean topmost = false;
@@ -171,22 +171,22 @@ public class DocStructType implements Serializable {
      *
      * @param inBool
      **************************************************************************/
-	public void setAnchorClass(String anchorClass) {
-		this.anchorClass = anchorClass;
+    public void setAnchorClass(String anchorClass) {
+        this.anchorClass = anchorClass;
     }
 
     /***************************************************************************
-	 * Retrieves the name of the anchor structure, if any, or null otherwise.
-	 * Anchors ar a special type of document structure, which group other
-	 * structure entities together, but have no own content. E.h. a periodical
-	 * as such can be an anchor. The periodical itself is a virtual structure
-	 * entity without any own content, but groups all years of appearance
-	 * together. Years may be anchors again for volumes, etc.
-	 *
-	 * @return String, which is null, if it cannot be used as an anchor
-	 **************************************************************************/
-	public String getAnchorClass() {
-		return anchorClass;
+     * Retrieves the name of the anchor structure, if any, or null otherwise.
+     * Anchors ar a special type of document structure, which group other
+     * structure entities together, but have no own content. E.h. a periodical
+     * as such can be an anchor. The periodical itself is a virtual structure
+     * entity without any own content, but groups all years of appearance
+     * together. Years may be anchors again for volumes, etc.
+     *
+     * @return String, which is null, if it cannot be used as an anchor
+     **************************************************************************/
+    public String getAnchorClass() {
+        return anchorClass;
     }
 
     /***************************************************************************
@@ -687,7 +687,7 @@ public class DocStructType implements Serializable {
      * @see java.lang.Object#toString()
      */
     @Override
-	public String toString() {
+    public String toString() {
         return getName();
     }
 

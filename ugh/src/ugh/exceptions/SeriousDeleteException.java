@@ -28,35 +28,35 @@ package ugh.exceptions;
 
 public class SeriousDeleteException extends UGHException {
 
-	private static final long	serialVersionUID	= -6166668296450504223L;
+    private static final long    serialVersionUID    = -6166668296450504223L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public SeriousDeleteException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public SeriousDeleteException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public SeriousDeleteException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public SeriousDeleteException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public SeriousDeleteException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public SeriousDeleteException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public SeriousDeleteException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public SeriousDeleteException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
 }
