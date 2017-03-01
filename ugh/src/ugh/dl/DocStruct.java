@@ -68,7 +68,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * <li>set and retrieve metadata, which describe a structure entity,
  * <li>handle content files, which are linked to a structure entity.
  * </ul>
- * 
+ *
  * Every structure entity is of a special kind. The kind of entity is stored in
  * a {@link DocStructType} element. Depending on the type of structure entities
  * certain metadata and children a permitted or forbidden.
@@ -105,7 +105,7 @@ public class DocStruct implements Serializable {
     /**
      * List containing meta-data instances which have been removed. These
      * instances must be deleted from database etc.
-     * 
+     *
      * @deprecated This field is decommissioned. However, it must remain in
      *             place to allow deserialization XStream files created in days
      *             of yore.
@@ -127,40 +127,40 @@ public class DocStruct implements Serializable {
      * List containing all DocStrct-instances being children of this instance.
      */
     private List<DocStruct> children;
-    
+
     /**
      * List containing all references to Contentfile objects.
      */
     private List<ContentFileReference> contentFileReferences = new LinkedList<ContentFileReference>();
-    
+
     /**
      * List of all persons; list containing all Person objects.
      */
     private List<Person> persons;
 
     private DocStruct parent;
-    
+
     /**
      * All references to other DocStrct instances (containing References
      * objects).
      */
     private final List<Reference> docStructRefsTo = new LinkedList<Reference>();
-    
+
     /**
      * All references from another DocStruct to this one.
      */
     private final List<Reference> docStructRefsFrom = new LinkedList<Reference>();
-    
+
     /**
      * Type of this instance.
      */
     private DocStructType type;
-    
+
     /**
      * Local identifier of this docstruct.
      */
     private String identifier = null;
-    
+
     /**
      * Digital document, to which this DocStruct belongs.
      */
@@ -169,7 +169,7 @@ public class DocStruct implements Serializable {
 
     /**
      * ID in database table, 4 bytes long.
-     * 
+     *
      * @deprecated This field is decommissioned. However, it must remain in
      *             place to allow deserialization XStream files created in days
      *             of yore.
@@ -179,12 +179,12 @@ public class DocStruct implements Serializable {
 
     private boolean logical = false;
     private boolean physical = false;
-    
+
     /**
      * String containing an identifier or a URL to the anchor.
      */
     private String referenceToAnchor;
-    
+
     /**
      * the amdSec referenced by this docStruct, if any
      */
@@ -309,7 +309,7 @@ public class DocStruct implements Serializable {
      * this instance is anchored on it. In the {@code DigitalDocument} that this
      * instance is anchored on, the identifier is stored as a {@link Metadata}
      * field.
-     * 
+     *
      * @return the identifier of the {@code DigitalDocument} this instance is
      *         anchored on
      */
@@ -325,7 +325,7 @@ public class DocStruct implements Serializable {
     /**
      * Sets the identifier of the {@link DigitalDocument} this instance is
      * anchored on.
-     * 
+     *
      * @param in
      *            the identifier of the {@code DigitalDocument} this instance is
      *            anchored on
@@ -977,7 +977,7 @@ public class DocStruct implements Serializable {
     /**
      * Returns the parent of this instance. Returns {@code null} if this
      * instance is the root of the tree.
-     * 
+     *
      * @return the parent, if any
      */
     public DocStruct getParent() {
@@ -3126,7 +3126,7 @@ public class DocStruct implements Serializable {
     /**
      * Sorts the meta-data and persons in this instance according to their
      * occurrence in the {@code Preferences} file.
-     * 
+     *
      * @param thePrefs
      *            preferences file to use for sorting
      */
