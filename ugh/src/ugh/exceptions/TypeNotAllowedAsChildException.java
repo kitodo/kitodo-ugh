@@ -36,82 +36,82 @@ import ugh.dl.DocStructType;
 
 public class TypeNotAllowedAsChildException extends UGHException {
 
-	private static final long	serialVersionUID	= -8326109048661152397L;
+    private static final long    serialVersionUID    = -8326109048661152397L;
 
-	ugh.dl.DocStructType		dsChildType;
-	ugh.dl.DocStructType		dsParentType;
+    ugh.dl.DocStructType        dsChildType;
+    ugh.dl.DocStructType        dsParentType;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public TypeNotAllowedAsChildException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public TypeNotAllowedAsChildException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public TypeNotAllowedAsChildException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public TypeNotAllowedAsChildException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public TypeNotAllowedAsChildException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public TypeNotAllowedAsChildException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public TypeNotAllowedAsChildException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public TypeNotAllowedAsChildException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
-	/***************************************************************************
-	 * @param child
-	 **************************************************************************/
-	public TypeNotAllowedAsChildException(DocStructType child) {
-		this.dsChildType = child;
-	}
+    /***************************************************************************
+     * @param child
+     **************************************************************************/
+    public TypeNotAllowedAsChildException(DocStructType child) {
+        this.dsChildType = child;
+    }
 
-	/***************************************************************************
-	 * @param parent
-	 * @param child
-	 **************************************************************************/
-	public TypeNotAllowedAsChildException(DocStructType parent,
-			DocStructType child) {
-		this.dsChildType = child;
-		this.dsParentType = parent;
-	}
+    /***************************************************************************
+     * @param parent
+     * @param child
+     **************************************************************************/
+    public TypeNotAllowedAsChildException(DocStructType parent,
+            DocStructType child) {
+        this.dsChildType = child;
+        this.dsParentType = parent;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Throwable#getMessage()
-	 */
-	@Override
-	public String getMessage() {
-		String result = null;
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Throwable#getMessage()
+     */
+    @Override
+    public String getMessage() {
+        String result = null;
 
-		if (this.dsChildType == null && this.dsParentType != null) {
-			result = "DocStructType for child is not defined; probably a mapping problem in the ruleset. Child should be added for parent '"
-					+ this.dsParentType.getName() + "'";
-		} else if (this.dsParentType == null && this.dsChildType != null) {
-			result = "Child of type '"
-					+ this.dsChildType.getName()
-					+ "' is not allowed for parent; unfortunately we don't have any information about the parent";
-		} else {
-			result = "Child of "
-					+ (this.dsChildType == null ? "unknown type" : "type '"
-							+ this.dsChildType.getName() + "'")
-					+ " can't be added to a DocStruct of type '"
-					+ this.dsParentType.getName() + "'";
-		}
+        if (this.dsChildType == null && this.dsParentType != null) {
+            result = "DocStructType for child is not defined; probably a mapping problem in the ruleset. Child should be added for parent '"
+                    + this.dsParentType.getName() + "'";
+        } else if (this.dsParentType == null && this.dsChildType != null) {
+            result = "Child of type '"
+                    + this.dsChildType.getName()
+                    + "' is not allowed for parent; unfortunately we don't have any information about the parent";
+        } else {
+            result = "Child of "
+                    + (this.dsChildType == null ? "unknown type" : "type '"
+                            + this.dsChildType.getName() + "'")
+                    + " can't be added to a DocStruct of type '"
+                    + this.dsParentType.getName() + "'";
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

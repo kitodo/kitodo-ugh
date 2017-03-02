@@ -38,123 +38,123 @@ import java.io.Serializable;
 
 public class VirtualFileGroup implements Serializable {
 
-	private static final long	serialVersionUID	= 8594056041230503891L;
+    private static final long    serialVersionUID    = 8594056041230503891L;
 
-	private String				name				= "";
-	private String				pathToFiles			= "";
-	private String				mimetype			= "";
-	private String				fileSuffix			= "";
-	private String				idSuffix			= "";
-	private boolean				ordinary			= true;
+    private String                name                = "";
+    private String                pathToFiles            = "";
+    private String                mimetype            = "";
+    private String                fileSuffix            = "";
+    private String                idSuffix            = "";
+    private boolean                ordinary            = true;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public VirtualFileGroup() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public VirtualFileGroup() {
+        super();
+    }
 
-	/***************************************************************************
-	 * Constructor.
-	 **************************************************************************/
-	public VirtualFileGroup(String theFilegroupName, String thePath,
-			String theMimetype, String theFileSuffix) {
+    /***************************************************************************
+     * Constructor.
+     **************************************************************************/
+    public VirtualFileGroup(String theFilegroupName, String thePath,
+            String theMimetype, String theFileSuffix) {
 
-		super();
-		this.name = theFilegroupName;
-		this.pathToFiles = thePath;
-		this.mimetype = theMimetype;
-		this.fileSuffix = theFileSuffix;
-	}
+        super();
+        this.name = theFilegroupName;
+        this.pathToFiles = thePath;
+        this.mimetype = theMimetype;
+        this.fileSuffix = theFileSuffix;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getName() {
-		return this.name;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getName() {
+        return this.name;
+    }
 
-	/***************************************************************************
-	 * @param name
-	 **************************************************************************/
-	public void setName(String name) {
-		this.name = name;
-	}
+    /***************************************************************************
+     * @param name
+     **************************************************************************/
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getPathToFiles() {
-		return this.pathToFiles;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getPathToFiles() {
+        return this.pathToFiles;
+    }
 
-	/***************************************************************************
-	 * @param pathToFiles
-	 **************************************************************************/
-	public void setPathToFiles(String pathToFiles) {
-		this.pathToFiles = pathToFiles;
-	}
+    /***************************************************************************
+     * @param pathToFiles
+     **************************************************************************/
+    public void setPathToFiles(String pathToFiles) {
+        this.pathToFiles = pathToFiles;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getMimetype() {
-		return this.mimetype;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getMimetype() {
+        return this.mimetype;
+    }
 
-	/***************************************************************************
-	 * @param mimetype
-	 **************************************************************************/
-	public void setMimetype(String mimetype) {
-		this.mimetype = mimetype;
-	}
+    /***************************************************************************
+     * @param mimetype
+     **************************************************************************/
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getFileSuffix() {
-		return this.fileSuffix;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getFileSuffix() {
+        return this.fileSuffix;
+    }
 
-	/***************************************************************************
-	 * @param fileSuffix
-	 **************************************************************************/
-	public void setFileSuffix(String fileSuffix) {
+    /***************************************************************************
+     * @param fileSuffix
+     **************************************************************************/
+    public void setFileSuffix(String fileSuffix) {
 
-		// If the given file suffix starts with a ".", remove the ".".
-		if (fileSuffix.startsWith(".")) {
-			this.fileSuffix = fileSuffix.replaceFirst("\\.", "");
-		} else {
-			this.fileSuffix = fileSuffix;
-		}
-	}
+        // If the given file suffix starts with a ".", remove the ".".
+        if (fileSuffix.startsWith(".")) {
+            this.fileSuffix = fileSuffix.replaceFirst("\\.", "");
+        } else {
+            this.fileSuffix = fileSuffix;
+        }
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getIdSuffix() {
-		return this.idSuffix;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getIdSuffix() {
+        return this.idSuffix;
+    }
 
-	/***************************************************************************
-	 * @param idSuffix
-	 **************************************************************************/
-	public void setIdSuffix(String idSuffix) {
-		this.idSuffix = idSuffix;
-	}
+    /***************************************************************************
+     * @param idSuffix
+     **************************************************************************/
+    public void setIdSuffix(String idSuffix) {
+        this.idSuffix = idSuffix;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public boolean isOrdinary() {
-		return ordinary;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public boolean isOrdinary() {
+        return ordinary;
+    }
 
-	/***************************************************************************
-	 * @param ordinary
-	 **************************************************************************/
-	public void setOrdinary(boolean ordinary) {
-		this.ordinary = ordinary;
-	}
+    /***************************************************************************
+     * @param ordinary
+     **************************************************************************/
+    public void setOrdinary(boolean ordinary) {
+        this.ordinary = ordinary;
+    }
 
 }

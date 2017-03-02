@@ -68,7 +68,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
  * <li>set and retrieve metadata, which describe a structure entity,
  * <li>handle content files, which are linked to a structure entity.
  * </ul>
- * 
+ *
  * Every structure entity is of a special kind. The kind of entity is stored in
  * a {@link DocStructType} element. Depending on the type of structure entities
  * certain metadata and children a permitted or forbidden.
@@ -88,14 +88,14 @@ public class DocStruct implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
     private static final String HIDDEN_METADATA_CHAR = "_";
 
-	private static final List<String> IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING = Arrays.asList(
-		new String[] { "TitleDocMain", "CatalogIDDigital", "TitleDocMainShort", "MetsPointerURL" }
-	);
+    private static final List<String> IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING = Arrays.asList(
+        new String[] { "TitleDocMain", "CatalogIDDigital", "TitleDocMainShort", "MetsPointerURL" }
+    );
 
-	private static final Set<String> FOREIGN_CHILD_METADATA_TYPES_TO_COPY = new HashSet<String>(
-			Arrays.asList(new String[] { MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE,
-					MetsModsImportExport.CREATE_LABEL_ATTRIBUTE_TYPE,
-					MetsModsImportExport.CREATE_ORDERLABEL_ATTRIBUTE_TYPE }));
+    private static final Set<String> FOREIGN_CHILD_METADATA_TYPES_TO_COPY = new HashSet<String>(
+            Arrays.asList(new String[] { MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE,
+                    MetsModsImportExport.CREATE_LABEL_ATTRIBUTE_TYPE,
+                    MetsModsImportExport.CREATE_ORDERLABEL_ATTRIBUTE_TYPE }));
 
     /**
      *  List containing all Metadata instances.
@@ -105,7 +105,7 @@ public class DocStruct implements Serializable {
     /**
      * List containing meta-data instances which have been removed. These
      * instances must be deleted from database etc.
-     * 
+     *
      * @deprecated This field is decommissioned. However, it must remain in
      *             place to allow deserialization XStream files created in days
      *             of yore.
@@ -127,40 +127,40 @@ public class DocStruct implements Serializable {
      * List containing all DocStrct-instances being children of this instance.
      */
     private List<DocStruct> children;
-    
+
     /**
      * List containing all references to Contentfile objects.
      */
     private List<ContentFileReference> contentFileReferences = new LinkedList<ContentFileReference>();
-    
+
     /**
      * List of all persons; list containing all Person objects.
      */
     private List<Person> persons;
 
     private DocStruct parent;
-    
+
     /**
      * All references to other DocStrct instances (containing References
      * objects).
      */
     private final List<Reference> docStructRefsTo = new LinkedList<Reference>();
-    
+
     /**
      * All references from another DocStruct to this one.
      */
     private final List<Reference> docStructRefsFrom = new LinkedList<Reference>();
-    
+
     /**
      * Type of this instance.
      */
     private DocStructType type;
-    
+
     /**
      * Local identifier of this docstruct.
      */
     private String identifier = null;
-    
+
     /**
      * Digital document, to which this DocStruct belongs.
      */
@@ -169,7 +169,7 @@ public class DocStruct implements Serializable {
 
     /**
      * ID in database table, 4 bytes long.
-     * 
+     *
      * @deprecated This field is decommissioned. However, it must remain in
      *             place to allow deserialization XStream files created in days
      *             of yore.
@@ -179,12 +179,12 @@ public class DocStruct implements Serializable {
 
     private boolean logical = false;
     private boolean physical = false;
-    
+
     /**
      * String containing an identifier or a URL to the anchor.
      */
     private String referenceToAnchor;
-    
+
     /**
      * the amdSec referenced by this docStruct, if any
      */
@@ -276,19 +276,19 @@ public class DocStruct implements Serializable {
      *
      * @return all child nodes that are of a different or no anchor class at all
      */
-	public List<DocStruct> getAllRealSuccessors() {
-		LinkedList<DocStruct> result = new LinkedList<DocStruct>();
-		if (children != null) {
-			for (DocStruct child : children) {
-				if (type.getAnchorClass().equals(child.getType().getAnchorClass())) {
-					result.addAll(child.getAllRealSuccessors());
-				} else if (!child.hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE)) {
-					result.add(child);
-				}
-			}
-		}
-		return result;
-	}
+    public List<DocStruct> getAllRealSuccessors() {
+        LinkedList<DocStruct> result = new LinkedList<DocStruct>();
+        if (children != null) {
+            for (DocStruct child : children) {
+                if (type.getAnchorClass().equals(child.getType().getAnchorClass())) {
+                    result.addAll(child.getAllRealSuccessors());
+                } else if (!child.hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE)) {
+                    result.add(child);
+                }
+            }
+        }
+        return result;
+    }
 
     @Deprecated
     public String getreferenceToAnchor() {
@@ -309,7 +309,7 @@ public class DocStruct implements Serializable {
      * this instance is anchored on it. In the {@code DigitalDocument} that this
      * instance is anchored on, the identifier is stored as a {@link Metadata}
      * field.
-     * 
+     *
      * @return the identifier of the {@code DigitalDocument} this instance is
      *         anchored on
      */
@@ -325,7 +325,7 @@ public class DocStruct implements Serializable {
     /**
      * Sets the identifier of the {@link DigitalDocument} this instance is
      * anchored on.
-     * 
+     *
      * @param in
      *            the identifier of the {@code DigitalDocument} this instance is
      *            anchored on
@@ -479,7 +479,7 @@ public class DocStruct implements Serializable {
      *            copy any children
      * @return a new DocStruct instance
      */
-	public DocStruct copy(boolean cpmetadata, Boolean recursive) {
+    public DocStruct copy(boolean cpmetadata, Boolean recursive) {
 
         DocStruct newStruct = null;
         try {
@@ -629,23 +629,23 @@ public class DocStruct implements Serializable {
             }
             }
 
-		// Iterate over all children, if recursive set to true.
-		if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
-			for (DocStruct child : this.getAllChildren()) {
-				if (recursive == null
-						&& (type == null || type.getAnchorClass() == null || child.getType() == null || !type
-								.getAnchorClass().equals(child.getType().getAnchorClass()))) {
-					continue;
-				}
-				DocStruct copiedChild = child.copy(cpmetadata, recursive);
-				try {
-					newStruct.addChild(copiedChild);
-				} catch (TypeNotAllowedAsChildException e) {
-					String message = "This " + e.getClass().getName() + " should not have been occurred!";
-					LOGGER.error(message, e);
-				}
-			}
-		}
+        // Iterate over all children, if recursive set to true.
+        if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
+            for (DocStruct child : this.getAllChildren()) {
+                if (recursive == null
+                        && (type == null || type.getAnchorClass() == null || child.getType() == null || !type
+                                .getAnchorClass().equals(child.getType().getAnchorClass()))) {
+                    continue;
+                }
+                DocStruct copiedChild = child.copy(cpmetadata, recursive);
+                try {
+                    newStruct.addChild(copiedChild);
+                } catch (TypeNotAllowedAsChildException e) {
+                    String message = "This " + e.getClass().getName() + " should not have been occurred!";
+                    LOGGER.error(message, e);
+                }
+            }
+        }
 
         return newStruct;
     }
@@ -659,9 +659,9 @@ public class DocStruct implements Serializable {
      *            anchor class below which the copy shall be truncated
      * @return a partial copy of the structure tree
      */
-	public DocStruct copyTruncated(String anchorClass) {
-		return copyTruncated(anchorClass, parent);
-	}
+    public DocStruct copyTruncated(String anchorClass) {
+        return copyTruncated(anchorClass, parent);
+    }
 
     /**
      * Returns a partial copy the structural tree with all structural elements
@@ -674,164 +674,164 @@ public class DocStruct implements Serializable {
      *            parent class of the copy to create
      * @return a partial copy of the structure tree
      */
-	private DocStruct copyTruncated(String anchorClass, DocStruct parent) {
+    private DocStruct copyTruncated(String anchorClass, DocStruct parent) {
 
-		try {
-			DocStruct newStruct = new DocStruct(type);
-			newStruct.parent = parent;
-			newStruct.logical = this.logical;
+        try {
+            DocStruct newStruct = new DocStruct(type);
+            newStruct.parent = parent;
+            newStruct.logical = this.logical;
 
-			if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
-				if (allMetadata != null) {
-					for (Metadata md : allMetadata) {
-						if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
-							continue;
-						}
-						Metadata mdnew = new Metadata(md.getType());
-						mdnew.setValue(md.getValue());
-						if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
-							mdnew.setValueQualifier(md.getValueQualifier(), md.getValueQualifierType());
-						}
-						if (md.getAuthorityID() != null && md.getAuthorityValue() != null
-								&& md.getAuthorityURI() != null) {
-							mdnew.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
-						}
-						newStruct.addMetadata(mdnew);
-					}
-				}
+            if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
+                if (allMetadata != null) {
+                    for (Metadata md : allMetadata) {
+                        if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
+                            continue;
+                        }
+                        Metadata mdnew = new Metadata(md.getType());
+                        mdnew.setValue(md.getValue());
+                        if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
+                            mdnew.setValueQualifier(md.getValueQualifier(), md.getValueQualifierType());
+                        }
+                        if (md.getAuthorityID() != null && md.getAuthorityValue() != null
+                                && md.getAuthorityURI() != null) {
+                            mdnew.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+                        }
+                        newStruct.addMetadata(mdnew);
+                    }
+                }
 
-				if (allMetadataGroups != null) {
-					for (MetadataGroup md : this.getAllMetadataGroups()) {
-						MetadataGroup mdnew = new MetadataGroup(md.getType());
-						mdnew.setDocStruct(newStruct);
-						List<Metadata> newmdlist = new LinkedList<Metadata>();
-						List<Person> newPersonList = new LinkedList<Person>();
-						for (Metadata meta : md.getMetadataList()) {
-							Metadata newMeta = new Metadata(meta.getType());
-							newMeta.setValue(meta.getValue());
-							if (meta.getValueQualifier() != null && meta.getValueQualifierType() != null) {
-								newMeta.setValueQualifier(meta.getValueQualifier(), meta.getValueQualifierType());
-							}
-							if (meta.getAuthorityID() != null && meta.getAuthorityValue() != null
-									&& meta.getAuthorityURI() != null) {
-								newMeta.setAutorityFile(meta.getAuthorityID(), meta.getAuthorityURI(),
-										meta.getAuthorityValue());
-							}
-							newmdlist.add(newMeta);
-						}
+                if (allMetadataGroups != null) {
+                    for (MetadataGroup md : this.getAllMetadataGroups()) {
+                        MetadataGroup mdnew = new MetadataGroup(md.getType());
+                        mdnew.setDocStruct(newStruct);
+                        List<Metadata> newmdlist = new LinkedList<Metadata>();
+                        List<Person> newPersonList = new LinkedList<Person>();
+                        for (Metadata meta : md.getMetadataList()) {
+                            Metadata newMeta = new Metadata(meta.getType());
+                            newMeta.setValue(meta.getValue());
+                            if (meta.getValueQualifier() != null && meta.getValueQualifierType() != null) {
+                                newMeta.setValueQualifier(meta.getValueQualifier(), meta.getValueQualifierType());
+                            }
+                            if (meta.getAuthorityID() != null && meta.getAuthorityValue() != null
+                                    && meta.getAuthorityURI() != null) {
+                                newMeta.setAutorityFile(meta.getAuthorityID(), meta.getAuthorityURI(),
+                                        meta.getAuthorityValue());
+                            }
+                            newmdlist.add(newMeta);
+                        }
 
-						for (Person ps : md.getPersonList()) {
-							Person newps = new Person(ps.getType());
-							if (ps.getLastname() != null) {
-								newps.setLastname(ps.getLastname());
-							}
-							if (ps.getFirstname() != null) {
-								newps.setFirstname(ps.getFirstname());
-							}
-							if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
-									&& ps.getAuthorityValue() != null) {
-								newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
-							}
-							if (ps.getInstitution() != null) {
-								newps.setInstitution(ps.getInstitution());
-							}
-							if (ps.getAffiliation() != null) {
-								newps.setAffiliation(ps.getAffiliation());
-							}
-							if (ps.getRole() != null) {
-								newps.setRole(ps.getRole());
-							}
-							newPersonList.add(newps);
-						}
-						mdnew.setMetadataList(newmdlist);
-						mdnew.setPersonList(newPersonList);
-						newStruct.addMetadataGroup(mdnew);
+                        for (Person ps : md.getPersonList()) {
+                            Person newps = new Person(ps.getType());
+                            if (ps.getLastname() != null) {
+                                newps.setLastname(ps.getLastname());
+                            }
+                            if (ps.getFirstname() != null) {
+                                newps.setFirstname(ps.getFirstname());
+                            }
+                            if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
+                                    && ps.getAuthorityValue() != null) {
+                                newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                            }
+                            if (ps.getInstitution() != null) {
+                                newps.setInstitution(ps.getInstitution());
+                            }
+                            if (ps.getAffiliation() != null) {
+                                newps.setAffiliation(ps.getAffiliation());
+                            }
+                            if (ps.getRole() != null) {
+                                newps.setRole(ps.getRole());
+                            }
+                            newPersonList.add(newps);
+                        }
+                        mdnew.setMetadataList(newmdlist);
+                        mdnew.setPersonList(newPersonList);
+                        newStruct.addMetadataGroup(mdnew);
 
-						mdnew.setMetadataList(newmdlist);
-						newStruct.addMetadataGroup(mdnew);
+                        mdnew.setMetadataList(newmdlist);
+                        newStruct.addMetadataGroup(mdnew);
 
-					}
-				}
+                    }
+                }
 
-				// Copy the persons.
-				if (this.getAllPersons() != null) {
-					for (Person ps : this.getAllPersons()) {
+                // Copy the persons.
+                if (this.getAllPersons() != null) {
+                    for (Person ps : this.getAllPersons()) {
 
-						Person newps = new Person(ps.getType());
-						if (ps.getLastname() != null) {
-							newps.setLastname(ps.getLastname());
-						}
-						if (ps.getFirstname() != null) {
-							newps.setFirstname(ps.getFirstname());
-						}
+                        Person newps = new Person(ps.getType());
+                        if (ps.getLastname() != null) {
+                            newps.setLastname(ps.getLastname());
+                        }
+                        if (ps.getFirstname() != null) {
+                            newps.setFirstname(ps.getFirstname());
+                        }
 
-						if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
-								&& ps.getAuthorityValue() != null) {
-							newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
-						}
+                        if (ps.getAuthorityID() != null && ps.getAuthorityURI() != null
+                                && ps.getAuthorityValue() != null) {
+                            newps.setAutorityFile(ps.getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                        }
 
-						if (ps.getInstitution() != null) {
-							newps.setInstitution(ps.getInstitution());
-						}
-						if (ps.getAffiliation() != null) {
-							newps.setAffiliation(ps.getAffiliation());
-						}
-						if (ps.getRole() != null) {
-							newps.setRole(ps.getRole());
-						}
-						newStruct.addPerson(newps);
+                        if (ps.getInstitution() != null) {
+                            newps.setInstitution(ps.getInstitution());
+                        }
+                        if (ps.getAffiliation() != null) {
+                            newps.setAffiliation(ps.getAffiliation());
+                        }
+                        if (ps.getRole() != null) {
+                            newps.setRole(ps.getRole());
+                        }
+                        newStruct.addPerson(newps);
 
-					}
-				}
-			} else if (allMetadata != null
-					&& parent != null
-					&& parent.getType().getAnchorClass() != null
-					&& parent.getType().getAnchorClass().equals(anchorClass)
-					&& (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
-							.equals(type.getAnchorClass()))) {
-				for (Metadata md : allMetadata) {
-					if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
-						continue;
-					}
-					Metadata mdnew = new Metadata(md.getType());
-					mdnew.setValue(md.getValue());
-					newStruct.addMetadata(mdnew);
-				}
-			} else if (allMetadata != null
-					&& children != null
-					&& (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
-							.equals(type.getAnchorClass())))
-				for (DocStruct child : children)
-					if (anchorClass == null ? child.getAnchorClass() == null : anchorClass.equals(child
-							.getAnchorClass())) {
-						for (Metadata md : allMetadata) {
-							if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
-								continue;
-							}
-							Metadata mdnew = new Metadata(md.getType());
-							mdnew.setValue(md.getValue());
-							newStruct.addMetadata(mdnew);
-						}
-						break;
-					}
+                    }
+                }
+            } else if (allMetadata != null
+                    && parent != null
+                    && parent.getType().getAnchorClass() != null
+                    && parent.getType().getAnchorClass().equals(anchorClass)
+                    && (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
+                            .equals(type.getAnchorClass()))) {
+                for (Metadata md : allMetadata) {
+                    if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
+                        continue;
+                    }
+                    Metadata mdnew = new Metadata(md.getType());
+                    mdnew.setValue(md.getValue());
+                    newStruct.addMetadata(mdnew);
+                }
+            } else if (allMetadata != null
+                    && children != null
+                    && (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
+                            .equals(type.getAnchorClass())))
+                for (DocStruct child : children)
+                    if (anchorClass == null ? child.getAnchorClass() == null : anchorClass.equals(child
+                            .getAnchorClass())) {
+                        for (Metadata md : allMetadata) {
+                            if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
+                                continue;
+                            }
+                            Metadata mdnew = new Metadata(md.getType());
+                            mdnew.setValue(md.getValue());
+                            newStruct.addMetadata(mdnew);
+                        }
+                        break;
+                    }
 
-			if (children != null
-					&& (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
-							.getAnchorClass().equals(anchorClass))) {
-				for (DocStruct child : this.getAllChildren()) {
-					if ((anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass()))
-							|| !child.isMetsPointerStruct() ) {
-						DocStruct copiedChild = child.copyTruncated(anchorClass, this);
-						newStruct.addChild(copiedChild);
-					}
-				}
-			}
+            if (children != null
+                    && (anchorClass.equals(type.getAnchorClass()) || parent == null || !parent.getType()
+                            .getAnchorClass().equals(anchorClass))) {
+                for (DocStruct child : this.getAllChildren()) {
+                    if ((anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass()))
+                            || !child.isMetsPointerStruct() ) {
+                        DocStruct copiedChild = child.copyTruncated(anchorClass, this);
+                        newStruct.addChild(copiedChild);
+                    }
+                }
+            }
 
-			return newStruct;
-		} catch (UGHException thisShouldNeverHappen) {
-			throw new RuntimeException(thisShouldNeverHappen.getMessage(), thisShouldNeverHappen);
-		}
-	}
+            return newStruct;
+        } catch (UGHException thisShouldNeverHappen) {
+            throw new RuntimeException(thisShouldNeverHappen.getMessage(), thisShouldNeverHappen);
+        }
+    }
 
     /**
      * Returns whether this instance contains METS pointers by itself or whose
@@ -839,20 +839,20 @@ public class DocStruct implements Serializable {
      *
      * @return whether this contains only METS pointers
      */
-	public boolean isMetsPointerStruct() {
-		if (getMetadataByType(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE).size() > 0) {
-			return true;
-		}
-		if (children == null || children.isEmpty()) {
-			return false;
-		}
-		for (DocStruct child : children) {
-			if (!child.isMetsPointerStruct()) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public boolean isMetsPointerStruct() {
+        if (getMetadataByType(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE).size() > 0) {
+            return true;
+        }
+        if (children == null || children.isEmpty()) {
+            return false;
+        }
+        for (DocStruct child : children) {
+            if (!child.isMetsPointerStruct()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Returns incoming or outgoing {@code Reference}s.
@@ -977,7 +977,7 @@ public class DocStruct implements Serializable {
     /**
      * Returns the parent of this instance. Returns {@code null} if this
      * instance is the root of the tree.
-     * 
+     *
      * @return the parent, if any
      */
     public DocStruct getParent() {
@@ -2027,7 +2027,7 @@ public class DocStruct implements Serializable {
         }
 
         if (this.persons != null) {
-			for (Person per : this.persons) {
+            for (Person per : this.persons) {
                 MetadataType mdt = per.getType();
                 if (mdt == null) {
                     continue;
@@ -2037,7 +2037,7 @@ public class DocStruct implements Serializable {
                     return true;
                 }
             }
-		}
+        }
 
         return false;
     }
@@ -2360,7 +2360,7 @@ public class DocStruct implements Serializable {
      *             member of this instance's DocStruct type
      */
     public boolean addChild(DocStruct inchild) throws TypeNotAllowedAsChildException {
-    	return addChild((Integer) null, inchild);
+        return addChild((Integer) null, inchild);
     }
 
     /**
@@ -2420,17 +2420,17 @@ public class DocStruct implements Serializable {
             inchild.setPhysical(true);
         }
 
-		inchild.setParent(this);
+        inchild.setParent(this);
 
-		if (index == null) {
-			// Add child to end of List.
-			children.add(inchild);
-		} else {
-			children.add(index.intValue(), inchild);
-		}
+        if (index == null) {
+            // Add child to end of List.
+            children.add(inchild);
+        } else {
+            children.add(index.intValue(), inchild);
+        }
 
-		// Child was added.
-		return true;
+        // Child was added.
+        return true;
     }
 
     /**
@@ -2449,18 +2449,18 @@ public class DocStruct implements Serializable {
      *             if a child should be added, but it's DocStruct type isn't
      *             member of this instance's DocStruct type
      */
-	public boolean addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
-		if (where == null || inchild == null || inchild.getType() == null) {
-			LOGGER.warn("DocStruct or DocStructType is null");
-			return false;
-		}
+    public boolean addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
+        if (where == null || inchild == null || inchild.getType() == null) {
+            LOGGER.warn("DocStruct or DocStructType is null");
+            return false;
+        }
 
-		// get next position of index
-		int next = where.indexOf(44) + 1;
+        // get next position of index
+        int next = where.indexOf(44) + 1;
 
-		return next != 0 ? children.get(Integer.parseInt(where.substring(0, next - 1))).addChild(where.substring(next),
-				inchild) : addChild(Integer.valueOf(where), inchild);
-	}
+        return next != 0 ? children.get(Integer.parseInt(where.substring(0, next - 1))).addChild(where.substring(next),
+                inchild) : addChild(Integer.valueOf(where), inchild);
+    }
 
     /**
      * Removes a child from this instance.
@@ -3126,7 +3126,7 @@ public class DocStruct implements Serializable {
     /**
      * Sorts the meta-data and persons in this instance according to their
      * occurrence in the {@code Preferences} file.
-     * 
+     *
      * @param thePrefs
      *            preferences file to use for sorting
      */
@@ -3579,7 +3579,7 @@ public class DocStruct implements Serializable {
     class MetadataComparator implements Comparator<Object> {
 
         @Override
-		public int compare(Object o1, Object o2) {
+        public int compare(Object o1, Object o2) {
 
             Metadata m1 = (Metadata) o1;
             Metadata m2 = (Metadata) o2;
@@ -3599,7 +3599,7 @@ public class DocStruct implements Serializable {
     class MetadataGroupComparator implements Comparator<Object> {
 
         @Override
-		public int compare(Object o1, Object o2) {
+        public int compare(Object o1, Object o2) {
 
             MetadataGroup m1 = (MetadataGroup) o1;
             MetadataGroup m2 = (MetadataGroup) o2;
@@ -3684,9 +3684,9 @@ public class DocStruct implements Serializable {
      * @throws NoSuchElementException
      *             if this DocStruct does not contain the DocStruct
      */
-	public String indexOf(DocStruct d) throws NoSuchElementException {
-		return indexOf(d, null);
-	}
+    public String indexOf(DocStruct d) throws NoSuchElementException {
+        return indexOf(d, null);
+    }
 
     /**
      * Returns the index of the first occurrence of the specified element in
@@ -3706,34 +3706,34 @@ public class DocStruct implements Serializable {
      * @throws NoSuchElementException
      *             if this DocStruct does not contain the DocStruct
      */
-	public String indexOf(DocStruct d, String afterIndex) throws NoSuchElementException {
-		int from = 0;
-		String subIndex = null;
-		if (afterIndex != null) {
-			int comma = afterIndex.indexOf(',');
-			if (comma >= 0) {
-				from = Integer.parseInt(afterIndex.substring(0, comma));
-				subIndex = afterIndex.substring(comma + 1);
-			} else {
-				from = Integer.parseInt(afterIndex) + 1;
-			}
-		}
+    public String indexOf(DocStruct d, String afterIndex) throws NoSuchElementException {
+        int from = 0;
+        String subIndex = null;
+        if (afterIndex != null) {
+            int comma = afterIndex.indexOf(',');
+            if (comma >= 0) {
+                from = Integer.parseInt(afterIndex.substring(0, comma));
+                subIndex = afterIndex.substring(comma + 1);
+            } else {
+                from = Integer.parseInt(afterIndex) + 1;
+            }
+        }
 
-		if (children != null) {
-			for (int i = from; i < children.size(); i++) {
-				DocStruct child = children.get(i);
-				if (subIndex == null && child.equals(d)) {
-					return Integer.toString(i);
-				}
-				try {
-					return Integer.toString(i) + ',' + child.indexOf(d, subIndex);
-				} catch (NoSuchElementException go_on) {
-				}
-				subIndex = null;
-			}
-		}
-		throw new NoSuchElementException("No " + d + " in " + this);
-	}
+        if (children != null) {
+            for (int i = from; i < children.size(); i++) {
+                DocStruct child = children.get(i);
+                if (subIndex == null && child.equals(d)) {
+                    return Integer.toString(i);
+                }
+                try {
+                    return Integer.toString(i) + ',' + child.indexOf(d, subIndex);
+                } catch (NoSuchElementException go_on) {
+                }
+                subIndex = null;
+            }
+        }
+        throw new NoSuchElementException("No " + d + " in " + this);
+    }
 
     /**
      * Retrieves the name of the anchor structure, if any, or null otherwise.
@@ -3745,12 +3745,12 @@ public class DocStruct implements Serializable {
      *
      * @return String, which is null, if it cannot be used as an anchor
      */
-	public String getAnchorClass() {
-		if (type == null) {
-			return null;
-		}
-		return type.getAnchorClass();
-	}
+    public String getAnchorClass() {
+        if (type == null) {
+            return null;
+        }
+        return type.getAnchorClass();
+    }
 
     /**
      * The function getAllAnchorClasses() traverses the structure tree and
@@ -3763,51 +3763,51 @@ public class DocStruct implements Serializable {
      *             having been descending right into a hierarchy to be
      *             maintained in another anchor class already
      */
-	public Collection<String> getAllAnchorClasses() throws PreferencesException {
-		LinkedHashSet<String> result = new LinkedHashSet<String>();
-		String anchorClass = getAnchorClass();
-		if (anchorClass != null) {
-			result.add(anchorClass);
-			List<DocStruct> docStructs = getAllRealSuccessors();
-			do {
-				anchorClass = null;
-				List<DocStruct> nextLevel = new LinkedList<DocStruct>();
-				for (DocStruct docStruct : docStructs) {
-					String ancora = docStruct.getAnchorClass();
-					if (ancora != null) {
-						if (anchorClass == null) {
-							anchorClass = ancora;
-						} else if (!anchorClass.equals(ancora)) {
-							throw new PreferencesException(
-									"All real successors of an anchor class that are of an anchor class themselves "
-											+ "must belong to the same anchor class. The given logical document "
-											+ "structure in combination with the anchor names configured would result "
-											+ "in the hierarchical level " + docStruct.getParent().getType().getName()
-											+ "\u200A\u2014\u200Abelonging to the anchor class "
-											+ docStruct.getParent().getType().getAnchorClass() + "\u200A\u2014\u200Ato"
-											+ " have children which belong to the different anchor classes "
-											+ anchorClass + " and " + ancora + ", which is not supported.");
-						}
-						nextLevel.addAll(docStruct.getAllRealSuccessors());
-					}
-				}
-				if(anchorClass != null && !result.add(anchorClass)) {
-					String last = "";
-					for (String entry : result) {
-						last = entry;
-					}
-					throw new PreferencesException(
-							"All levels of the logical document structure that belong to the same anchor file must "
-									+ "immediately  follow each other as children. The given logical document "
-									+ "structure in combination with the anchor names configured would result in an "
-									+ "interruption of the elements being stored in the " + anchorClass + " anchor by "
-									+ "elements to be stored in the " + last + " anchor,  which isn’t possible.");
-				}
-				docStructs = nextLevel;
-			} while (docStructs.size() > 0);
-		}
-		return result;
-	}
+    public Collection<String> getAllAnchorClasses() throws PreferencesException {
+        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        String anchorClass = getAnchorClass();
+        if (anchorClass != null) {
+            result.add(anchorClass);
+            List<DocStruct> docStructs = getAllRealSuccessors();
+            do {
+                anchorClass = null;
+                List<DocStruct> nextLevel = new LinkedList<DocStruct>();
+                for (DocStruct docStruct : docStructs) {
+                    String ancora = docStruct.getAnchorClass();
+                    if (ancora != null) {
+                        if (anchorClass == null) {
+                            anchorClass = ancora;
+                        } else if (!anchorClass.equals(ancora)) {
+                            throw new PreferencesException(
+                                    "All real successors of an anchor class that are of an anchor class themselves "
+                                            + "must belong to the same anchor class. The given logical document "
+                                            + "structure in combination with the anchor names configured would result "
+                                            + "in the hierarchical level " + docStruct.getParent().getType().getName()
+                                            + "\u200A\u2014\u200Abelonging to the anchor class "
+                                            + docStruct.getParent().getType().getAnchorClass() + "\u200A\u2014\u200Ato"
+                                            + " have children which belong to the different anchor classes "
+                                            + anchorClass + " and " + ancora + ", which is not supported.");
+                        }
+                        nextLevel.addAll(docStruct.getAllRealSuccessors());
+                    }
+                }
+                if(anchorClass != null && !result.add(anchorClass)) {
+                    String last = "";
+                    for (String entry : result) {
+                        last = entry;
+                    }
+                    throw new PreferencesException(
+                            "All levels of the logical document structure that belong to the same anchor file must "
+                                    + "immediately  follow each other as children. The given logical document "
+                                    + "structure in combination with the anchor names configured would result in an "
+                                    + "interruption of the elements being stored in the " + anchorClass + " anchor by "
+                                    + "elements to be stored in the " + last + " anchor,  which isn’t possible.");
+                }
+                docStructs = nextLevel;
+            } while (docStructs.size() > 0);
+        }
+        return result;
+    }
 
     /**
      * The function getChild() returns a child element from this structural
@@ -3819,18 +3819,18 @@ public class DocStruct implements Serializable {
      * @throws IndexOutOfBoundsException
      *             if the child indicated cannot be reached
      */
-	public DocStruct getChild(String reference) {
-		if(children == null) {
-			throw new IndexOutOfBoundsException(reference);
-		}
-		int fieldSeparator;
-		if ((fieldSeparator = reference.indexOf(',')) > -1) {
-			int index = Integer.parseInt(reference.substring(0, fieldSeparator));
-			return children.get(index).getChild(reference.substring(fieldSeparator + 1));
-		} else {
-			return children.get(Integer.parseInt(reference));
-		}
-	}
+    public DocStruct getChild(String reference) {
+        if(children == null) {
+            throw new IndexOutOfBoundsException(reference);
+        }
+        int fieldSeparator;
+        if ((fieldSeparator = reference.indexOf(',')) > -1) {
+            int index = Integer.parseInt(reference.substring(0, fieldSeparator));
+            return children.get(index).getChild(reference.substring(fieldSeparator + 1));
+        } else {
+            return children.get(Integer.parseInt(reference));
+        }
+    }
 
     /**
      * The function addMetadata() adds a meta data field with the given name to
@@ -3845,23 +3845,23 @@ public class DocStruct implements Serializable {
      *             if no corresponding MetadataType object is returned by
      *             getAddableMetadataTypes()
      */
-	public DocStruct addMetadata(String fieldName, String value) throws MetadataTypeNotAllowedException {
-		boolean success = false;
-		for (MetadataType fieldType : type.getAllMetadataTypes()) {
-			if (fieldType.getName().equals(fieldName)) {
-				Metadata field = new Metadata(fieldType);
-				field.setValue(value);
-				addMetadata(field);
-				success = true;
-				break;
-			}
-		}
-		if (!success) {
-			throw new MetadataTypeNotAllowedException("Couldn’t add " + fieldName + " to " + type.getName()
-					+ ": No corresponding MetadataType object in result of DocStruc.getAllMetadataTypes().");
-		}
-		return this;
-	}
+    public DocStruct addMetadata(String fieldName, String value) throws MetadataTypeNotAllowedException {
+        boolean success = false;
+        for (MetadataType fieldType : type.getAllMetadataTypes()) {
+            if (fieldType.getName().equals(fieldName)) {
+                Metadata field = new Metadata(fieldType);
+                field.setValue(value);
+                addMetadata(field);
+                success = true;
+                break;
+            }
+        }
+        if (!success) {
+            throw new MetadataTypeNotAllowedException("Couldn’t add " + fieldName + " to " + type.getName()
+                    + ": No corresponding MetadataType object in result of DocStruc.getAllMetadataTypes().");
+        }
+        return this;
+    }
 
     /**
      * The function createChild() creates a child DocStruct below a DocStruct.
@@ -3881,12 +3881,12 @@ public class DocStruct implements Serializable {
      *             if a child should be added, but it's DocStruct type isn't
      *             member of this instance's DocStruct type
      */
-	public DocStruct createChild(String type, DigitalDocument caudexDigitalis, Prefs ruleset)
-			throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
-		DocStruct result = caudexDigitalis.createDocStruct(ruleset.getDocStrctTypeByName(type));
-		addChild(result);
-		return result;
-	}
+    public DocStruct createChild(String type, DigitalDocument caudexDigitalis, Prefs ruleset)
+            throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
+        DocStruct result = caudexDigitalis.createDocStruct(ruleset.getDocStrctTypeByName(type));
+        addChild(result);
+        return result;
+    }
 
     /**
      * The function getChild() returns a child of a DocStruct, identified by its
@@ -3905,22 +3905,22 @@ public class DocStruct implements Serializable {
      * @throws NoSuchElementException
      *             if no matching child is found
      */
-	public DocStruct getChild(String type, String identifierField, String identifier) throws NoSuchElementException {
-		List<DocStruct> children = getAllChildrenByTypeAndMetadataType(type, identifierField);
-		if (children == null) {
-			children = Collections.emptyList();
-		}
-		for (DocStruct child : children) {
-			for (Metadata metadataElement : child.getAllMetadata()) {
-				if (metadataElement.getType().getName().equals(identifierField)
-						&& metadataElement.getValue().equals(identifier)) {
-					return child;
-				}
-			}
-		}
-		throw new NoSuchElementException("No child " + type + " with " + identifierField + " = " + identifier + " in "
-				+ this + '.');
-	}
+    public DocStruct getChild(String type, String identifierField, String identifier) throws NoSuchElementException {
+        List<DocStruct> children = getAllChildrenByTypeAndMetadataType(type, identifierField);
+        if (children == null) {
+            children = Collections.emptyList();
+        }
+        for (DocStruct child : children) {
+            for (Metadata metadataElement : child.getAllMetadata()) {
+                if (metadataElement.getType().getName().equals(identifierField)
+                        && metadataElement.getValue().equals(identifier)) {
+                    return child;
+                }
+            }
+        }
+        throw new NoSuchElementException("No child " + type + " with " + identifierField + " = " + identifier + " in "
+                + this + '.');
+    }
 
     /**
      * The function getMetadataByType() returns a list of all meta data elements
@@ -3930,17 +3930,17 @@ public class DocStruct implements Serializable {
      *            name of the type of meta data to look for
      * @return a list of all meta data elements of that type
      */
-	public List<Metadata> getMetadataByType(String typeName) {
-		LinkedList<Metadata> result = new LinkedList<Metadata>();
-		if (allMetadata != null) {
-			for (Metadata metadata : allMetadata) {
-				if (metadata.getType().getName().equals(typeName)) {
-					result.add(metadata);
-				}
-			}
-		}
-		return result;
-	}
+    public List<Metadata> getMetadataByType(String typeName) {
+        LinkedList<Metadata> result = new LinkedList<Metadata>();
+        if (allMetadata != null) {
+            for (Metadata metadata : allMetadata) {
+                if (metadata.getType().getName().equals(typeName)) {
+                    result.add(metadata);
+                }
+            }
+        }
+        return result;
+    }
 
     /**
      * The function toString() returns a concise but informative representation
@@ -3954,52 +3954,52 @@ public class DocStruct implements Serializable {
      * @return a string representation of the DocStruct
      * @see java.lang.Object#toString()
      */
-	@Override
-	public String toString() {
-		final int EM_DASH = 0x2014;
-		final int HORIZONTAL_ELLIPSIS = 0x2026;
-		final short MAX_CHARS = 12;
+    @Override
+    public String toString() {
+        final int EM_DASH = 0x2014;
+        final int HORIZONTAL_ELLIPSIS = 0x2026;
+        final short MAX_CHARS = 12;
 
-		StringBuilder result = new StringBuilder();
-		if (type == null || type.getName() == null) {
-			result.append(identify(this));
-		} else {
-			result.append(type.getName());
-		}
-		if(type != null) {
-			result.append(' ');
-		}
-		result.append('(');
-		if (allMetadata == null) {
-			result.appendCodePoint(EM_DASH);
-		} else {
-			String out = null;
-			Iterator<String> iter = IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING.iterator();
-			while (out == null && iter.hasNext()) {
-				Iterator<Metadata> mdIter = getMetadataByType(iter.next()).iterator();
-				while (mdIter.hasNext() && out == null) {
-					out = mdIter.next().getValue();
-				}
-			}
-			if (out != null && out.length() > MAX_CHARS) {
-				result.append(out.substring(0, MAX_CHARS - 1));
-				result.appendCodePoint(HORIZONTAL_ELLIPSIS);
-			} else if (out != null) {
-				result.append(out);
-			} else {
-				result.append("\u2026 ");
-				result.append(allMetadata.size());
-				result.append(" \u2026");
-			}
-		}
-		result.append(')');
-		if(children == null) {
-			result.append("[\u2014]");
-		} else {
-			result.append(children.toString());
-		}
-		return result.toString();
-	}
+        StringBuilder result = new StringBuilder();
+        if (type == null || type.getName() == null) {
+            result.append(identify(this));
+        } else {
+            result.append(type.getName());
+        }
+        if(type != null) {
+            result.append(' ');
+        }
+        result.append('(');
+        if (allMetadata == null) {
+            result.appendCodePoint(EM_DASH);
+        } else {
+            String out = null;
+            Iterator<String> iter = IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING.iterator();
+            while (out == null && iter.hasNext()) {
+                Iterator<Metadata> mdIter = getMetadataByType(iter.next()).iterator();
+                while (mdIter.hasNext() && out == null) {
+                    out = mdIter.next().getValue();
+                }
+            }
+            if (out != null && out.length() > MAX_CHARS) {
+                result.append(out.substring(0, MAX_CHARS - 1));
+                result.appendCodePoint(HORIZONTAL_ELLIPSIS);
+            } else if (out != null) {
+                result.append(out);
+            } else {
+                result.append("\u2026 ");
+                result.append(allMetadata.size());
+                result.append(" \u2026");
+            }
+        }
+        result.append(')');
+        if(children == null) {
+            result.append("[\u2014]");
+        } else {
+            result.append(children.toString());
+        }
+        return result.toString();
+    }
 
     /**
      * Returns whether a downwards METS pointer must be written. This is the
@@ -4010,13 +4010,13 @@ public class DocStruct implements Serializable {
      *            anchor class of the file to write
      * @return whether a downwards METS pointer must be written
      */
-	public boolean mustWriteDownwardsMptrIn(String fileClass) {
-		if (fileClass == null || parent == null) {
-			return false;
-		}
-		return fileClass.equals(parent.getType().getAnchorClass())
-				&& !fileClass.equals(type.getAnchorClass());
-	}
+    public boolean mustWriteDownwardsMptrIn(String fileClass) {
+        if (fileClass == null || parent == null) {
+            return false;
+        }
+        return fileClass.equals(parent.getType().getAnchorClass())
+                && !fileClass.equals(type.getAnchorClass());
+    }
 
     /**
      * Returns whether an upwards METS pointer must be written. This is the case
@@ -4036,39 +4036,39 @@ public class DocStruct implements Serializable {
      *             having been descending right into a hierarchy to be
      *             maintained in another anchor class already
      */
-	public boolean mustWriteUpwardsMptrIn(String fileClass) throws PreferencesException {
-		String anchorClass = type.getAnchorClass();
-		if (fileClass == null && anchorClass == null || fileClass != null && fileClass.equals(anchorClass)) {
-			return false;
-		}
-		if (this.parent == null) {
-			return anchorClass == null ? false : !anchorClass.equals(fileClass);
-		}
-		String parentClass = parent.getType().getAnchorClass();
-		if (parentClass == null || parentClass.equals(anchorClass)) {
-			return false;
-		}
-		Collection<String> anchorChain = getTopStruct().getAllAnchorClasses();
-		anchorChain.add(null);
-		Iterator<String> capstan = anchorChain.iterator();
-		String link;
-		do {
-			link = capstan.next();
-			if (link.equals(fileClass)) {
-				return false;
-			}
-		} while (!link.equals(parentClass));
-		return true;
-	}
+    public boolean mustWriteUpwardsMptrIn(String fileClass) throws PreferencesException {
+        String anchorClass = type.getAnchorClass();
+        if (fileClass == null && anchorClass == null || fileClass != null && fileClass.equals(anchorClass)) {
+            return false;
+        }
+        if (this.parent == null) {
+            return anchorClass == null ? false : !anchorClass.equals(fileClass);
+        }
+        String parentClass = parent.getType().getAnchorClass();
+        if (parentClass == null || parentClass.equals(anchorClass)) {
+            return false;
+        }
+        Collection<String> anchorChain = getTopStruct().getAllAnchorClasses();
+        anchorChain.add(null);
+        Iterator<String> capstan = anchorChain.iterator();
+        String link;
+        do {
+            link = capstan.next();
+            if (link.equals(fileClass)) {
+                return false;
+            }
+        } while (!link.equals(parentClass));
+        return true;
+    }
 
     /**
      * Returns the topmost DocStruct
      *
      * @return the topmost DocStruct
      */
-	public DocStruct getTopStruct() {
-		return parent == null ? this : parent.getTopStruct();
-	}
+    public DocStruct getTopStruct() {
+        return parent == null ? this : parent.getTopStruct();
+    }
 
     /**
      * Returns a readable name for a DocStruct.
@@ -4077,41 +4077,41 @@ public class DocStruct implements Serializable {
      *            DocStruct whose name is to return
      * @return a readable name for the DocStruct
      */
-	private static String identify(DocStruct obj) {
-		DocStructType objectType = obj.getType();
-		if (objectType != null && objectType.getName() != null) {
-			return "'" + objectType.getName() + "'";
-		}
-		DocStruct parent = obj.getParent();
-		if (parent == null) {
-			return "top level";
-		}
-		List<DocStruct> parentsChildren = parent.getAllChildren();
-		if (parentsChildren == null || parentsChildren.isEmpty()) {
-			return "orphan";
-		}
-		int position = parentsChildren.indexOf(obj);
-		if (position < 0) {
-			return "orphan";
-		}
-		String childOfParent = " child of " + identify(parent);
-		if (position == 0) {
-			return "first" + childOfParent;
-		}
-		int childNo = position + 1;
-		if (childNo == parentsChildren.size()) {
-			return "last" + childOfParent;
-		}
-		String childIndex = Integer.toString(childNo);
-		switch (Integer.valueOf(childIndex.substring(childIndex.length() - 1))) {
-		case 1:
-			return childIndex + "st" + childOfParent;
-		case 2:
-			return childIndex + "nd" + childOfParent;
-		case 3:
-			return childIndex + "rd" + childOfParent;
-		default:
-			return childIndex + "th" + childOfParent;
-		}
-	}
+    private static String identify(DocStruct obj) {
+        DocStructType objectType = obj.getType();
+        if (objectType != null && objectType.getName() != null) {
+            return "'" + objectType.getName() + "'";
+        }
+        DocStruct parent = obj.getParent();
+        if (parent == null) {
+            return "top level";
+        }
+        List<DocStruct> parentsChildren = parent.getAllChildren();
+        if (parentsChildren == null || parentsChildren.isEmpty()) {
+            return "orphan";
+        }
+        int position = parentsChildren.indexOf(obj);
+        if (position < 0) {
+            return "orphan";
+        }
+        String childOfParent = " child of " + identify(parent);
+        if (position == 0) {
+            return "first" + childOfParent;
+        }
+        int childNo = position + 1;
+        if (childNo == parentsChildren.size()) {
+            return "last" + childOfParent;
+        }
+        String childIndex = Integer.toString(childNo);
+        switch (Integer.valueOf(childIndex.substring(childIndex.length() - 1))) {
+        case 1:
+            return childIndex + "st" + childOfParent;
+        case 2:
+            return childIndex + "nd" + childOfParent;
+        case 3:
+            return childIndex + "rd" + childOfParent;
+        default:
+            return childIndex + "th" + childOfParent;
+        }
+    }
 }

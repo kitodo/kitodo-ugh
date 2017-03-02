@@ -290,8 +290,8 @@ public class Prefs implements Serializable {
         if (attrnodes != null) {
             // Check if it's an anchor.
             Node typenode = attrnodes.item(0);
-			if (typenode != null && typenode.getNodeName().equals("anchor")) {
-				currentDocStrctType.setAnchorClass(typenode.getNodeValue());
+            if (typenode != null && typenode.getNodeName().equals("anchor")) {
+                currentDocStrctType.setAnchorClass(typenode.getNodeValue());
             }
         }
 
@@ -790,7 +790,7 @@ public class Prefs implements Serializable {
             // Iterate...
             for (DocStructType dst : allTypes) {
                 // ...and add to result list if anchor DocStruct.
-				if (dst.getAnchorClass() != null) {
+                if (dst.getAnchorClass() != null) {
                     result.add(dst);
                 }
             }

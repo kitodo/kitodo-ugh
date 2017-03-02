@@ -29,86 +29,86 @@ package ugh.fileformats.mets;
 
 public class Namespace {
 
-	protected String	prefix					= null;
-	protected String	uri						= null;
-	protected String	schemalocation			= null;
-	protected Boolean	defaultNS				= false;
-	// If the namespace is the default namespace, a container Element can be
-	// named here.
-	protected String	containerElementName	= "";
+    protected String    prefix                    = null;
+    protected String    uri                        = null;
+    protected String    schemalocation            = null;
+    protected Boolean    defaultNS                = false;
+    // If the namespace is the default namespace, a container Element can be
+    // named here.
+    protected String    containerElementName    = "";
 
-	/***************************************************************************
-	 * @return the prefix
-	 **************************************************************************/
-	public String getPrefix() {
-		return this.prefix;
-	}
+    /***************************************************************************
+     * @return the prefix
+     **************************************************************************/
+    public String getPrefix() {
+        return this.prefix;
+    }
 
-	/***************************************************************************
-	 * @param prefix
-	 *            the prefix to set
-	 **************************************************************************/
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+    /***************************************************************************
+     * @param prefix
+     *            the prefix to set
+     **************************************************************************/
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
-	/***************************************************************************
-	 * @return the uri
-	 **************************************************************************/
-	public String getUri() {
-		return this.uri;
-	}
+    /***************************************************************************
+     * @return the uri
+     **************************************************************************/
+    public String getUri() {
+        return this.uri;
+    }
 
-	/***************************************************************************
-	 * @param uri
-	 *            the uri to set
-	 **************************************************************************/
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+    /***************************************************************************
+     * @param uri
+     *            the uri to set
+     **************************************************************************/
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-	/***************************************************************************
-	 * @return the schemalocation
-	 **************************************************************************/
-	public String getSchemalocation() {
-		return this.schemalocation;
-	}
+    /***************************************************************************
+     * @return the schemalocation
+     **************************************************************************/
+    public String getSchemalocation() {
+        return this.schemalocation;
+    }
 
-	/***************************************************************************
-	 * @param schemalocation
-	 *            the schemalocation to set
-	 **************************************************************************/
-	public void setSchemalocation(String schemalocation) {
-		this.schemalocation = schemalocation;
-	}
+    /***************************************************************************
+     * @param schemalocation
+     *            the schemalocation to set
+     **************************************************************************/
+    public void setSchemalocation(String schemalocation) {
+        this.schemalocation = schemalocation;
+    }
 
-	/***************************************************************************
-	 * @return the defaultNS
-	 **************************************************************************/
-	public Boolean getDefaultNS() {
-		return this.defaultNS;
-	}
+    /***************************************************************************
+     * @return the defaultNS
+     **************************************************************************/
+    public Boolean getDefaultNS() {
+        return this.defaultNS;
+    }
 
-	/***************************************************************************
-	 * @param defaultNS
-	 *            the defaultNS to set
-	 **************************************************************************/
-	public void setDefaultNS(Boolean defaultNS) {
-		this.defaultNS = defaultNS;
-	}
+    /***************************************************************************
+     * @param defaultNS
+     *            the defaultNS to set
+     **************************************************************************/
+    public void setDefaultNS(Boolean defaultNS) {
+        this.defaultNS = defaultNS;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getContainerElementName() {
-		return this.containerElementName;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getContainerElementName() {
+        return this.containerElementName;
+    }
 
-	/***************************************************************************
-	 * @param containerElementName
-	 **************************************************************************/
-	public void setContainerElementName(String containerElementName) {
-		this.containerElementName = containerElementName;
-	}
+    /***************************************************************************
+     * @param containerElementName
+     **************************************************************************/
+    public void setContainerElementName(String containerElementName) {
+        this.containerElementName = containerElementName;
+    }
 
 }

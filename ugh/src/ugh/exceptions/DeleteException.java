@@ -28,68 +28,68 @@ package ugh.exceptions;
 
 public class DeleteException extends UGHException {
 
-	private static final long	serialVersionUID	= 5095477783159963783L;
+    private static final long    serialVersionUID    = 5095477783159963783L;
 
-	private int					errorcode;
+    private int                    errorcode;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public DeleteException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public DeleteException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public DeleteException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public DeleteException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public DeleteException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public DeleteException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public DeleteException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public DeleteException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
-	/***************************************************************************
-	 * @param inError
-	 * @param inReason
-	 **************************************************************************/
-	public DeleteException(int inError, String inReason) {
-		this.errorcode = inError;
-	}
+    /***************************************************************************
+     * @param inError
+     * @param inReason
+     **************************************************************************/
+    public DeleteException(int inError, String inReason) {
+        this.errorcode = inError;
+    }
 
-	/**************************************************************************
-	 * @return
-	 **************************************************************************/
-	public int getErrorcode() {
-		return this.errorcode;
-	}
+    /**************************************************************************
+     * @return
+     **************************************************************************/
+    public int getErrorcode() {
+        return this.errorcode;
+    }
 
-	/**************************************************************************
-	 * @param errorcode
-	 **************************************************************************/
-	public void setErrorcode(int errorcode) {
-		this.errorcode = errorcode;
-	}
+    /**************************************************************************
+     * @param errorcode
+     **************************************************************************/
+    public void setErrorcode(int errorcode) {
+        this.errorcode = errorcode;
+    }
 
-	/***************************************************************************
-	 * @deprecated
-	 * @return
-	 **************************************************************************/
-	@Deprecated
-	public int getErrorCode() {
-		return this.errorcode;
-	}
+    /***************************************************************************
+     * @deprecated
+     * @return
+     **************************************************************************/
+    @Deprecated
+    public int getErrorCode() {
+        return this.errorcode;
+    }
 
 }

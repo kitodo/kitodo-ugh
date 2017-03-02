@@ -37,109 +37,109 @@ import org.apache.xmlbeans.XmlOptions;
  **************************************************************************/
 public class HelperTest {
 
-	/**************************************************************************
-	 * @param args
-	 **************************************************************************/
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		HelperTest ht = new HelperTest();
-		ht.createMets();
-	}
+    /**************************************************************************
+     * @param args
+     **************************************************************************/
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        HelperTest ht = new HelperTest();
+        ht.createMets();
+    }
 
-	/***************************************************************************
-	 * <p>
-	 * Constructor.
-	 * </p>
-	 **************************************************************************/
-	public HelperTest() {
-		//
-	}
+    /***************************************************************************
+     * <p>
+     * Constructor.
+     * </p>
+     **************************************************************************/
+    public HelperTest() {
+        //
+    }
 
-	/**************************************************************************
-	 *
-	 **************************************************************************/
-	public void createMets() {
-		// HashMap to store prefixes for different namespaces.
-		HashMap<String, String> suggestedPrefixes = new HashMap<String, String>();
-		XmlOptions opts = new XmlOptions();
+    /**************************************************************************
+     *
+     **************************************************************************/
+    public void createMets() {
+        // HashMap to store prefixes for different namespaces.
+        HashMap<String, String> suggestedPrefixes = new HashMap<String, String>();
+        XmlOptions opts = new XmlOptions();
 
-		// Create a METS wrapper
-		//
-		MetsDocument metsDocument = MetsDocument.Factory.newInstance();
+        // Create a METS wrapper
+        //
+        MetsDocument metsDocument = MetsDocument.Factory.newInstance();
 
-		// This is the <mets> element.
-		MetsType myMets = metsDocument.addNewMets();
+        // This is the <mets> element.
+        MetsType myMets = metsDocument.addNewMets();
 
-		// create header
-		//
-		// <MetsHdr>
-		// <agent>
-		// <name></name>
-		// <note></note>
-		// </agent>
-		// </MetsHdr>
+        // create header
+        //
+        // <MetsHdr>
+        // <agent>
+        // <name></name>
+        // <note></note>
+        // </agent>
+        // </MetsHdr>
 
-		MetsHdr header = myMets.addNewMetsHdr();
-		Agent metsAgent = header.addNewAgent();
-		metsAgent.setROLE(MetsType.MetsHdr.Agent.ROLE.CREATOR);
-		metsAgent.setTYPE(MetsType.MetsHdr.Agent.TYPE.INDIVIDUAL);
-		metsAgent.setName("Markus Enders");
-		metsAgent.addNote("He is the the METS-api to create this file");
+        MetsHdr header = myMets.addNewMetsHdr();
+        Agent metsAgent = header.addNewAgent();
+        metsAgent.setROLE(MetsType.MetsHdr.Agent.ROLE.CREATOR);
+        metsAgent.setTYPE(MetsType.MetsHdr.Agent.TYPE.INDIVIDUAL);
+        metsAgent.setName("Markus Enders");
+        metsAgent.addNote("He is the the METS-api to create this file");
 
-		// Create first div; therefore we have to add a new struct map; while
-		// adding this structMap a StructMapType object is created.
-		//
-		// Create a new <StructMap> element.
-		StructMapType sm = myMets.addNewStructMap();
+        // Create first div; therefore we have to add a new struct map; while
+        // adding this structMap a StructMapType object is created.
+        //
+        // Create a new <StructMap> element.
+        StructMapType sm = myMets.addNewStructMap();
 
-		// Create first div.
-		DivType monograph_div = sm.addNewDiv();
-		// This div is a monograph.
-		monograph_div.setTYPE("Monograph");
-		// This ID must be XML compliant.
-		monograph_div.setID("MAINDIV01");
-		monograph_div.setLABEL("Monograph");
+        // Create first div.
+        DivType monograph_div = sm.addNewDiv();
+        // This div is a monograph.
+        monograph_div.setTYPE("Monograph");
+        // This ID must be XML compliant.
+        monograph_div.setID("MAINDIV01");
+        monograph_div.setLABEL("Monograph");
 
-		// Create metadata for the first div.
-		//
-		// Ceate the xml metadata first.
-		StringBuffer xmlmetadata = new StringBuffer();
-		// Set the namespace for the MODS part.
-		suggestedPrefixes.put("http://purl.org/DC#", "dc");
-		xmlmetadata
-				.append("<dc:identifier xmlns:dc=\"http://purl.org/DC#\"></dc:identifier>");
-		xmlmetadata.append("<dc:title></dc:title>");
+        // Create metadata for the first div.
+        //
+        // Ceate the xml metadata first.
+        StringBuffer xmlmetadata = new StringBuffer();
+        // Set the namespace for the MODS part.
+        suggestedPrefixes.put("http://purl.org/DC#", "dc");
+        xmlmetadata
+                .append("<dc:identifier xmlns:dc=\"http://purl.org/DC#\"></dc:identifier>");
+        xmlmetadata.append("<dc:title></dc:title>");
 
-		// create binary metadata (e.g. orig. MARC record)
-		StringBuffer binmetadata = new StringBuffer();
-		binmetadata.append("Binary Data");
+        // create binary metadata (e.g. orig. MARC record)
+        StringBuffer binmetadata = new StringBuffer();
+        binmetadata.append("Binary Data");
 
-		// Creating metadata is difficult, since it can be therefore we use the
-		// helper class from level 2 api.
-		Helper h = new Helper(myMets);
+        // Creating metadata is difficult, since it can be therefore we use the
+        // helper class from level 2 api.
+        Helper h = new Helper(myMets);
 
-		h.addDmdSecType(monograph_div, xmlmetadata.toString());
-		h.addDmdSecType(monograph_div, binmetadata.toString().getBytes());
+        h.addDmdSecType(monograph_div, xmlmetadata.toString());
+        h.addDmdSecType(monograph_div, binmetadata.toString().getBytes());
 
-		// Save METS as file, but create options.
-		opts.setSaveSuggestedPrefixes(suggestedPrefixes);
+        // Save METS as file, but create options.
+        opts.setSaveSuggestedPrefixes(suggestedPrefixes);
 
-		// Save file using the given options.
-		File outputFile = new File("C:/myMets.xml");
+        // Save file using the given options.
+        File outputFile = new File("C:/myMets.xml");
 
-		try {
-			metsDocument.save(outputFile, opts);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+        try {
+            metsDocument.save(outputFile, opts);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	/**************************************************************************
-	 *
-	 **************************************************************************/
-	public void createMetsHeader() {
-		//
-	}
+    /**************************************************************************
+     *
+     **************************************************************************/
+    public void createMetsHeader() {
+        //
+    }
 
 }

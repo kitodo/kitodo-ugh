@@ -28,35 +28,35 @@ package ugh.exceptions;
 
 public class PreferencesException extends UGHException {
 
-	private static final long	serialVersionUID	= 5894924406290847207L;
+    private static final long    serialVersionUID    = 5894924406290847207L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public PreferencesException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public PreferencesException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public PreferencesException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public PreferencesException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public PreferencesException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public PreferencesException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public PreferencesException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public PreferencesException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
 }

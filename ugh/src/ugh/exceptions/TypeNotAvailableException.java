@@ -28,35 +28,35 @@ package ugh.exceptions;
 
 public class TypeNotAvailableException extends UGHException {
 
-	private static final long	serialVersionUID	= -1649415658881353489L;
+    private static final long    serialVersionUID    = -1649415658881353489L;
 
-	/***************************************************************************
-	 * Constructor.
-	 **************************************************************************/
-	public TypeNotAvailableException() {
-		super();
-	}
+    /***************************************************************************
+     * Constructor.
+     **************************************************************************/
+    public TypeNotAvailableException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public TypeNotAvailableException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public TypeNotAvailableException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public TypeNotAvailableException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public TypeNotAvailableException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public TypeNotAvailableException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public TypeNotAvailableException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
 }

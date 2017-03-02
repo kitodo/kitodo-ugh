@@ -46,137 +46,137 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 public class PaginationSequence {
 
-	private static final Logger	LOGGER				= Logger
-															.getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger    LOGGER                = Logger
+                                                            .getLogger(ugh.dl.DigitalDocument.class);
 
-	protected int				physicalstart		= 0;
-	protected int				physicalend			= 0;
-	protected int				logcountedstart		= -1;
-	protected int				logcountedend		= -1;
-	protected int				lognotcountedstart	= -1;
-	protected int				lognotcountedend	= -1;
-	// Can be "1" for arabic or "R" for roman number; 1 is default.
-	protected String			pageformatnumber	= "1";
+    protected int                physicalstart        = 0;
+    protected int                physicalend            = 0;
+    protected int                logcountedstart        = -1;
+    protected int                logcountedend        = -1;
+    protected int                lognotcountedstart    = -1;
+    protected int                lognotcountedend    = -1;
+    // Can be "1" for arabic or "R" for roman number; 1 is default.
+    protected String            pageformatnumber    = "1";
 
-	private ugh.dl.Prefs		mypreferences;
+    private ugh.dl.Prefs        mypreferences;
 
-	/***************************************************************************
-	 * @param myprefs
-	 **************************************************************************/
+    /***************************************************************************
+     * @param myprefs
+     **************************************************************************/
 
-	public PaginationSequence(Prefs myprefs) {
-		this.mypreferences = myprefs;
-	}
+    public PaginationSequence(Prefs myprefs) {
+        this.mypreferences = myprefs;
+    }
 
-	/***************************************************************************
-	 * <p>
-	 * Convert the pages from this sequence to the physical document structure
-	 * entities these entities can be added to a digital document etc...
-	 * strucutre entities (DocStruct-objects) are returned as a LinkedList.
-	 * </p>
-	 *
-	 * @param digdoc
-	 * @return
-	 **************************************************************************/
-	public LinkedList<DocStruct> ConvertToPhysicalStructure(
-			DigitalDocument digdoc) {
-		// Document structure type for the page.
-		ugh.dl.DocStructType pagetype;
-		// Type of metadata for storing pagenumbers etc.
-		ugh.dl.MetadataType logpagenumbertype;
-		// Tpye for storing physical pagenumber.
-		ugh.dl.MetadataType physpagenumbertype;
-		ugh.dl.DocStruct page;
+    /***************************************************************************
+     * <p>
+     * Convert the pages from this sequence to the physical document structure
+     * entities these entities can be added to a digital document etc...
+     * strucutre entities (DocStruct-objects) are returned as a LinkedList.
+     * </p>
+     *
+     * @param digdoc
+     * @return
+     **************************************************************************/
+    public LinkedList<DocStruct> ConvertToPhysicalStructure(
+            DigitalDocument digdoc) {
+        // Document structure type for the page.
+        ugh.dl.DocStructType pagetype;
+        // Type of metadata for storing pagenumbers etc.
+        ugh.dl.MetadataType logpagenumbertype;
+        // Tpye for storing physical pagenumber.
+        ugh.dl.MetadataType physpagenumbertype;
+        ugh.dl.DocStruct page;
 
-		// Get DocStructType for page.
-		pagetype = this.mypreferences.getDocStrctTypeByName("page");
-		if (pagetype == null) {
-			LOGGER
-					.error("PaginationSequence.ConvertToPhysicalStructure: No DocStructType for 'page' available");
-			return null;
-		}
+        // Get DocStructType for page.
+        pagetype = this.mypreferences.getDocStrctTypeByName("page");
+        if (pagetype == null) {
+            LOGGER
+                    .error("PaginationSequence.ConvertToPhysicalStructure: No DocStructType for 'page' available");
+            return null;
+        }
 
-		// Get MetadataType for logical and physical page numbers.
-		logpagenumbertype = this.mypreferences
-				.getMetadataTypeByName("logicalPageNumber");
-		physpagenumbertype = this.mypreferences
-				.getMetadataTypeByName("physPageNumber");
+        // Get MetadataType for logical and physical page numbers.
+        logpagenumbertype = this.mypreferences
+                .getMetadataTypeByName("logicalPageNumber");
+        physpagenumbertype = this.mypreferences
+                .getMetadataTypeByName("physPageNumber");
 
-		if (logpagenumbertype == null) {
-			LOGGER
-					.error("Ppagination sequences can't be calculated; 'logicalPageNumber' metadata type is NOT defined! This may cause corrupt data!");
-		}
-		if (physpagenumbertype == null) {
-			LOGGER
-					.error("Pagination sequences can't be calculated; 'physPageNumber' metadata type is NOT defined! This may cause corrupt data!");
-		}
+        if (logpagenumbertype == null) {
+            LOGGER
+                    .error("Ppagination sequences can't be calculated; 'logicalPageNumber' metadata type is NOT defined! This may cause corrupt data!");
+        }
+        if (physpagenumbertype == null) {
+            LOGGER
+                    .error("Pagination sequences can't be calculated; 'physPageNumber' metadata type is NOT defined! This may cause corrupt data!");
+        }
 
-		// Ccreate a LinkedList containing all pages.
-		LinkedList<DocStruct> allpages = new LinkedList<DocStruct>();
+        // Ccreate a LinkedList containing all pages.
+        LinkedList<DocStruct> allpages = new LinkedList<DocStruct>();
 
-		for (int i = 0; i < (this.physicalend - this.physicalstart) + 1; i++) {
+        for (int i = 0; i < (this.physicalend - this.physicalstart) + 1; i++) {
 
-			Metadata logpagenumber;
-			Metadata physpagenumber;
-			// Create a page as a DocStruct instance.
-			try {
-				page = digdoc.createDocStruct(pagetype);
+            Metadata logpagenumber;
+            Metadata physpagenumber;
+            // Create a page as a DocStruct instance.
+            try {
+                page = digdoc.createDocStruct(pagetype);
 
-				logpagenumber = new Metadata(logpagenumbertype);
-				physpagenumber = new Metadata(physpagenumbertype);
-			} catch (TypeNotAllowedForParentException e) {
-				LOGGER
-						.error(
-								"PaginationSequence.ConvertToPhysicalStructure: Type not allowed as child!",
-								e);
-				return null;
-			} catch (MetadataTypeNotAllowedException e) {
-				LOGGER
-						.error(
-								"PaginationSequence.ConvertToPhysicalStructure: Type must not be null!",
-								e);
-				return null;
-			}
+                logpagenumber = new Metadata(logpagenumbertype);
+                physpagenumber = new Metadata(physpagenumbertype);
+            } catch (TypeNotAllowedForParentException e) {
+                LOGGER
+                        .error(
+                                "PaginationSequence.ConvertToPhysicalStructure: Type not allowed as child!",
+                                e);
+                return null;
+            } catch (MetadataTypeNotAllowedException e) {
+                LOGGER
+                        .error(
+                                "PaginationSequence.ConvertToPhysicalStructure: Type must not be null!",
+                                e);
+                return null;
+            }
 
-			// Set the value for the logical number, "uncounted"-value if it's
-			// uncounted roman number, if it's roman etc...
-			if ((this.logcountedstart != -1) && (this.lognotcountedstart < 0)) {
-				// Counted start page.
-				if (this.pageformatnumber.equals("1")) {
-					logpagenumber.setValue(Integer
-							.toString(this.logcountedstart + i));
-				} else {
-					RomanNumeral romannumber = new RomanNumeral(
-							this.logcountedstart + i);
-					logpagenumber.setValue(romannumber.toString());
-				}
-			}
-			if ((this.logcountedstart == 0) && (this.lognotcountedstart != 0)) {
-				logpagenumber.setValue(" - ");
-			}
-			if ((this.logcountedstart == this.logcountedend)
-					&& (this.lognotcountedstart != 0)
-					&& (this.lognotcountedend != 0)) {
-				logpagenumber.setValue(" - ");
-			}
+            // Set the value for the logical number, "uncounted"-value if it's
+            // uncounted roman number, if it's roman etc...
+            if ((this.logcountedstart != -1) && (this.lognotcountedstart < 0)) {
+                // Counted start page.
+                if (this.pageformatnumber.equals("1")) {
+                    logpagenumber.setValue(Integer
+                            .toString(this.logcountedstart + i));
+                } else {
+                    RomanNumeral romannumber = new RomanNumeral(
+                            this.logcountedstart + i);
+                    logpagenumber.setValue(romannumber.toString());
+                }
+            }
+            if ((this.logcountedstart == 0) && (this.lognotcountedstart != 0)) {
+                logpagenumber.setValue(" - ");
+            }
+            if ((this.logcountedstart == this.logcountedend)
+                    && (this.lognotcountedstart != 0)
+                    && (this.lognotcountedend != 0)) {
+                logpagenumber.setValue(" - ");
+            }
 
-			// Set phyisical page number.
-			physpagenumber.setValue(Integer.toString(this.physicalstart + i));
-			try {
-				// Add pagenumber as metadata.
-				page.addMetadata(logpagenumber);
-				page.addMetadata(physpagenumber);
-			} catch (MetadataTypeNotAllowedException mtnaae) {
-				LOGGER.error(
-						"PaginationSequence: can't add pagenumbers to page!",
-						mtnaae);
-				return null;
-			}
+            // Set phyisical page number.
+            physpagenumber.setValue(Integer.toString(this.physicalstart + i));
+            try {
+                // Add pagenumber as metadata.
+                page.addMetadata(logpagenumber);
+                page.addMetadata(physpagenumber);
+            } catch (MetadataTypeNotAllowedException mtnaae) {
+                LOGGER.error(
+                        "PaginationSequence: can't add pagenumbers to page!",
+                        mtnaae);
+                return null;
+            }
 
-			allpages.add(page);
-		}
+            allpages.add(page);
+        }
 
-		return allpages;
-	}
+        return allpages;
+    }
 
 }
