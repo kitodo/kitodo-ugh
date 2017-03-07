@@ -2,4 +2,8 @@
 
 language: java
 
+jdk:
+  - oraclejdk7
+  - openjdk7
+
 script: cd ugh && ant all
