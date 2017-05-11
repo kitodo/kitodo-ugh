@@ -221,8 +221,8 @@ public class MetsMods implements ugh.dl.Fileformat {
     // This is the metadata the StructMap LOGICAL labels are creared from.
     protected static final String METS_PREFS_LABEL_METADATA_STRING = "TitleDocMain";
 
-	// This is the metadata the StructMap LOGICAL orderlabels are creared from.
-	protected static final String METS_PREFS_ORDERLABEL_METADATA_STRING = "TitleDocMainShort";
+    // This is the metadata the StructMap LOGICAL orderlabels are creared from.
+    protected static final String METS_PREFS_ORDERLABEL_METADATA_STRING = "TitleDocMainShort";
 
     // Some METS string finals.
     protected static final String METS_METS_STRING = "mets";
@@ -305,14 +305,14 @@ public class MetsMods implements ugh.dl.Fileformat {
     protected static final String DMDPHYS_PREFIX = "DMDPHYS_";
     protected static final String ANCHOR_XML_FILE_SUFFIX_STRING = "_anchor";
 
-	/**
-	 * Character used inside the MetsMods class to separate multiple anchor
-	 * URLs. Must be a character that cannot be part of an URL (that would have
-	 * been encoded, if it was, respectively) and that has no special meaning in
-	 * a Java regular expression. The variable must be a String so that we can
-	 * pass it to {@link java.lang.String#split(String)}.
-	 */
-	private static final String URL_SEPARATOR = "\u00BB";
+    /**
+     * Character used inside the MetsMods class to separate multiple anchor
+     * URLs. Must be a character that cannot be part of an URL (that would have
+     * been encoded, if it was, respectively) and that has no special meaning in
+     * a Java regular expression. The variable must be a String so that we can
+     * pass it to {@link java.lang.String#split(String)}.
+     */
+    private static final String URL_SEPARATOR = "\u00BB";
 
     private boolean writeLocalFilegroup = true;
 
@@ -342,7 +342,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     protected String mptrUrl = "";
     protected String mptrUrlAnchor = "";
 
-    //	protected FileSet myImageset;
+    //    protected FileSet myImageset;
 
     protected Prefs myPreferences;
 
@@ -423,47 +423,47 @@ public class MetsMods implements ugh.dl.Fileformat {
         readPrefs(prefsMetsNode);
     }
 
-	/**
-	 * Constructor to create a MetsMods object by loading a file.
-	 *
-	 * @param inPrefs
-	 *            rule set object to read the file
-	 * @param fileName
-	 *            file name of the file to open
-	 * @param recursive
-	 *            flag, set to true if you call yourself to prevent infinite
-	 *            recursion
-	 * @throws ReadException
-	 *             if something goes wrong
-	 */
-	private MetsMods(Prefs inPrefs, String fileName, boolean recursive) throws ReadException {
-		try {
-			setNamespaces();
-			this.myPreferences = inPrefs;
+    /**
+     * Constructor to create a MetsMods object by loading a file.
+     *
+     * @param inPrefs
+     *            rule set object to read the file
+     * @param fileName
+     *            file name of the file to open
+     * @param recursive
+     *            flag, set to true if you call yourself to prevent infinite
+     *            recursion
+     * @throws ReadException
+     *             if something goes wrong
+     */
+    private MetsMods(Prefs inPrefs, String fileName, boolean recursive) throws ReadException {
+        try {
+            setNamespaces();
+            this.myPreferences = inPrefs;
 
-			LOGGER.info(this.getClass().getName() + " " + getVersion());
+            LOGGER.info(this.getClass().getName() + " " + getVersion());
 
-			// Read preferences.
-			Node prefsMetsNode = inPrefs.getPreferenceNode(METS_PREFS_NODE_NAME_STRING);
-			if (prefsMetsNode == null) {
-				String message = "Can't read preferences for METS fileformat!";
-				PreferencesException pe = new PreferencesException("Node '" + METS_PREFS_NODE_NAME_STRING
-						+ "' in preferences file not found!");
-				LOGGER.error(message, pe);
-				throw pe;
-			}
+            // Read preferences.
+            Node prefsMetsNode = inPrefs.getPreferenceNode(METS_PREFS_NODE_NAME_STRING);
+            if (prefsMetsNode == null) {
+                String message = "Can't read preferences for METS fileformat!";
+                PreferencesException pe = new PreferencesException("Node '" + METS_PREFS_NODE_NAME_STRING
+                        + "' in preferences file not found!");
+                LOGGER.error(message, pe);
+                throw pe;
+            }
 
-			readPrefs(prefsMetsNode);
-		} catch (PreferencesException e) {
-			String message = "Can't read Preferences for METS while reading the anchor file";
-			LOGGER.error(message, e);
-			throw new ReadException(message, e);
-		}
-		this.recursive = recursive;
-		read(fileName);
-	}
+            readPrefs(prefsMetsNode);
+        } catch (PreferencesException e) {
+            String message = "Can't read Preferences for METS while reading the anchor file";
+            LOGGER.error(message, e);
+            throw new ReadException(message, e);
+        }
+        this.recursive = recursive;
+        read(fileName);
+    }
 
-	/***************************************************************************
+    /***************************************************************************
      * WHAT THE OBJECT DOES
      **************************************************************************/
 
@@ -640,7 +640,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         LOGGER.info("Writing METS ....");
 
         // Digital Document for the anchor.
-		List<DigitalDocument> anchorDocuments = new LinkedList<DigitalDocument>();
+        List<DigitalDocument> anchorDocuments = new LinkedList<DigitalDocument>();
         DigitalDocument topDocument = null;
         DigitalDocument myDigDoc = this.digdoc;
 
@@ -654,31 +654,31 @@ public class MetsMods implements ugh.dl.Fileformat {
         DocStruct uppermostStruct = this.getDigitalDocument().getLogicalDocStruct();
         DocStructType uppermostType = uppermostStruct.getType();
 
-		for (String anchorClass : uppermostStruct.getAllAnchorClasses()) {
+        for (String anchorClass : uppermostStruct.getAllAnchorClasses()) {
             // The uppermost structure is an anchor; so we need to split the
-			// document and create two or more different METS/MODS files: One for
-			// each anchor class and one for the rest.
+            // document and create two or more different METS/MODS files: One for
+            // each anchor class and one for the rest.
 
-			DigitalDocument anchorDocument = new DigitalDocument();
+            DigitalDocument anchorDocument = new DigitalDocument();
 
-			// Copy metadata and all children belonging to the same anchor class.
+            // Copy metadata and all children belonging to the same anchor class.
             // Copy here the children from the next level only for MPTRs
-			// without metadata.
-			DocStruct newStruct = uppermostStruct.copyTruncated(anchorClass);
+            // without metadata.
+            DocStruct newStruct = uppermostStruct.copyTruncated(anchorClass);
 
             // New struct is top document.
             anchorDocument.setLogicalDocStruct(newStruct);
 
             // Get child of top document; there should only be a single child.
-			List<DocStruct> children = uppermostStruct.getAllRealSuccessors();
+            List<DocStruct> children = uppermostStruct.getAllRealSuccessors();
 
-			if (children.size() == 0) {
-				String message = "DocStruct '" + uppermostType.getName() + "' is anchor struct, but has no children!";
-				LOGGER.error(message);
-				throw new PreferencesException(message);
-			}
+            if (children.size() == 0) {
+                String message = "DocStruct '" + uppermostType.getName() + "' is anchor struct, but has no children!";
+                LOGGER.error(message);
+                throw new PreferencesException(message);
+            }
 
-			if (children.size() > 1) {
+            if (children.size() > 1) {
                 // Error; there must only be a single top-document under the
                 // anchor.
                 this.digdoc = myDigDoc;
@@ -691,29 +691,29 @@ public class MetsMods implements ugh.dl.Fileformat {
                 topDocument = this.digdoc;
             }
 
-			anchorDocuments.add(anchorDocument);
-		}
-		if (anchorDocuments.size() == 0) {
+            anchorDocuments.add(anchorDocument);
+        }
+        if (anchorDocuments.size() == 0) {
             // Simply write the normal DigitalDocument.
             topDocument = this.digdoc;
         }
 
         boolean success = true;
-		if (anchorDocuments.size() != 0) {
-			// First write the anchors
-			Iterator<String> anchorClasses = uppermostStruct.getAllAnchorClasses().iterator();
-			for (DigitalDocument anchorDocument : anchorDocuments) {
-				this.digdoc = anchorDocument;
-				String anchorClass = anchorClasses.next();
-				String anchorfilename = buildAnchorFilename(filename, anchorClass);
+        if (anchorDocuments.size() != 0) {
+            // First write the anchors
+            Iterator<String> anchorClasses = uppermostStruct.getAllAnchorClasses().iterator();
+            for (DigitalDocument anchorDocument : anchorDocuments) {
+                this.digdoc = anchorDocument;
+                String anchorClass = anchorClasses.next();
+                String anchorfilename = buildAnchorFilename(filename, anchorClass);
 
-				LOGGER.info("Writing anchor file '" + anchorfilename + "' from DocStruct '"
-						+ this.digdoc.getLogicalDocStruct().getType().getName() + "'");
+                LOGGER.info("Writing anchor file '" + anchorfilename + "' from DocStruct '"
+                        + this.digdoc.getLogicalDocStruct().getType().getName() + "'");
 
-				success = writeMetsMods(anchorfilename, DO_NOT_VALIDATE, anchorClass);
+                success = writeMetsMods(anchorfilename, DO_NOT_VALIDATE, anchorClass);
 
-				LOGGER.info("Anchor file written");
-			}
+                LOGGER.info("Anchor file written");
+            }
         }
 
         if (topDocument != null) {
@@ -721,7 +721,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             LOGGER.info("Writing regular file '" + filename + "' from DocStruct '" + this.digdoc.getLogicalDocStruct().getType().getName() + "'");
 
-			success = writeMetsMods(filename, DO_NOT_VALIDATE, null);
+            success = writeMetsMods(filename, DO_NOT_VALIDATE, null);
         }
 
         this.digdoc = myDigDoc;
@@ -933,7 +933,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             // Only if the given DocStruct type is NOT an anchor, set references
             // from the current smLink.
-			if (this.myPreferences.getDocStrctTypeByName(linkFromDivType.getTYPE()).getAnchorClass() == null) {
+            if (this.myPreferences.getDocStrctTypeByName(linkFromDivType.getTYPE()).getAnchorClass() == null) {
 
                 // Get the appropriate logical DocStruct 'from' reference.
                 DocStruct foundLogicalStruct = getDocStructByDivID(linkFrom, this.digdoc.getLogicalDocStruct());
@@ -1258,7 +1258,9 @@ public class MetsMods implements ugh.dl.Fileformat {
             parseMetadataForLogicalDocStruct(newDocStruct, true);
 
             // If the top DocStruct is an anchor, get its child's MODS section.
-            if (newDocStruct.getType().getAnchorClass() != null && newDocStruct.getAllChildren().get(0).getAnchorClass() == null) {
+            if (newDocStruct.getType().getAnchorClass() != null && newDocStruct.getAllChildren() != null &&
+                    newDocStruct.getAllChildren().get(0).getAnchorClass() == null) {
+
                 String modsdata = getMODSSection(newDocStruct.getAllChildren().get(0));
 
                 // If a MODS section is existing, look for anchor references. A
@@ -1310,40 +1312,45 @@ public class MetsMods implements ugh.dl.Fileformat {
                 }
             }
 
-			// If things are more complex, get all childs' MODS sections.
-			else if (newDocStruct.getType().getAnchorClass() != null && !recursive) {
-				try {
-					DocStruct origen = null;
-					List<DocStruct> docStructList = null;
-					for (String allAnchorClasses : newDocStruct.getAllAnchorClasses()) {
-						MetsMods metsMods = new MetsMods(myPreferences, buildAnchorFilename(theFilename,
-								allAnchorClasses), true);
-						if (docStructList != null) {
-							Iterator<DocStruct> elements = docStructList.iterator();
-							while (elements.hasNext()) {
-								String child = newDocStruct.indexOf(elements.next());
-								DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
-								origen.addChild(child, copier.copy(true, null));
-								docStructList = newDocStruct.getChild(child).getAllRealSuccessors();
-							}
-						} else {
-							origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
-							docStructList = newDocStruct.getAllRealSuccessors();
-						}
-					}
-					String child = null;
-					for (DocStruct firstStruct : docStructList) {
-						child = newDocStruct.indexOf(firstStruct, child);
-						origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
-					}
+            // If things are more complex, get all childs' MODS sections.
+            else if (newDocStruct.getType().getAnchorClass() != null && !recursive) {
+                try {
+                    DocStruct origen = null;
+                    List<DocStruct> docStructList = null;
+                    for (String allAnchorClasses : newDocStruct.getAllAnchorClasses()) {
+                        MetsMods metsMods = new MetsMods(myPreferences, buildAnchorFilename(theFilename,
+                                allAnchorClasses), true);
+                        if (docStructList != null) {
+                            Iterator<DocStruct> elements = docStructList.iterator();
+                            while (elements.hasNext()) {
+                                String child = newDocStruct.indexOf(elements.next());
+                                DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
+                                origen.addChild(child, copier.copy(true, null));
+                                docStructList = newDocStruct.getChild(child).getAllRealSuccessors();
+                            }
+                        } else {
+                            origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
+                            docStructList = newDocStruct.getAllRealSuccessors();
+                        }
+                    }
+                    String child = null;
+                    for (DocStruct firstStruct : docStructList) {
+                        child = newDocStruct.indexOf(firstStruct, child);
+                        origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
+                    }
 
-					// when done, write the origen document back
-					this.getDigitalDocument().setLogicalDocStruct(origen);
-				} catch (UGHException caught) {
-					throw caught instanceof ReadException ? (ReadException) caught : new ReadException(
-							caught.getMessage(), caught);
-				}
-			}
+                    // when done, write the origen document back
+                    this.getDigitalDocument().setLogicalDocStruct(origen);
+                } catch (ReadException canBeThrownDirectly) {
+                    throw canBeThrownDirectly ;
+                } catch (UGHException|IndexOutOfBoundsException wrappedException) {
+                    String reason = wrappedException.getClass().getSimpleName();
+                    if (wrappedException.getMessage() != null) {
+                        reason += ": " + wrappedException.getMessage();
+                    }
+                    throw new ReadException(reason, wrappedException);
+                }
+            }
 
         } else {
             // No logical structMap available. Error - there must be at least a
@@ -1383,7 +1390,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      *
      * @param inMods
      * @param filename
-	 * @param topAnchorClassName top anchor class name
+     * @param topAnchorClassName top anchor class name
      * @return
      * @throws ReadException
      **************************************************************************/
@@ -2997,9 +3004,9 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             }
 
-        	if(!theFilegroup.isOrdinary() && !cf.isRepresentative()) {
-				continue;
-			}
+            if(!theFilegroup.isOrdinary() && !cf.isRepresentative()) {
+                continue;
+            }
 
             // Use the content file's ID if local filegroup is written, append
             // the filegroup's name if not.
@@ -3255,7 +3262,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @throws WriteException
      * @throws PreferencesException
      **************************************************************************/
-	protected Element writeLogDivs(Node parentNode, DocStruct inStruct, String anchorClass) throws WriteException, PreferencesException {
+    protected Element writeLogDivs(Node parentNode, DocStruct inStruct, String anchorClass) throws WriteException, PreferencesException {
 
         // Write div element.
         Document domDoc = parentNode.getOwnerDocument();
@@ -3287,7 +3294,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         // Set the DMDIDs.
-		int dmdid = writeLogDmd(this.metsNode, inStruct, anchorClass);
+        int dmdid = writeLogDmd(this.metsNode, inStruct, anchorClass);
         if (dmdid >= 0) {
             // Just set DMDID attribute, if there is a metadata set.
             String dmdidString = DMDLOG_PREFIX + new DecimalFormat(DECIMAL_FORMAT).format(dmdid);
@@ -3306,23 +3313,23 @@ public class MetsMods implements ugh.dl.Fileformat {
         Element mptr = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_MPTR_STRING);
         mptr.setAttribute(METS_LOCTYPE_STRING, "URL");
 
-		// Write an "upwards" MPTR pointing to a higher anchor file if the
-		// metadata of the current docStruct is not kept in the file currently
-		// under construction, and either the current docStruct has no parent
-		// and the anchor class of the file to create is different from the
-		// anchor class of the current docStruct, or if the parent of the
-		// current docStruct belongs to a different anchor class and the anchor
-		// class of the file to create appears after the anchor class of the
-		// parent of the current docStruct in the list of anchor classes.
+        // Write an "upwards" MPTR pointing to a higher anchor file if the
+        // metadata of the current docStruct is not kept in the file currently
+        // under construction, and either the current docStruct has no parent
+        // and the anchor class of the file to create is different from the
+        // anchor class of the current docStruct, or if the parent of the
+        // current docStruct belongs to a different anchor class and the anchor
+        // class of the file to create appears after the anchor class of the
+        // parent of the current docStruct in the list of anchor classes.
         if (inStruct.mustWriteUpwardsMptrIn(anchorClass)){
             createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getUpwardsMptrFor(inStruct));
             div.appendChild(mptr);
         }
 
-		// Write a "downwards" MPTR pointing to the only or a higher anchor
+        // Write a "downwards" MPTR pointing to the only or a higher anchor
         // file if if the parent docStruct is of the the anchor class of the
         // file thas is currently written, but this docStruct isn’t.
-		if (inStruct.mustWriteDownwardsMptrIn(anchorClass)) {
+        if (inStruct.mustWriteDownwardsMptrIn(anchorClass)) {
             createDomAttributeNS(mptr, this.xlinkNamespacePrefix, METS_HREF_STRING, getDownwardsMptrFor(inStruct, anchorClass));
             div.appendChild(mptr);
         }
@@ -3331,7 +3338,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         List<DocStruct> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
             for (DocStruct child : allChildren) {
-				if (writeLogDivs(div, child, anchorClass) == null) {
+                if (writeLogDivs(div, child, anchorClass) == null) {
                     // Error occurred while writing div for child.
                     return null;
                 }
@@ -3352,7 +3359,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     private void getIdentifiersForAnchorLink(DocStruct inStruct) {
 
         // If parent is no anchor; so don't write anything.
-		if (inStruct.getType().getAnchorClass() == null) {
+        if (inStruct.getType().getAnchorClass() == null) {
             return;
         }
 
@@ -3526,6 +3533,12 @@ public class MetsMods implements ugh.dl.Fileformat {
                 } else {
                     currentPath += "/" + element;
                 }
+            }
+            // Check, if the element name starts with a "@", if so, an attribute
+            // needs to be created.
+            else if (element.startsWith("@")) {
+                // Get out of loop.
+                break;
             }
             // We are requesting an element.
             else {
@@ -3984,14 +3997,14 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @throws MissingModsMappingException
      * @throws WriteException
      **************************************************************************/
-	protected int writeLogDmd(org.w3c.dom.Node parentNode, DocStruct inStruct, String anchorClass) throws PreferencesException, WriteException {
+    protected int writeLogDmd(org.w3c.dom.Node parentNode, DocStruct inStruct, String anchorClass) throws PreferencesException, WriteException {
 
         Document domDoc = parentNode.getOwnerDocument();
 
         // Do throw a WriteException, if the child of anchor DocStruct has no
         // MODS metadata! We have then no identifier!
-		if (anchorClass == null && inStruct.getType().getAnchorClass() == null && inStruct.getParent() != null
-				&& inStruct.getType().getAnchorClass() != null
+        if (anchorClass == null && inStruct.getType().getAnchorClass() == null && inStruct.getParent() != null
+                && inStruct.getType().getAnchorClass() != null
                 && inStruct.getAllMetadata() == null) {
             String message =
                     "DocStruct '" + inStruct.getParent().getType().getName()
@@ -4004,8 +4017,8 @@ public class MetsMods implements ugh.dl.Fileformat {
         // Do NOT create a DIV element, if (a) a non-anchor file is written AND
         // element is defined as an anchor in the prefs OR if (b) an anchor
         // file is written AND parent element is an anchor.
-		if ((anchorClass == null && inStruct.getType().getAnchorClass() != null)
-				|| (anchorClass != null && inStruct.getType().getAnchorClass() == null)) {
+        if ((anchorClass == null && inStruct.getType().getAnchorClass() != null)
+                || (anchorClass != null && inStruct.getType().getAnchorClass() == null)) {
             return -1;
         }
 
@@ -4019,7 +4032,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
         // If inStruct is an anchor DocStruct, get the identifier for the
         // anchor.
-		if (inStruct.getType().getAnchorClass() != null) {
+        if (inStruct.getType().getAnchorClass() != null) {
             this.getIdentifiersForAnchorLink(inStruct);
         }
 
@@ -4109,7 +4122,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                 // Create a reference only, if parentStruct exists, and
                 // parentStruct is an anchor DocStruct, and the MMO's internal
                 // name is mentioned in the prefs.
-				if (parentStruct != null && parentStruct.getType().getAnchorClass() != null
+                if (parentStruct != null && parentStruct.getType().getAnchorClass() != null
                         && m.getType().getName().equalsIgnoreCase(this.anchorIdentifierMetadataType)) {
 
                     // Check if anchor identifier type is existing in the prefs.
@@ -4156,10 +4169,10 @@ public class MetsMods implements ugh.dl.Fileformat {
             }
 
             // Check if an anchorIdentifier metadata type was written, if
-			// parentStruct was a anchor, but inStruct is not.
-			if (parentStruct != null && parentStruct.getType().getAnchorClass() != null
-					&& parentStruct.getParent() == null
-					&& inStruct.getType().getAnchorClass() == null && !gotAnchorIdentifierType) {
+            // parentStruct was a anchor, but inStruct is not.
+            if (parentStruct != null && parentStruct.getType().getAnchorClass() != null
+                    && parentStruct.getParent() == null
+                    && inStruct.getType().getAnchorClass() == null && !gotAnchorIdentifierType) {
                 WriteException we =
                         new WriteException("Unable to write MODS section! No metadata of type '" + this.anchorIdentifierMetadataType
                                 + "' existing for parent DocStruct '" + parentStruct.getType().getName() + "'");
@@ -4216,6 +4229,11 @@ public class MetsMods implements ugh.dl.Fileformat {
             throw new PreferencesException(message);
         }
 
+        // Add value to attribute.
+        if(createdNode instanceof Attr){
+            ((Attr) createdNode).setValue(theMetadata.getValue());
+            return;
+        }
         // Add value to node.
         Node valueNode = theDocument.createTextNode(theMetadata.getValue());
         createdNode.appendChild(valueNode);
@@ -4884,11 +4902,11 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @param mptrUrl
      **************************************************************************/
     public void setMptrUrl(String mptrUrl) {
-		if (mptrUrl == null || this.mptrUrl == null || this.mptrUrl.length() == 0) {
-			this.mptrUrl = mptrUrl;
-		} else {
-			this.mptrUrl += URL_SEPARATOR + mptrUrl;
-		}
+        if (mptrUrl == null || this.mptrUrl == null || this.mptrUrl.length() == 0) {
+            this.mptrUrl = mptrUrl;
+        } else {
+            this.mptrUrl += URL_SEPARATOR + mptrUrl;
+        }
     }
 
     /***************************************************************************
@@ -4905,67 +4923,67 @@ public class MetsMods implements ugh.dl.Fileformat {
         this.mptrUrlAnchor = mptrAnchorUrl;
     }
 
-	/**
-	 * Returns the upwards pointing METS pointer depeding on the given anchor
-	 * class and the logical document structure the given docStruct is part of.
-	 *
-	 * @param inStruct
-	 *            a logical document structure entity whose anchor class
-	 *            hierarchy is to examine
-	 * @return the upwards pointing METS pointer
-	 * @throws PreferencesException
-	 *             if an anchor class name is encountered a second time after
-	 *             having been descending right into a hierarchy to be
-	 *             maintained in another anchor class already
-	 */
-	protected String getUpwardsMptrFor(DocStruct inStruct) throws PreferencesException {
-		if (this.mptrUrl == null) {
-			return null;
-		}
-		String result = "";
-		String anchorClass = inStruct.getType().getAnchorClass();
-		Collection<String> anchorChain = inStruct.getTopStruct().getAllAnchorClasses();
-		anchorChain.add(null);
-		Iterator<String> capstan = anchorChain.iterator();
-		Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
-		String link = capstan.next();
-		do{
-			if (path.hasNext()) {
-				result = path.next();
-			}
-		}while(!(link.equals(anchorClass) || (link = capstan.next()) == null));
-		return result;
-	}
+    /**
+     * Returns the upwards pointing METS pointer depeding on the given anchor
+     * class and the logical document structure the given docStruct is part of.
+     *
+     * @param inStruct
+     *            a logical document structure entity whose anchor class
+     *            hierarchy is to examine
+     * @return the upwards pointing METS pointer
+     * @throws PreferencesException
+     *             if an anchor class name is encountered a second time after
+     *             having been descending right into a hierarchy to be
+     *             maintained in another anchor class already
+     */
+    protected String getUpwardsMptrFor(DocStruct inStruct) throws PreferencesException {
+        if (this.mptrUrl == null) {
+            return null;
+        }
+        String result = "";
+        String anchorClass = inStruct.getType().getAnchorClass();
+        Collection<String> anchorChain = inStruct.getTopStruct().getAllAnchorClasses();
+        anchorChain.add(null);
+        Iterator<String> capstan = anchorChain.iterator();
+        Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
+        String link = capstan.next();
+        do{
+            if (path.hasNext()) {
+                result = path.next();
+            }
+        }while(!(link.equals(anchorClass) || (link = capstan.next()) == null));
+        return result;
+    }
 
-	/**
-	 * Returns the downwards pointing METS pointer depeding on the given anchor
-	 * class and the logical document structure the given docStruct is part of.
-	 *
-	 * @param inStruct
-	 *            a logical document structure entity whose anchor class
-	 *            hierarchy is to examine
-	 * @param anchorClass
-	 *            the anchor class of the file under construction
-	 * @return the downwards pointing METS pointer
-	 * @throws NoSuchElementException
-	 *             if the given anchorClass isn’t found in the list of anchor
-	 *             classes
-	 */
-	protected String getDownwardsMptrFor(DocStruct inStruct, String anchorClass) throws PreferencesException {
-		if (this.mptrUrlAnchor == null || this.mptrUrl == null) {
-			return null;
-		}
-		if (anchorClass == null) {
-			return "";
-		}
-		Iterator<String> capstan = inStruct.getTopStruct().getAllAnchorClasses().iterator();
-		Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
-		String step = path.hasNext() ? path.next() : null;
-		do {
-			step = path.hasNext() ? path.next() : null;
-		} while (!anchorClass.equals(capstan.next()));
-		return step != null && capstan.hasNext() ? step : this.mptrUrlAnchor;
-	}
+    /**
+     * Returns the downwards pointing METS pointer depeding on the given anchor
+     * class and the logical document structure the given docStruct is part of.
+     *
+     * @param inStruct
+     *            a logical document structure entity whose anchor class
+     *            hierarchy is to examine
+     * @param anchorClass
+     *            the anchor class of the file under construction
+     * @return the downwards pointing METS pointer
+     * @throws NoSuchElementException
+     *             if the given anchorClass isn’t found in the list of anchor
+     *             classes
+     */
+    protected String getDownwardsMptrFor(DocStruct inStruct, String anchorClass) throws PreferencesException {
+        if (this.mptrUrlAnchor == null || this.mptrUrl == null) {
+            return null;
+        }
+        if (anchorClass == null) {
+            return "";
+        }
+        Iterator<String> capstan = inStruct.getTopStruct().getAllAnchorClasses().iterator();
+        Iterator<String> path = Arrays.asList(this.mptrUrl.split(URL_SEPARATOR)).iterator();
+        String step = path.hasNext() ? path.next() : null;
+        do {
+            step = path.hasNext() ? path.next() : null;
+        } while (!anchorClass.equals(capstan.next()));
+        return step != null && capstan.hasNext() ? step : this.mptrUrlAnchor;
+    }
 
     /***************************************************************************
      * @return

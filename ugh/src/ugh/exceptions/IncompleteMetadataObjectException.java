@@ -35,35 +35,35 @@ package ugh.exceptions;
 
 public class IncompleteMetadataObjectException extends RuntimeException {
 
-	private static final long	serialVersionUID	= -3017121111006455108L;
+    private static final long    serialVersionUID    = -3017121111006455108L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public IncompleteMetadataObjectException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public IncompleteMetadataObjectException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inMessage
-	 **************************************************************************/
-	public IncompleteMetadataObjectException(String inMessage) {
-		super(inMessage);
-	}
+    /***************************************************************************
+     * @param inMessage
+     **************************************************************************/
+    public IncompleteMetadataObjectException(String inMessage) {
+        super(inMessage);
+    }
 
-	/***************************************************************************
-	 * @param exp
-	 **************************************************************************/
-	public IncompleteMetadataObjectException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param exp
+     **************************************************************************/
+    public IncompleteMetadataObjectException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inMessage
-	 * @param exp
-	 **************************************************************************/
-	public IncompleteMetadataObjectException(String inMessage, Exception e) {
-		super(inMessage, e);
-	}
+    /***************************************************************************
+     * @param inMessage
+     * @param exp
+     **************************************************************************/
+    public IncompleteMetadataObjectException(String inMessage, Exception e) {
+        super(inMessage, e);
+    }
 
 }

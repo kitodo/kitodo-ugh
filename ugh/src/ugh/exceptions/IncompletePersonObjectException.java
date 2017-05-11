@@ -35,35 +35,35 @@ package ugh.exceptions;
 
 public class IncompletePersonObjectException extends RuntimeException {
 
-	private static final long	serialVersionUID	= 3080339507475098186L;
+    private static final long    serialVersionUID    = 3080339507475098186L;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public IncompletePersonObjectException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public IncompletePersonObjectException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inMessage
-	 **************************************************************************/
-	public IncompletePersonObjectException(String inMessage) {
-		super(inMessage);
-	}
+    /***************************************************************************
+     * @param inMessage
+     **************************************************************************/
+    public IncompletePersonObjectException(String inMessage) {
+        super(inMessage);
+    }
 
-	/***************************************************************************
-	 * @param exp
-	 **************************************************************************/
-	public IncompletePersonObjectException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param exp
+     **************************************************************************/
+    public IncompletePersonObjectException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inMessage
-	 * @param exp
-	 **************************************************************************/
-	public IncompletePersonObjectException(String inMessage, Exception e) {
-		super(inMessage, e);
-	}
+    /***************************************************************************
+     * @param inMessage
+     * @param exp
+     **************************************************************************/
+    public IncompletePersonObjectException(String inMessage, Exception e) {
+        super(inMessage, e);
+    }
 
 }

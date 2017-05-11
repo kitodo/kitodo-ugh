@@ -49,176 +49,176 @@ import java.util.List;
 
 public class FileSet implements Serializable {
 
-	private static final long		serialVersionUID	= 6605222755528016675L;
+    private static final long        serialVersionUID    = 6605222755528016675L;
 
-	private static final String		LINE				= "--------------------"
-																+ "--------------------"
-																+ "--------------------"
-																+ "--------------------";
+    private static final String        LINE                = "--------------------"
+                                                                + "--------------------"
+                                                                + "--------------------"
+                                                                + "--------------------";
 
-	// Containing all Images/Files belonging to a digital object.
-	private List<ContentFile>		allImages;
+    // Containing all Images/Files belonging to a digital object.
+    private List<ContentFile>        allImages;
 
-	// Metadata for the image/fileset.
-	private List<Metadata>			allMetadata;
+    // Metadata for the image/fileset.
+    private List<Metadata>            allMetadata;
 
-	// If metadata is removed; it will be added to this list; for undo
-	// functions, or something else lateron.
-	private List<Metadata>			removedMetadata;
+    // If metadata is removed; it will be added to this list; for undo
+    // functions, or something else lateron.
+    private List<Metadata>            removedMetadata;
 
-	// Contains all virtual fileg groups needed for the zvdd/DFG-viewer METS.
-	private List<VirtualFileGroup>	virtualFileGroups;
+    // Contains all virtual fileg groups needed for the zvdd/DFG-viewer METS.
+    private List<VirtualFileGroup>    virtualFileGroups;
 
-	/***************************************************************************
-	 * <p>
-	 * Constructor. Creates all lists which store all objects for Images,
-	 * Metadata, removed Metadata, and virtual file groups.
-	 * </p>
-	 **************************************************************************/
-	public FileSet() {
-		this.allImages = new LinkedList<ContentFile>();
-		this.allMetadata = new LinkedList<Metadata>();
-		this.removedMetadata = new LinkedList<Metadata>();
-		this.virtualFileGroups = new LinkedList<VirtualFileGroup>();
-	}
+    /***************************************************************************
+     * <p>
+     * Constructor. Creates all lists which store all objects for Images,
+     * Metadata, removed Metadata, and virtual file groups.
+     * </p>
+     **************************************************************************/
+    public FileSet() {
+        this.allImages = new LinkedList<ContentFile>();
+        this.allMetadata = new LinkedList<Metadata>();
+        this.removedMetadata = new LinkedList<Metadata>();
+        this.virtualFileGroups = new LinkedList<VirtualFileGroup>();
+    }
 
-	/***************************************************************************
-	 * <p>
-	 * Adds a ContentFile object to the FileSet, if it is not yet existing.
-	 * </p>
-	 *
-	 * @param inImage
-	 *            ContentFile to be added
-	 * @return always true
-	 **************************************************************************/
-	public boolean addFile(ContentFile inImage) {
+    /***************************************************************************
+     * <p>
+     * Adds a ContentFile object to the FileSet, if it is not yet existing.
+     * </p>
+     *
+     * @param inImage
+     *            ContentFile to be added
+     * @return always true
+     **************************************************************************/
+    public boolean addFile(ContentFile inImage) {
 
-		// Only add the file, if it is not yet existing in the list.
-		if (!this.allImages.contains(inImage)) {
-			this.allImages.add(inImage);
-		}
+        // Only add the file, if it is not yet existing in the list.
+        if (!this.allImages.contains(inImage)) {
+            this.allImages.add(inImage);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/***************************************************************************
-	 * <p>
-	 * Removes a ContentFile from the FileSet. If the ContentFile doesn't belong
-	 * to the FileSet an exception is thrown.
-	 * </p>
-	 *
-	 * @param inImage
-	 *            ContentFile to be removed
-	 * @return always true
-	 **************************************************************************/
-	public boolean removeFile(ContentFile inImage) {
-		this.allImages.remove(inImage);
-		return true;
-	}
+    /***************************************************************************
+     * <p>
+     * Removes a ContentFile from the FileSet. If the ContentFile doesn't belong
+     * to the FileSet an exception is thrown.
+     * </p>
+     *
+     * @param inImage
+     *            ContentFile to be removed
+     * @return always true
+     **************************************************************************/
+    public boolean removeFile(ContentFile inImage) {
+        this.allImages.remove(inImage);
+        return true;
+    }
 
-	/***************************************************************************
-	 * @param inMD
-	 * @return
-	 **************************************************************************/
-	public boolean addMetadata(Metadata inMD) {
-		this.allMetadata.add(inMD);
-		return true;
-	}
+    /***************************************************************************
+     * @param inMD
+     * @return
+     **************************************************************************/
+    public boolean addMetadata(Metadata inMD) {
+        this.allMetadata.add(inMD);
+        return true;
+    }
 
-	/***************************************************************************
-	 * @param inMD
-	 * @return
-	 **************************************************************************/
-	public boolean removeMetadata(Metadata inMD) {
-		this.removedMetadata.add(inMD);
-		this.allMetadata.remove(inMD);
-		return true;
-	}
+    /***************************************************************************
+     * @param inMD
+     * @return
+     **************************************************************************/
+    public boolean removeMetadata(Metadata inMD) {
+        this.removedMetadata.add(inMD);
+        this.allMetadata.remove(inMD);
+        return true;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public List<ContentFile> getAllFiles() {
-		return this.allImages;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public List<ContentFile> getAllFiles() {
+        return this.allImages;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public List<Metadata> getAllMetadata() {
-		return this.allMetadata;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public List<Metadata> getAllMetadata() {
+        return this.allMetadata;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public List<VirtualFileGroup> getVirtualFileGroups() {
-		return this.virtualFileGroups;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public List<VirtualFileGroup> getVirtualFileGroups() {
+        return this.virtualFileGroups;
+    }
 
-	/**************************************************************************
-	 * @param theVirtualFileGroupList
-	 **************************************************************************/
-	public void setVirtualFileGroups(
-			List<VirtualFileGroup> theVirtualFileGroupList) {
-		this.virtualFileGroups = theVirtualFileGroupList;
-	}
+    /**************************************************************************
+     * @param theVirtualFileGroupList
+     **************************************************************************/
+    public void setVirtualFileGroups(
+            List<VirtualFileGroup> theVirtualFileGroupList) {
+        this.virtualFileGroups = theVirtualFileGroupList;
+    }
 
-	/***************************************************************************
-	 * @param virtualFileGroups
-	 **************************************************************************/
-	public void addVirtualFileGroup(VirtualFileGroup theFilegroup) {
-		this.virtualFileGroups.add(theFilegroup);
-	}
+    /***************************************************************************
+     * @param virtualFileGroups
+     **************************************************************************/
+    public void addVirtualFileGroup(VirtualFileGroup theFilegroup) {
+        this.virtualFileGroups.add(theFilegroup);
+    }
 
-	/***************************************************************************
-	 * @param theFilegroup
-	 **************************************************************************/
-	public void removeVirtualFileGroup(VirtualFileGroup theFilegroup) {
-		this.virtualFileGroups.remove(theFilegroup);
-	}
+    /***************************************************************************
+     * @param theFilegroup
+     **************************************************************************/
+    public void removeVirtualFileGroup(VirtualFileGroup theFilegroup) {
+        this.virtualFileGroups.remove(theFilegroup);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
 
-		String result = LINE + "\nFileSet\n" + LINE + "\n";
+        String result = LINE + "\nFileSet\n" + LINE + "\n";
 
-		// Add FileSet.
-		if (this.getAllFiles() == null || this.getAllFiles().isEmpty()) {
-			result += "NO FILES" + "\n";
-		} else {
-			StringBuffer resultBuffer = new StringBuffer();
-			for (ContentFile currentCF : this.getAllFiles()) {
-				resultBuffer.append("ContentFile (" + currentCF.getIdentifier()
-						+ "): '" + currentCF.getLocation() + "' ("
-						+ currentCF.getMimetype() + ")" + "\n");
-			}
-			result += resultBuffer;
-		}
+        // Add FileSet.
+        if (this.getAllFiles() == null || this.getAllFiles().isEmpty()) {
+            result += "NO FILES" + "\n";
+        } else {
+            StringBuffer resultBuffer = new StringBuffer();
+            for (ContentFile currentCF : this.getAllFiles()) {
+                resultBuffer.append("ContentFile (" + currentCF.getIdentifier()
+                        + "): '" + currentCF.getLocation() + "' ("
+                        + currentCF.getMimetype() + ")" + "\n");
+            }
+            result += resultBuffer;
+        }
 
-		// Add VirtualFileGroups.
-		result += LINE + "\nVirtualFileGroups\n" + LINE + "\n";
+        // Add VirtualFileGroups.
+        result += LINE + "\nVirtualFileGroups\n" + LINE + "\n";
 
-		if (this.getVirtualFileGroups() == null
-				|| this.getVirtualFileGroups().isEmpty()) {
-			result += "NONE\n";
-		} else {
-			StringBuffer resultBuffer = new StringBuffer();
-			for (VirtualFileGroup vfg : this.getVirtualFileGroups()) {
-				resultBuffer.append("NAME: " + vfg.getName() + ", FILESUFFIX: "
-						+ vfg.getFileSuffix() + ", MIMETYPE: "
-						+ vfg.getMimetype() + ", IDSUFFIX: "
-						+ vfg.getIdSuffix() + ", PATH: " + vfg.getPathToFiles()
-						+ "\n");
-			}
-			result += resultBuffer;
-		}
+        if (this.getVirtualFileGroups() == null
+                || this.getVirtualFileGroups().isEmpty()) {
+            result += "NONE\n";
+        } else {
+            StringBuffer resultBuffer = new StringBuffer();
+            for (VirtualFileGroup vfg : this.getVirtualFileGroups()) {
+                resultBuffer.append("NAME: " + vfg.getName() + ", FILESUFFIX: "
+                        + vfg.getFileSuffix() + ", MIMETYPE: "
+                        + vfg.getMimetype() + ", IDSUFFIX: "
+                        + vfg.getIdSuffix() + ", PATH: " + vfg.getPathToFiles()
+                        + "\n");
+            }
+            result += resultBuffer;
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

@@ -53,119 +53,119 @@ import ugh.exceptions.ContentFileAreaTypeUnknownException;
 
 public class ContentFileArea implements Serializable {
 
-	private static final long	serialVersionUID	= 3957147069912977429L;
+    private static final long    serialVersionUID    = 3957147069912977429L;
 
-	private static final Logger	LOGGER				= Logger
-															.getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger    LOGGER                = Logger
+                                                            .getLogger(ugh.dl.DigitalDocument.class);
 
-	// Type of area (coordinates, xml id, byteoffset, ...).
-	private String				type;
-	// From attribute; e.g. can be xml id, SMTPE code etc.
-	private String				from;
-	// To attribute; same as from.
-	private String				to;
+    // Type of area (coordinates, xml id, byteoffset, ...).
+    private String                type;
+    // From attribute; e.g. can be xml id, SMTPE code etc.
+    private String                from;
+    // To attribute; same as from.
+    private String                to;
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getFrom() {
-		return this.from;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getFrom() {
+        return this.from;
+    }
 
-	/***************************************************************************
-	 * @param from
-	 **************************************************************************/
-	public void setFrom(String from) {
-		this.from = from;
-	}
+    /***************************************************************************
+     * @param from
+     **************************************************************************/
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getTo() {
-		return this.to;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getTo() {
+        return this.to;
+    }
 
-	/***************************************************************************
-	 * @param to
-	 **************************************************************************/
-	public void setTo(String to) {
-		this.to = to;
-	}
+    /***************************************************************************
+     * @param to
+     **************************************************************************/
+    public void setTo(String to) {
+        this.to = to;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getType() {
-		return this.type;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getType() {
+        return this.type;
+    }
 
-	/***************************************************************************
-	 * <p>
-	 * Sets the type of reference. The following types are known:
-	 * <ul>
-	 * <li>byteoffset</li>
-	 * <li>coordinates</li>
-	 * <li>smtpe</li>
-	 * <li>xmlid Types are case sensitive. If an unknown type is set, an
-	 * exception is thrown.</li>
-	 * </ul>
-	 * </p>
-	 *
-	 * @param type
-	 *            As a String.
-	 * @throws ContentFileAreaTypeUnknownException
-	 **************************************************************************/
-	public void setType(String type) throws ContentFileAreaTypeUnknownException {
+    /***************************************************************************
+     * <p>
+     * Sets the type of reference. The following types are known:
+     * <ul>
+     * <li>byteoffset</li>
+     * <li>coordinates</li>
+     * <li>smtpe</li>
+     * <li>xmlid Types are case sensitive. If an unknown type is set, an
+     * exception is thrown.</li>
+     * </ul>
+     * </p>
+     *
+     * @param type
+     *            As a String.
+     * @throws ContentFileAreaTypeUnknownException
+     **************************************************************************/
+    public void setType(String type) throws ContentFileAreaTypeUnknownException {
 
-		if (type.equals("coordinates") || type.equals("byteoffset")
-				|| type.equals("xmlid") || type.equals("smtpe")) {
-			this.type = type;
-		} else {
-			String message = "'" + type
-					+ "' is unknown for ContentFileArea type";
-			LOGGER.error(message);
-			throw new ContentFileAreaTypeUnknownException(message);
-		}
-	}
+        if (type.equals("coordinates") || type.equals("byteoffset")
+                || type.equals("xmlid") || type.equals("smtpe")) {
+            this.type = type;
+        } else {
+            String message = "'" + type
+                    + "' is unknown for ContentFileArea type";
+            LOGGER.error(message);
+            throw new ContentFileAreaTypeUnknownException(message);
+        }
+    }
 
-	/***************************************************************************
-	 * <p>
-	 * Overloaded method compares this ContentFileArea with parameter
-	 * contentFileArea.
-	 * </p>
-	 *
-	 * @author Wulf Riebensahm
-	 * @return TRUE if type and value are the same.
-	 * @param ContentFileArea
-	 *            contentFileArea
-	 **************************************************************************/
-	public boolean equals(ContentFileArea contentFileArea) {
+    /***************************************************************************
+     * <p>
+     * Overloaded method compares this ContentFileArea with parameter
+     * contentFileArea.
+     * </p>
+     *
+     * @author Wulf Riebensahm
+     * @return TRUE if type and value are the same.
+     * @param ContentFileArea
+     *            contentFileArea
+     **************************************************************************/
+    public boolean equals(ContentFileArea contentFileArea) {
 
-		// Try block for comparing strings.
-		try {
-			if (!((this.getType() == null && contentFileArea.getType() == null) || this
-					.getType().equals(contentFileArea.getType()))) {
-				return false;
-			}
+        // Try block for comparing strings.
+        try {
+            if (!((this.getType() == null && contentFileArea.getType() == null) || this
+                    .getType().equals(contentFileArea.getType()))) {
+                return false;
+            }
 
-			if (!((this.getFrom() == null && contentFileArea.getFrom() == null) || this
-					.getFrom().equals(contentFileArea.getFrom()))) {
-				return false;
-			}
+            if (!((this.getFrom() == null && contentFileArea.getFrom() == null) || this
+                    .getFrom().equals(contentFileArea.getFrom()))) {
+                return false;
+            }
 
-			if (!((this.getTo() == null && contentFileArea.getTo() == null) || this
-					.getTo().equals(contentFileArea.getTo()))) {
-				return false;
-			}
+            if (!((this.getTo() == null && contentFileArea.getTo() == null) || this
+                    .getTo().equals(contentFileArea.getTo()))) {
+                return false;
+            }
 
-		}
-		// TODO Teldemokles says: "Do never catch a NullPointerException"!
-		catch (NullPointerException npe) {
-			return false;
-		}
+        }
+        // TODO Teldemokles says: "Do never catch a NullPointerException"!
+        catch (NullPointerException npe) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 }

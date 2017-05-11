@@ -34,104 +34,104 @@ import ugh.dl.Metadata;
 
 public class MissingModsMappingException extends UGHException {
 
-	private static final long	serialVersionUID	= -8257927032753509817L;
+    private static final long    serialVersionUID    = -8257927032753509817L;
 
-	DocStructType				docStructType;
-	List<Metadata>				metadataTypes;
+    DocStructType                docStructType;
+    List<Metadata>                metadataTypes;
 
-	/***************************************************************************
-	 * Default constructor.
-	 **************************************************************************/
-	public MissingModsMappingException() {
-		super();
-	}
+    /***************************************************************************
+     * Default constructor.
+     **************************************************************************/
+    public MissingModsMappingException() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 **************************************************************************/
-	public MissingModsMappingException(String inReason) {
-		super(inReason);
-	}
+    /***************************************************************************
+     * @param inReason
+     **************************************************************************/
+    public MissingModsMappingException(String inReason) {
+        super(inReason);
+    }
 
-	/***************************************************************************
-	 * @param e
-	 **************************************************************************/
-	public MissingModsMappingException(Exception e) {
-		super(e);
-	}
+    /***************************************************************************
+     * @param e
+     **************************************************************************/
+    public MissingModsMappingException(Exception e) {
+        super(e);
+    }
 
-	/***************************************************************************
-	 * @param inReason
-	 * @param e
-	 **************************************************************************/
-	public MissingModsMappingException(String inReason, Exception e) {
-		super(inReason, e);
-	}
+    /***************************************************************************
+     * @param inReason
+     * @param e
+     **************************************************************************/
+    public MissingModsMappingException(String inReason, Exception e) {
+        super(inReason, e);
+    }
 
-	/***************************************************************************
-	 * @param in
-	 * @param inDSType
-	 **************************************************************************/
-	public MissingModsMappingException(DocStructType inDSType,
-			List<Metadata> inMDList) {
-		this.docStructType = inDSType;
-		this.metadataTypes = inMDList;
-	}
+    /***************************************************************************
+     * @param in
+     * @param inDSType
+     **************************************************************************/
+    public MissingModsMappingException(DocStructType inDSType,
+            List<Metadata> inMDList) {
+        this.docStructType = inDSType;
+        this.metadataTypes = inMDList;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Throwable#getMessage()
-	 */
-	@Override
-	public String getMessage() {
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Throwable#getMessage()
+     */
+    @Override
+    public String getMessage() {
 
-		if (this.docStructType != null && !this.metadataTypes.isEmpty()) {
-			StringBuffer listEntries = new StringBuffer();
-			for (Metadata m : this.metadataTypes) {
-				if (m.getValue() != null && !m.getValue().equals("")) {
-					listEntries.append("[" + m.getType().getName() + ":'"
-							+ m.getValue() + "'] ");
-				} else {
-					listEntries.append("[" + m.getType().getName() + "] ");
-				}
-			}
+        if (this.docStructType != null && !this.metadataTypes.isEmpty()) {
+            StringBuffer listEntries = new StringBuffer();
+            for (Metadata m : this.metadataTypes) {
+                if (m.getValue() != null && !m.getValue().equals("")) {
+                    listEntries.append("[" + m.getType().getName() + ":'"
+                            + m.getValue() + "'] ");
+                } else {
+                    listEntries.append("[" + m.getType().getName() + "] ");
+                }
+            }
 
-			return "The following metadata types for DocStruct '"
-					+ this.docStructType.getName()
-					+ "' are NOT YET mapped to the MODS: "
-					+ listEntries.toString().trim();
-		}
+            return "The following metadata types for DocStruct '"
+                    + this.docStructType.getName()
+                    + "' are NOT YET mapped to the MODS: "
+                    + listEntries.toString().trim();
+        }
 
-		return "Error occurred for unknown reason";
-	}
+        return "Error occurred for unknown reason";
+    }
 
-	/***************************************************************************
-	 * @return the dst
-	 **************************************************************************/
-	public DocStructType getDocStructType() {
-		return this.docStructType;
-	}
+    /***************************************************************************
+     * @return the dst
+     **************************************************************************/
+    public DocStructType getDocStructType() {
+        return this.docStructType;
+    }
 
-	/**************************************************************************
-	 * @param docStructType
-	 **************************************************************************/
-	public void setDocStructType(DocStructType docStructType) {
-		this.docStructType = docStructType;
-	}
+    /**************************************************************************
+     * @param docStructType
+     **************************************************************************/
+    public void setDocStructType(DocStructType docStructType) {
+        this.docStructType = docStructType;
+    }
 
-	/**************************************************************************
-	 * @return
-	 **************************************************************************/
-	public List<Metadata> getMetadataTypes() {
-		return this.metadataTypes;
-	}
+    /**************************************************************************
+     * @return
+     **************************************************************************/
+    public List<Metadata> getMetadataTypes() {
+        return this.metadataTypes;
+    }
 
-	/**************************************************************************
-	 * @param metadataType
-	 **************************************************************************/
-	public void setMetadataTypes(List<Metadata> metadataTypes) {
-		this.metadataTypes = metadataTypes;
-	}
+    /**************************************************************************
+     * @param metadataType
+     **************************************************************************/
+    public void setMetadataTypes(List<Metadata> metadataTypes) {
+        this.metadataTypes = metadataTypes;
+    }
 
 }

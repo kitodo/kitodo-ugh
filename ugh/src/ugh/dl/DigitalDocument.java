@@ -221,7 +221,7 @@ public class DigitalDocument implements Serializable {
      * @see java.lang.Object#toString()
      */
     @Override
-	public String toString() {
+    public String toString() {
 
         String result = "";
 
@@ -808,19 +808,19 @@ public class DigitalDocument implements Serializable {
         }
     }
 
-	/***************************************************************************
-	 * Retrieves the name of the anchor structure, if any, or null otherwise.
-	 * Anchors are a special type of document structure, which group other
-	 * structure entities together, but have no own content. Imagine a
-	 * periodical as such an anchor. The periodical itself is a virtual
-	 * structure entity without any own content, but groups all years of
-	 * appearance together. Years may be anchors again for volumes, etc.
-	 *
-	 * @return String, which is null, if it cannot be used as an anchor
-	 **************************************************************************/
-	public String getAnchorClass() {
-		return topLogicalStruct.getAnchorClass();
-	}
+    /***************************************************************************
+     * Retrieves the name of the anchor structure, if any, or null otherwise.
+     * Anchors are a special type of document structure, which group other
+     * structure entities together, but have no own content. Imagine a
+     * periodical as such an anchor. The periodical itself is a virtual
+     * structure entity without any own content, but groups all years of
+     * appearance together. Years may be anchors again for volumes, etc.
+     *
+     * @return String, which is null, if it cannot be used as an anchor
+     **************************************************************************/
+    public String getAnchorClass() {
+        return topLogicalStruct.getAnchorClass();
+    }
 
     /***************************************************************************
      * <p>

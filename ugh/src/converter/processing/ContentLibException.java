@@ -1,8 +1,8 @@
 /*
  * This file is part of the ContentServer  project.
  * Visit the websites for more information.
- * 		- http://gdz.sub.uni-goettingen.de
- * 		- http://www.intranda.com
+ *         - http://gdz.sub.uni-goettingen.de
+ *         - http://www.intranda.com
  *
  * Copyright 2009, Center for Retrospective Digitization, Göttingen (GDZ),
  * intranda software.
@@ -30,22 +30,22 @@ package converter.processing;
  ************************************************************************************/
 public class ContentLibException extends Exception {
 
-	private static final long serialVersionUID = 4277888305577041996L;
+    private static final long serialVersionUID = 4277888305577041996L;
 
-	public ContentLibException(){
-		super();
-	}
+    public ContentLibException(){
+        super();
+    }
 
-	public ContentLibException(String inMessage){
-		super(inMessage);
-	}
+    public ContentLibException(String inMessage){
+        super(inMessage);
+    }
 
-	public ContentLibException(Throwable incause){
-		super(incause);
-	}
+    public ContentLibException(Throwable incause){
+        super(incause);
+    }
 
-	public ContentLibException(String inMessage, Throwable incause){
-		super(inMessage, incause);
-	}
+    public ContentLibException(String inMessage, Throwable incause){
+        super(inMessage, incause);
+    }
 
 }

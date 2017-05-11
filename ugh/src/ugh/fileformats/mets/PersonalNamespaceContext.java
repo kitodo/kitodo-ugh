@@ -36,130 +36,130 @@ import javax.xml.namespace.NamespaceContext;
 
 public class PersonalNamespaceContext implements NamespaceContext {
 
-	// Key is the prefix; value is the URI (as a String).
-	private HashMap<String, Namespace>	namespaceHash	= null;
+    // Key is the prefix; value is the URI (as a String).
+    private HashMap<String, Namespace>    namespaceHash    = null;
 
-	/***************************************************************************
-	 * @return the namespaceHash
-	 **************************************************************************/
-	public HashMap<String, Namespace> getNamespaceHash() {
-		return this.namespaceHash;
-	}
+    /***************************************************************************
+     * @return the namespaceHash
+     **************************************************************************/
+    public HashMap<String, Namespace> getNamespaceHash() {
+        return this.namespaceHash;
+    }
 
-	/***************************************************************************
-	 * @param namespaceHash
-	 *            the namespaceHash to set
-	 **************************************************************************/
-	public void setNamespaceHash(HashMap<String, Namespace> namespaceHash) {
-		this.namespaceHash = namespaceHash;
-	}
+    /***************************************************************************
+     * @param namespaceHash
+     *            the namespaceHash to set
+     **************************************************************************/
+    public void setNamespaceHash(HashMap<String, Namespace> namespaceHash) {
+        this.namespaceHash = namespaceHash;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * This method is only be called, if there is a prefix to an element.
-	 *
-	 * @see
-	 * javax.xml.namespace.NamespaceContext#getNamespaceURI(java.lang.String)
-	 */
-	public String getNamespaceURI(String prefix) {
+    /*
+     * (non-Javadoc)
+     *
+     * This method is only be called, if there is a prefix to an element.
+     *
+     * @see
+     * javax.xml.namespace.NamespaceContext#getNamespaceURI(java.lang.String)
+     */
+    public String getNamespaceURI(String prefix) {
 
-		String uri = null;
+        String uri = null;
 
-		// System.out.println("Calling getNamespaceURI for prefix: " +
-		// prefix);
+        // System.out.println("Calling getNamespaceURI for prefix: " +
+        // prefix);
 
-		if (prefix == null) {
-			throw new NullPointerException("No prefix given; prefix is null!");
-		}
+        if (prefix == null) {
+            throw new NullPointerException("No prefix given; prefix is null!");
+        }
 
-		if (prefix.equals("")) {
-			// We are asking for the default namespace.
-			Namespace ns = this.getDefaultNamespace();
-			// System.out.println(" return:"+ns.getUri());
-			return ns.getUri();
-		}
+        if (prefix.equals("")) {
+            // We are asking for the default namespace.
+            Namespace ns = this.getDefaultNamespace();
+            // System.out.println(" return:"+ns.getUri());
+            return ns.getUri();
+        }
 
-		Namespace ns = this.getNamespaceHash().get(prefix);
-		if (ns != null) {
-			uri = ns.getUri();
-		}
-		if (uri != null) {
-			// System.out.println(" return:"+uri);
-			return uri;
-		}
+        Namespace ns = this.getNamespaceHash().get(prefix);
+        if (ns != null) {
+            uri = ns.getUri();
+        }
+        if (uri != null) {
+            // System.out.println(" return:"+uri);
+            return uri;
+        }
 
-		// System.out.println("
-		// return:"+XMLConstants.DEFAULT_NS_PREFIX);
-		return XMLConstants.DEFAULT_NS_PREFIX;
-	}
+        // System.out.println("
+        // return:"+XMLConstants.DEFAULT_NS_PREFIX);
+        return XMLConstants.DEFAULT_NS_PREFIX;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see javax.xml.namespace.NamespaceContext#getPrefix(java.lang.String)
-	 */
-	public String getPrefix(String uri) {
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.xml.namespace.NamespaceContext#getPrefix(java.lang.String)
+     */
+    public String getPrefix(String uri) {
 
-		if (uri == null) {
-			return null;
-		}
+        if (uri == null) {
+            return null;
+        }
 
-		HashMap<String, Namespace> hm = this.getNamespaceHash();
-		Set<String> keyset = hm.keySet();
+        HashMap<String, Namespace> hm = this.getNamespaceHash();
+        Set<String> keyset = hm.keySet();
 
-		// System.out.println("Get prefix for URI "+uri);
+        // System.out.println("Get prefix for URI "+uri);
 
-		// Iterate over keyset.
-		Iterator<String> it = keyset.iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			// Get the uri for the key.
-			Namespace keysns = hm.get(key);
-			String keysuri = keysns.getUri();
-			if (uri.equals(keysuri)) {
-				// System.out.println("returning: "+key);
-				// This is the right uri, so key is the prefix we are
-				// looking for.
-				return key;
-			}
-		}
+        // Iterate over keyset.
+        Iterator<String> it = keyset.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            // Get the uri for the key.
+            Namespace keysns = hm.get(key);
+            String keysuri = keysns.getUri();
+            if (uri.equals(keysuri)) {
+                // System.out.println("returning: "+key);
+                // This is the right uri, so key is the prefix we are
+                // looking for.
+                return key;
+            }
+        }
 
-		// No uri was found.
-		return null;
-	}
+        // No uri was found.
+        return null;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public Namespace getDefaultNamespace() {
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public Namespace getDefaultNamespace() {
 
-		HashMap<String, Namespace> hm = this.getNamespaceHash();
-		Set<String> keyset = hm.keySet();
+        HashMap<String, Namespace> hm = this.getNamespaceHash();
+        Set<String> keyset = hm.keySet();
 
-		// Iterate over keyset.
-		Iterator<String> it = keyset.iterator();
-		while (it.hasNext()) {
-			String key = it.next();
-			// Get the uri for the key.
-			Namespace keysns = hm.get(key);
-			// Is this the default namespace?
-			if (keysns.getDefaultNS().booleanValue()) {
-				return keysns;
-			}
-		}
+        // Iterate over keyset.
+        Iterator<String> it = keyset.iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            // Get the uri for the key.
+            Namespace keysns = hm.get(key);
+            // Is this the default namespace?
+            if (keysns.getDefaultNS().booleanValue()) {
+                return keysns;
+            }
+        }
 
-		// No uri was found.
-		return null;
-	}
+        // No uri was found.
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see javax.xml.namespace.NamespaceContext#getPrefixes(java.lang.String)
-	 */
-	public Iterator<String> getPrefixes(String uri) {
-		throw new UnsupportedOperationException();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.xml.namespace.NamespaceContext#getPrefixes(java.lang.String)
+     */
+    public Iterator<String> getPrefixes(String uri) {
+        throw new UnsupportedOperationException();
+    }
 
 }

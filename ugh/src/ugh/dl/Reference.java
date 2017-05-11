@@ -54,107 +54,107 @@ import java.io.Serializable;
 
 public class Reference implements Serializable {
 
-	private static final long	serialVersionUID	= 8042513549869050025L;
+    private static final long    serialVersionUID    = 8042513549869050025L;
 
-	private String				type;
-	private DocStruct			source;
+    private String                type;
+    private DocStruct            source;
 
-	// If sourceid has a value != 0, this must be taken; source in invalid then.
-	private long				sourceid;
-	private DocStruct			target;
-	private long				targetid;
-	private boolean				updated;
-	// Database ID.
-	// TODO What database ID?? I do not know!! Remove it!
-	private long				dbid;
+    // If sourceid has a value != 0, this must be taken; source in invalid then.
+    private long                sourceid;
+    private DocStruct            target;
+    private long                targetid;
+    private boolean                updated;
+    // Database ID.
+    // TODO What database ID?? I do not know!! Remove it!
+    private long                dbid;
 
-	/***************************************************************************
-	 * Constructor.
-	 **************************************************************************/
-	public Reference() {
-		super();
-	}
+    /***************************************************************************
+     * Constructor.
+     **************************************************************************/
+    public Reference() {
+        super();
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public DocStruct getSource() {
-		return this.source;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public DocStruct getSource() {
+        return this.source;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public long getSourceID() {
-		return this.sourceid;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public long getSourceID() {
+        return this.sourceid;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public DocStruct getTarget() {
-		return this.target;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public DocStruct getTarget() {
+        return this.target;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public long getTargetID() {
-		return this.targetid;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public long getTargetID() {
+        return this.targetid;
+    }
 
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public void setSource(DocStruct in) {
-		this.source = in;
-		this.sourceid = 0;
-		this.updated = true;
-	}
+    /***************************************************************************
+     * @param in
+     **************************************************************************/
+    public void setSource(DocStruct in) {
+        this.source = in;
+        this.sourceid = 0;
+        this.updated = true;
+    }
 
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public void setSourceID(long in) {
-		this.sourceid = in;
-		this.source = null;
-		this.updated = true;
-	}
+    /***************************************************************************
+     * @param in
+     **************************************************************************/
+    public void setSourceID(long in) {
+        this.sourceid = in;
+        this.source = null;
+        this.updated = true;
+    }
 
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public void setTarget(DocStruct in) {
-		this.target = in;
-		this.targetid = 0;
-		this.updated = true;
-	}
+    /***************************************************************************
+     * @param in
+     **************************************************************************/
+    public void setTarget(DocStruct in) {
+        this.target = in;
+        this.targetid = 0;
+        this.updated = true;
+    }
 
-	/***************************************************************************
-	 * @param in
-	 **************************************************************************/
-	public void setTargetID(long in) {
-		this.targetid = in;
-		this.target = null;
-		this.updated = true;
-	}
+    /***************************************************************************
+     * @param in
+     **************************************************************************/
+    public void setTargetID(long in) {
+        this.targetid = in;
+        this.target = null;
+        this.updated = true;
+    }
 
-	/***************************************************************************
-	 * @return
-	 **************************************************************************/
-	public String getType() {
-		return this.type;
-	}
+    /***************************************************************************
+     * @return
+     **************************************************************************/
+    public String getType() {
+        return this.type;
+    }
 
-	/***************************************************************************
-	 * @param intype
-	 * @return
-	 **************************************************************************/
-	public boolean setType(String intype) {
-		// TODO Check, if it's a valid type!
-		this.type = intype;
+    /***************************************************************************
+     * @param intype
+     * @return
+     **************************************************************************/
+    public boolean setType(String intype) {
+        // TODO Check, if it's a valid type!
+        this.type = intype;
 
-		return true;
-	}
+        return true;
+    }
 
 }
