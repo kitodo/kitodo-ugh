@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Comment;
 import org.jdom.Content;
 import org.jdom.Document;
@@ -16,8 +17,7 @@ import org.xml.sax.InputSource;
 
 public class RulesetReader {
 
-    protected final Logger myLogger = Logger
-            .getLogger(StarterRulesetMerging.class);
+    protected final Logger logger = LogManager.getLogger(StarterRulesetMerging.class);
 
     private String myFilePath = "";
     private Document myDoc = null;
@@ -38,7 +38,7 @@ public class RulesetReader {
             SAXBuilder sxbuild = new SAXBuilder();
             InputSource is = new InputSource(myFilePath);
             myDoc = sxbuild.build(is);
-            myLogger.info("document '" + myFilePath
+            logger.info("document '" + myFilePath
                     + "' read from file without exceptions");
         }
 

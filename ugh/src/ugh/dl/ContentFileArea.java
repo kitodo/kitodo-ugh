@@ -23,7 +23,8 @@ package ugh.dl;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import ugh.exceptions.ContentFileAreaTypeUnknownException;
 
@@ -55,8 +56,7 @@ public class ContentFileArea implements Serializable {
 
     private static final long    serialVersionUID    = 3957147069912977429L;
 
-    private static final Logger    LOGGER                = Logger
-                                                            .getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger    logger                = LogManager.getLogger(ugh.dl.DigitalDocument.class);
 
     // Type of area (coordinates, xml id, byteoffset, ...).
     private String                type;
@@ -124,7 +124,7 @@ public class ContentFileArea implements Serializable {
         } else {
             String message = "'" + type
                     + "' is unknown for ContentFileArea type";
-            LOGGER.error(message);
+            logger.error(message);
             throw new ContentFileAreaTypeUnknownException(message);
         }
     }
@@ -137,7 +137,7 @@ public class ContentFileArea implements Serializable {
      *
      * @author Wulf Riebensahm
      * @return TRUE if type and value are the same.
-     * @param ContentFileArea
+     * @param contentFileArea
      *            contentFileArea
      **************************************************************************/
     public boolean equals(ContentFileArea contentFileArea) {

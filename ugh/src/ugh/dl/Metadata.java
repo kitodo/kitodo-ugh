@@ -23,7 +23,8 @@ package ugh.dl;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
@@ -50,7 +51,7 @@ public class Metadata implements Serializable {
 
     private static final long serialVersionUID = -2535548431060378914L;
 
-    private static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger logger = LogManager.getLogger(Metadata.class);
 
     protected MetadataType MDType;
     // Document structure to which this metadata type belongs to.
@@ -362,7 +363,7 @@ public class Metadata implements Serializable {
      **************************************************************************/
     public boolean equals(Metadata metadata) {
 
-        LOGGER.debug("\r\n" + "metaData getClass()=" + this.getClass() + " ->id:" + this.getType().getName());
+        logger.debug("\r\n" + "metaData getClass()=" + this.getClass() + " ->id:" + this.getType().getName());
 
         if (!(this.getType().equals(metadata.getType()))) {
             return false;
@@ -370,31 +371,31 @@ public class Metadata implements Serializable {
 
         // Processing Strings in a try block.
         try {
-            LOGGER.debug("Values: md1/md2 " + this.getValue() + "/" + metadata.getValue());
+            logger.debug("Values: md1/md2 " + this.getValue() + "/" + metadata.getValue());
             if (!((this.getValue() == null && metadata.getValue() == null) || this.getValue().equals(metadata.getValue()))) {
-                LOGGER.debug("false returned");
+                logger.debug("false returned");
                 return false;
             }
 
             if (!((this.getValueQualifier() == null && metadata.getValueQualifier() == null) || this.getValueQualifier().equals(
                     metadata.getValueQualifier()))) {
-                LOGGER.debug("false returned");
+                logger.debug("false returned");
                 return false;
             }
 
             if (!((this.getValueQualifierType() == null && metadata.getValueQualifierType() == null) || this.getValueQualifierType().equals(
                     metadata.getValueQualifierType()))) {
-                LOGGER.debug("false returned");
+                logger.debug("false returned");
                 return false;
             }
         }
         // TODO Teldemokles says: "Do never catch a NullPointerException"!
         catch (NullPointerException npe) {
-            LOGGER.debug("NPE thrown and caught");
+            logger.debug("NPE thrown and caught");
             return false;
         }
 
-        LOGGER.debug("true returned");
+        logger.debug("true returned");
         return true;
     }
 

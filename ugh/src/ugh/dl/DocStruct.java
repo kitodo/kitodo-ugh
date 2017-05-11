@@ -37,7 +37,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import ugh.dl.DigitalDocument.ListPairCheck;
 import ugh.exceptions.ContentFileNotLinkedException;
@@ -85,7 +86,7 @@ public class DocStruct implements Serializable {
 
     private static final long serialVersionUID = -4531356062293054921L;
 
-    private static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger logger = LogManager.getLogger(DocStruct.class);
     private static final String HIDDEN_METADATA_CHAR = "_";
 
     private static final List<String> IDENTIFIER_METADATA_FIELDS_FOR_TOSTRING = Arrays.asList(
@@ -488,7 +489,7 @@ public class DocStruct implements Serializable {
             // This should never happen as we are creating the same
             // DocStructType.
             String message = "This " + e.getClass().getName() + " should not have been occurred!";
-            LOGGER.error(message, e);
+            logger.error(message, e);
         }
 
         // Copy the link to the parent.
@@ -516,12 +517,12 @@ public class DocStruct implements Serializable {
                         // This should never happen, as we are adding the same
                         // MetadataType.
                         String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                        LOGGER.error(message, e);
+                        logger.error(message, e);
                     } catch (MetadataTypeNotAllowedException e) {
                         // This should never happen, as we are adding the same
                         // MetadataType.
                         String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                        LOGGER.error(message, e);
+                        logger.error(message, e);
                     }
                 }
             }
@@ -577,12 +578,12 @@ public class DocStruct implements Serializable {
                         // This should never happen, as we are adding the same
                         // MetadataType.
                         String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                        LOGGER.error(message, e);
+                        logger.error(message, e);
                     } catch (MetadataTypeNotAllowedException e) {
                         // This should never happen, as we are adding the same
                         // MetadataType.
                         String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                        LOGGER.error(message, e);
+                        logger.error(message, e);
                     }
 
                 }
@@ -618,12 +619,12 @@ public class DocStruct implements Serializable {
                         // This should never happen as we are adding the same
                         // person type.
                         String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                        LOGGER.error(message, e);
+                        logger.error(message, e);
                     } catch (MetadataTypeNotAllowedException e) {
                         // This should never happen as we are adding the same
                         // person type.
                         String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                        LOGGER.error(message, e);
+                        logger.error(message, e);
                     }
                 }
             }
@@ -642,7 +643,7 @@ public class DocStruct implements Serializable {
                     newStruct.addChild(copiedChild);
                 } catch (TypeNotAllowedAsChildException e) {
                     String message = "This " + e.getClass().getName() + " should not have been occurred!";
-                    LOGGER.error(message, e);
+                    logger.error(message, e);
                 }
             }
         }
@@ -1413,7 +1414,7 @@ public class DocStruct implements Serializable {
         // document structure belongs to get global MDType.
         if (this.type == null) {
             String message = "Error occurred while adding metadata group of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
-            LOGGER.error(message);
+            logger.error(message);
             throw new DocStructHasNoTypeException(message);
         }
 
@@ -1423,7 +1424,7 @@ public class DocStruct implements Serializable {
         // we are creating a local copy of the MetadataType object.
         if (prefsMdType == null && !(inMdName.startsWith(HIDDEN_METADATA_CHAR))) {
             MetadataTypeNotAllowedException e = new MetadataTypeNotAllowedException(null, this.getType());
-            LOGGER.error(e.getMessage());
+            logger.error(e.getMessage());
             throw e;
         }
 
@@ -1472,9 +1473,9 @@ public class DocStruct implements Serializable {
             }
             this.allMetadataGroups.add(theMetadataGroup);
         } else {
-            LOGGER.debug("Not allowed to add metadata '" + inMdName + "'");
+            logger.debug("Not allowed to add metadata '" + inMdName + "'");
             MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException(null, this.getType());
-            LOGGER.error(mtnae.getMessage());
+            logger.error(mtnae.getMessage());
             throw mtnae;
         }
 
@@ -1629,7 +1630,7 @@ public class DocStruct implements Serializable {
         // document structure belongs to get global MDType.
         if (this.type == null) {
             String message = "Error occurred while adding metadata of type '" + inMdName + "' to " + identify(this) + " DocStruct: DocStruct has no type.";
-            LOGGER.error(message);
+            logger.error(message);
             throw new DocStructHasNoTypeException(message);
         }
 
@@ -1639,7 +1640,7 @@ public class DocStruct implements Serializable {
         // we are creating a local copy of the MetadataType object.
         if (prefsMdType == null && !(inMdName.startsWith(HIDDEN_METADATA_CHAR))) {
             MetadataTypeNotAllowedException e = new MetadataTypeNotAllowedException(inMdType, this.getType());
-            LOGGER.error(e.getMessage());
+            logger.error(e.getMessage());
             throw e;
         }
 
@@ -1688,9 +1689,9 @@ public class DocStruct implements Serializable {
             }
             this.allMetadata.add(theMetadata);
         } else {
-            LOGGER.debug("Not allowed to add metadata '" + inMdName + "'");
+            logger.debug("Not allowed to add metadata '" + inMdName + "'");
             MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException(inMdType, this.getType());
-            LOGGER.error(mtnae.getMessage());
+            logger.error(mtnae.getMessage());
             throw mtnae;
         }
 
@@ -2385,7 +2386,7 @@ public class DocStruct implements Serializable {
     public boolean addChild(Integer index, DocStruct inchild) throws TypeNotAllowedAsChildException {
 
         if (inchild == null || inchild.getType() == null) {
-            LOGGER.warn("DocStruct or DocStructType is null");
+            logger.warn("DocStruct or DocStructType is null");
             return false;
         }
 
@@ -2403,7 +2404,7 @@ public class DocStruct implements Serializable {
 
         if (!allowed) {
             TypeNotAllowedAsChildException tnaace = new TypeNotAllowedAsChildException(childtype);
-            LOGGER.error("DocStruct type '" + childtype + "' not allowed as child of type '" + this.getType().getName() + "'");
+            logger.error("DocStruct type '" + childtype + "' not allowed as child of type '" + this.getType().getName() + "'");
             throw tnaace;
         }
 
@@ -2451,7 +2452,7 @@ public class DocStruct implements Serializable {
      */
     public boolean addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
         if (where == null || inchild == null || inchild.getType() == null) {
-            LOGGER.warn("DocStruct or DocStructType is null");
+            logger.warn("DocStruct or DocStructType is null");
             return false;
         }
 
@@ -2770,7 +2771,7 @@ public class DocStruct implements Serializable {
         // Check, if person is complete.
         if (in.getType() == null) {
             IncompletePersonObjectException ipoe = new IncompletePersonObjectException();
-            LOGGER.error("Incomplete data for person metadata");
+            logger.error("Incomplete data for person metadata");
             throw ipoe;
         }
 
@@ -2779,7 +2780,7 @@ public class DocStruct implements Serializable {
         MetadataType mdtype = this.type.getMetadataTypeByType(in.getType());
         if (mdtype == null) {
             MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException();
-            LOGGER.error("MetadataType " + in.getType().getName() + " is not available for DocStruct '" + this.getType().getName() + "'");
+            logger.error("MetadataType " + in.getType().getName() + " is not available for DocStruct '" + this.getType().getName() + "'");
             throw mtnae;
         }
 
@@ -2819,7 +2820,7 @@ public class DocStruct implements Serializable {
         }
 
         MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException();
-        LOGGER.error("Person MetadataType '" + in.getType().getName() + "' not allowed for DocStruct '" + this.getType().getName() + "'");
+        logger.error("Person MetadataType '" + in.getType().getName() + "' not allowed for DocStruct '" + this.getType().getName() + "'");
         throw mtnae;
     }
 
@@ -3291,28 +3292,28 @@ public class DocStruct implements Serializable {
 
     public boolean equals(DocStruct docStruct) {
 
-        LOGGER.debug("\r\n" + this.getClass() + " ->id:" + this.getType().getName() + " other:" + docStruct.getType().getName() + "\r\n");
+        logger.debug("\r\n" + this.getClass() + " ->id:" + this.getType().getName() + " other:" + docStruct.getType().getName() + "\r\n");
 
         // Simple attributes.
         if (this.isLogical() != docStruct.isLogical()) {
-            LOGGER.debug("isLogical=false");
+            logger.debug("isLogical=false");
             return false;
         }
 
         if (this.isPhysical() != docStruct.isPhysical()) {
-            LOGGER.debug("isPhysical=false");
+            logger.debug("isPhysical=false");
             return false;
         }
 
         if (!((this.getReferenceToAnchor() == null && docStruct.getReferenceToAnchor() == null) || this.getReferenceToAnchor().equals(
                 docStruct.getReferenceToAnchor()))) {
-            LOGGER.debug("getreferenceAnchor=false");
+            logger.debug("getreferenceAnchor=false");
             return false;
         }
 
         // Compare types.
         if (!this.getType().equals(docStruct.getType())) {
-            LOGGER.debug("getType=false");
+            logger.debug("getType=false");
             return false;
         }
 
@@ -3334,68 +3335,68 @@ public class DocStruct implements Serializable {
         // Metadata.
         lpcResult = DigitalDocument.quickPairCheck(this.getAllMetadata(), docStruct.getAllMetadata());
         if (lpcResult == ListPairCheck.isNotEqual) {
-            LOGGER.debug("1 false returned");
+            logger.debug("1 false returned");
             return false;
         }
         if (lpcResult == ListPairCheck.needsFurtherChecking && this.getAllMetadata().size() != docStruct.getAllMetadata().size()) {
-            LOGGER.debug("2 false returned");
+            logger.debug("2 false returned");
             return false;
         }
 
         // DocStructs (children).
         lpcResult = DigitalDocument.quickPairCheck(this.getAllChildren(), docStruct.getAllChildren());
         if (lpcResult == ListPairCheck.isNotEqual) {
-            LOGGER.debug("3 false returned");
+            logger.debug("3 false returned");
             return false;
         }
         if (lpcResult == ListPairCheck.needsFurtherChecking && this.getAllChildren().size() != docStruct.getAllChildren().size()) {
-            LOGGER.debug("4 false returned");
+            logger.debug("4 false returned");
             return false;
         }
 
         // FileReferences.
         lpcResult = DigitalDocument.quickPairCheck(this.getAllContentFileReferences(), docStruct.getAllContentFileReferences());
         if (lpcResult == ListPairCheck.isNotEqual) {
-            LOGGER.debug("5 false returned");
+            logger.debug("5 false returned");
             return false;
         }
 
         if (lpcResult == ListPairCheck.needsFurtherChecking
                 && this.getAllContentFileReferences().size() != docStruct.getAllContentFileReferences().size()) {
-            LOGGER.debug("6 false returned");
+            logger.debug("6 false returned");
             return false;
         }
 
         // Persons.
         lpcResult = DigitalDocument.quickPairCheck(this.getAllPersons(), docStruct.getAllPersons());
         if (lpcResult == ListPairCheck.isNotEqual) {
-            LOGGER.debug("7 false returned");
+            logger.debug("7 false returned");
             return false;
         }
         if (lpcResult == ListPairCheck.needsFurtherChecking && this.getAllPersons().size() != docStruct.getAllPersons().size()) {
-            LOGGER.debug("8 false returned");
+            logger.debug("8 false returned");
             return false;
         }
 
         // To references.
         lpcResult = DigitalDocument.quickPairCheck(this.getAllToReferences(), docStruct.getAllToReferences());
         if (lpcResult == ListPairCheck.isNotEqual) {
-            LOGGER.debug("9 false returned");
+            logger.debug("9 false returned");
             return false;
         }
         if (lpcResult == ListPairCheck.needsFurtherChecking && this.getAllToReferences().size() != docStruct.getAllToReferences().size()) {
-            LOGGER.debug("10 false returned");
+            logger.debug("10 false returned");
             return false;
         }
 
         // From references.
         lpcResult = DigitalDocument.quickPairCheck(this.getAllFromReferences(), docStruct.getAllFromReferences());
         if (lpcResult == ListPairCheck.isNotEqual) {
-            LOGGER.debug("11 false returned");
+            logger.debug("11 false returned");
             return false;
         }
         if (lpcResult == ListPairCheck.needsFurtherChecking && this.getAllFromReferences().size() != docStruct.getAllFromReferences().size()) {
-            LOGGER.debug("12 false returned");
+            logger.debug("12 false returned");
             return false;
         }
 
@@ -3424,12 +3425,12 @@ public class DocStruct implements Serializable {
 
                 for (Metadata md2 : docStruct.getAllMetadata()) {
                     if (md1.equals(md2)) {
-                        LOGGER.debug("equals=true: MD1=" + md1.getType().getName() + ";MD2=" + md2.getType().getName());
+                        logger.debug("equals=true: MD1=" + md1.getType().getName() + ";MD2=" + md2.getType().getName());
                         flagFound = true;
                         break;
                     }
 
-                    LOGGER.debug("equals=false: MD1=" + md1.getType().getName() + ", MD2=" + md2.getType().getName());
+                    logger.debug("equals=false: MD1=" + md1.getType().getName() + ", MD2=" + md2.getType().getName());
                 }
 
                 // If equal Metadata couldn't be found this DocStruct cannot be
@@ -3449,12 +3450,12 @@ public class DocStruct implements Serializable {
 
                 for (MetadataGroup md2 : docStruct.getAllMetadataGroups()) {
                     if (md1.equals(md2)) {
-                        LOGGER.debug("equals=true: MD1=" + md1.getType().getName() + ";MD2=" + md2.getType().getName());
+                        logger.debug("equals=true: MD1=" + md1.getType().getName() + ";MD2=" + md2.getType().getName());
                         flagFound = true;
                         break;
                     }
 
-                    LOGGER.debug("equals=false: MD1=" + md1.getType().getName() + ", MD2=" + md2.getType().getName());
+                    logger.debug("equals=false: MD1=" + md1.getType().getName() + ", MD2=" + md2.getType().getName());
                 }
 
                 // If equal Metadata couldn't be found this DocStruct cannot be
@@ -3480,7 +3481,7 @@ public class DocStruct implements Serializable {
                 // If equal Person couldn't be found this DocStruct cannot be
                 // equal either.
                 if (!flagFound) {
-                    LOGGER.debug("15 false returned");
+                    logger.debug("15 false returned");
                     return false;
                 }
             }
@@ -3499,7 +3500,7 @@ public class DocStruct implements Serializable {
 
                 /*
                  * for (ContentFileReference cfr2 : docStruct .getAllContentFileReferences()) { if (cfr1.equals(cfr2)) { flagFound = true; break; } }
-                 * if (!flagFound) { LOGGER.debug("16 false returned"); return false; }
+                 * if (!flagFound) { logger.debug("16 false returned"); return false; }
                  */
             }
         }
@@ -3530,7 +3531,7 @@ public class DocStruct implements Serializable {
 
                 if (!flagFound) {
                     unregisterFromRefs(docStruct);
-                    LOGGER.debug("17 false returned");
+                    logger.debug("17 false returned");
                     return false;
                 }
             }
@@ -3559,7 +3560,7 @@ public class DocStruct implements Serializable {
 
                 if (!flagFound) {
                     unregisterToRefs(docStruct);
-                    LOGGER.debug("18 false returned");
+                    logger.debug("18 false returned");
                     return false;
                 }
             }

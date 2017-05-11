@@ -78,7 +78,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.oro.text.perl.Perl5Util;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
@@ -158,7 +159,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      **************************************************************************/
 
     // The logger.
-    protected static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
+    protected static final Logger LOGGER = LogManager.getLogger(MetsMods.class);
 
     // The line.
     protected static final String LINE = "--------------------" + "--------------------" + "--------------------" + "--------------------";

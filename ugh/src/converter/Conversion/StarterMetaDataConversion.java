@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
@@ -25,12 +26,11 @@ import converter.logger.UGH;
 @SuppressWarnings("deprecation")
 public class StarterMetaDataConversion {
 
-    protected static final Logger myLogger = Logger.getLogger(StarterMetaDataConversion.class);
-
-    protected static final Logger mySaveLog = Logger.getLogger(Filesave.class);
-    protected static final Logger myUghLog = Logger.getLogger(UGH.class);
-    protected static final Logger myCommitLog = Logger.getLogger(Commit.class);
-    protected static final Logger myRollbackLog = Logger.getLogger(Rollback.class);
+    protected static final Logger logger = LogManager.getLogger(StarterMetaDataConversion.class);
+    protected static final Logger saveLog = LogManager.getLogger(Filesave.class);
+    protected static final Logger ughLog = LogManager.getLogger(UGH.class);
+    protected static final Logger commitLog = LogManager.getLogger(Commit.class);
+    protected static final Logger rollbackLog = LogManager.getLogger(Rollback.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -46,17 +46,17 @@ public class StarterMetaDataConversion {
             prefPath = "C:/XMLCheck/ruleset.xml";
         }
 
-        myLogger.info("Conversion Session started on sub direcories of " + basePath + "\r\n" + "ruleset '" + prefPath + "' is used");
+        logger.info("Conversion Session started on sub direcories of " + basePath + "\r\n" + "ruleset '" + prefPath + "' is used");
 
         pref.loadPrefs(prefPath);
-        myLogger.info("Loading ruleset '" + prefPath + "'");
+        logger.info("Loading ruleset '" + prefPath + "'");
 
         // subfolders contain meta.xml metadata
         MetadataWalker walker = new MetadataWalker(basePath);
         File procFile = null;
         Fileformat metsOutput = null;
 
-        myLogger.info("Original files are backuped to meta.bak(n) - (highest number = latest backup)");
+        logger.info("Original files are backuped to meta.bak(n) - (highest number = latest backup)");
 
         for (Iterator<File> iterator = walker.iterator(); iterator.hasNext();) {
 
@@ -73,22 +73,22 @@ public class StarterMetaDataConversion {
 
             try {
                 copy(procFile, newFile);
-                myLogger.info(procFile.getAbsolutePath() + " was copied to " + newFile.getAbsolutePath());
-                mySaveLog.info(procFile.getAbsolutePath() + " was copied to " + newFile.getAbsolutePath());
+                logger.info(procFile.getAbsolutePath() + " was copied to " + newFile.getAbsolutePath());
+                saveLog.info(procFile.getAbsolutePath() + " was copied to " + newFile.getAbsolutePath());
             } catch (IOException e) {
                 flagErrorBackup = true;
             }
 
             if (flagErrorBackup) {
-                myLogger.info("Error creating backup. Processing of '" + newFile.getAbsolutePath() + "' cancelled");
-                myRollbackLog.info(procFile.getAbsolutePath() + " - backup and processing cancelled");
+                logger.info("Error creating backup. Processing of '" + newFile.getAbsolutePath() + "' cancelled");
+                rollbackLog.info(procFile.getAbsolutePath() + " - backup and processing cancelled");
             } else {
 
                 Validators myValidators = new Validators();
 
                 // now loading rdf format with ugh classes
                 RDFFile rdfInput = new RDFFile(pref);
-                myLogger.debug("loading:'" + newFile.getAbsolutePath() + "' as RDF in ugh");
+                logger.debug("loading:'" + newFile.getAbsolutePath() + "' as RDF in ugh");
 
                 try {
                     if (rdfInput.read(procFile.getAbsolutePath())) {
@@ -109,25 +109,25 @@ public class StarterMetaDataConversion {
                         /*######## Begin of 1. Equals Validation  #########*/
                         // if conversion doesn't generates equal digDoc
                         if (!myValidators.getEqualsValidation(digDoc1, digDoc2)) {
-                            myLogger.info("File " + procFile.getAbsolutePath() + " is not equals to the original file, will not be written");
-                            myRollbackLog.info(newFile.getAbsolutePath() + " - mets digDoc is different - processing cancelled");
+                            logger.info("File " + procFile.getAbsolutePath() + " is not equals to the original file, will not be written");
+                            rollbackLog.info(newFile.getAbsolutePath() + " - mets digDoc is different - processing cancelled");
                             flagError = true;
                             // if conversion doesn't generates equal digDoc
                         } else {
-                            myLogger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
+                            logger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
                         }
                         /*######## End of 1. Equals Validator  #########*/
 
 
                     } else {
-                        myLogger.info("File " + procFile.getAbsolutePath() + " could not be read, will not be written");
-                        myRollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
+                        logger.info("File " + procFile.getAbsolutePath() + " could not be read, will not be written");
+                        rollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
                         flagError = true;
                     }
 
                 } catch (Exception e) {
-                    myLogger.debug("read error for file " + procFile.getAbsolutePath(), e);
-                    myRollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
+                    logger.debug("read error for file " + procFile.getAbsolutePath(), e);
+                    rollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
                     flagError = true;
                 }
 
@@ -137,25 +137,25 @@ public class StarterMetaDataConversion {
                     try {
                         if (!metsOutput.write(procFile.getAbsolutePath())) {
 
-                            myLogger.error("File " + procFile.getAbsolutePath() + " couldn't be written in mets format");
+                            logger.error("File " + procFile.getAbsolutePath() + " couldn't be written in mets format");
 
-                            myRollbackLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - processing cancelled");
+                            rollbackLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - processing cancelled");
                             flagError = true;
                         } else {
 
-                            myLogger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
+                            logger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
 
-                            mySaveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
+                            saveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
                         }
 
                     } catch (Exception e) {
 
-                        myLogger.error("File " + procFile.getAbsolutePath() + " couldn't be written in mets format " + "Exception '" + e.getMessage()
+                        logger.error("File " + procFile.getAbsolutePath() + " couldn't be written in mets format " + "Exception '" + e.getMessage()
                                 + "' was thrown in ugh");
 
-                        myRollbackLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - ugh Error - processing cancelled");
+                        rollbackLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - ugh Error - processing cancelled");
 
-                        myUghLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - processing cancelled", e);
+                        ughLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - processing cancelled", e);
 
                         flagError = true;
                     }
@@ -187,23 +187,23 @@ public class StarterMetaDataConversion {
                             // Validator
 
                             if (myValidators.getEqualsValidation(digDoc1, digDoc2)) {
-                                myLogger.info("File " + procFile.getAbsolutePath() + " was successfully verified by equals validator in mets format");
+                                logger.info("File " + procFile.getAbsolutePath() + " was successfully verified by equals validator in mets format");
 
-                                myCommitLog.info(procFile.getAbsolutePath()
+                                commitLog.info(procFile.getAbsolutePath()
                                         + " was successfully written and verified by equals validator in mets format");
                             } else {
                                 /* Validator turned off
                                 //conversionFailure = true;
-                                myLogger.info("File " + procFile.getAbsolutePath()
+                                logger.info("File " + procFile.getAbsolutePath()
                                         + " digital document from the reloaded mets is not equal to the originally loaded digital document");
 
-                                myRollbackLog.info(procFile.getAbsolutePath()
+                                rollbackLog.info(procFile.getAbsolutePath()
                                         + " digital document from the reloaded mets is not equal to the originally loaded digital document");
                                 */
                             }
 
                             //next line only if previous block is taken out from //validator
-                            //myCommitLog.info(procFile.getAbsolutePath()    + " was NOT verified by equalsValidator in mets format");
+                            //commitLog.info(procFile.getAbsolutePath()    + " was NOT verified by equalsValidator in mets format");
 
                             // writing reconverted rdf file and writing originally loaded rdf
                             File fileA = new File(procFile.getAbsolutePath().replace(".xml", ".fromMets.rdf.xml"));
@@ -216,58 +216,58 @@ public class StarterMetaDataConversion {
                             /*
                             // Validator
                             if (myValidators.getFileStringValidation(fileA, fileB)) {
-                                myLogger.info("File " + procFile.getAbsolutePath() + " was successfully verified by stringValidator in mets format");
-                                myCommitLog.info(procFile.getAbsolutePath()
+                                logger.info("File " + procFile.getAbsolutePath() + " was successfully verified by stringValidator in mets format");
+                                commitLog.info(procFile.getAbsolutePath()
                                         + " was successfully written and verified by stringValidator in mets format");
 
                             } else {
                                 conversionFailure = true;
-                                myLogger.info("File " + procFile.getAbsolutePath()
+                                logger.info("File " + procFile.getAbsolutePath()
                                         + " the file reloaded from mets, reconverted to rdf and saved as '" + fileA.getAbsolutePath() + "' is not equal to the originally read and saved '" + fileB.getAbsolutePath() + "'");
 
-                                myRollbackLog.info(procFile.getAbsolutePath()
+                                rollbackLog.info(procFile.getAbsolutePath()
                                         + " the file reloaded from mets, reconverted to rdf and saved as '" + fileA.getAbsolutePath() + "' is not equal to the originally read and saved '" + fileB.getAbsolutePath() + "'");
                             }
                             */
 
-                            myCommitLog.info(procFile.getAbsolutePath()    + " stringValidator turned off - " + conversionFailure.toString());
+                            commitLog.info(procFile.getAbsolutePath()    + " stringValidator turned off - " + conversionFailure.toString());
 
                             // Tokenizer Validation, using newFile which is the backup of the original file
                             if (myValidators.getTokenizerValidation(newFile, fileA)) {
 
-                                myLogger.info("File " + procFile.getAbsolutePath()
+                                logger.info("File " + procFile.getAbsolutePath()
                                         + " was successfully written and verified by tokenizingValidator in mets format |###| tokenizer message -> " + FileCompare.getErrorMSG());
 
-                                myCommitLog.info(procFile.getAbsolutePath()
+                                commitLog.info(procFile.getAbsolutePath()
                                         + " was successfully written and verified by tokenizingValidator in mets format |###| tokenizer message -> " + FileCompare.getErrorMSG());
 
                             } else {
                                 conversionFailure = true;
-                                myLogger.info("File " + procFile.getAbsolutePath()
+                                logger.info("File " + procFile.getAbsolutePath()
                                         + " the file reloaded from mets, reconverted to rdf and saved as '" + fileA.getAbsolutePath() + "' is not equal to the originally read and saved '" + newFile.getAbsolutePath() + "'"
                                 + "tokenizer returned  ->" + FileCompare.getErrorMSG());
 
-                                myRollbackLog.info(procFile.getAbsolutePath()
+                                rollbackLog.info(procFile.getAbsolutePath()
                                         + " the file reloaded from mets, reconverted to rdf and saved as '" + fileA.getAbsolutePath() + "' is not equal to the originally read and saved '" + fileB.getAbsolutePath() + "'"
                                 + "tokenizer returned  ->" + FileCompare.getErrorMSG());
                             }
 
                             if (conversionFailure){
-                                myRollbackLog.info(procFile.getAbsolutePath()  + " conversion couldn't satisfy validators");
-                                myCommitLog.info(procFile.getAbsolutePath() + " conversion couldn't satisfy validators");
+                                rollbackLog.info(procFile.getAbsolutePath()  + " conversion couldn't satisfy validators");
+                                commitLog.info(procFile.getAbsolutePath() + " conversion couldn't satisfy validators");
                             }
 
                         } catch (ReadException e) {
 
-                            myLogger.info("File " + procFile.getAbsolutePath() + " could not be read into ugh with used ruleset " + prefPath);
-                            myRollbackLog.info(newFile.getAbsolutePath() + " - verify failed - mets was saved but couldn't get reloaded with ugh", e);
-                            myUghLog.info(newFile.getAbsolutePath() + " - verify failed - mets was saved but couldn't get reloaded with ugh", e);
+                            logger.info("File " + procFile.getAbsolutePath() + " could not be read into ugh with used ruleset " + prefPath);
+                            rollbackLog.info(newFile.getAbsolutePath() + " - verify failed - mets was saved but couldn't get reloaded with ugh", e);
+                            ughLog.info(newFile.getAbsolutePath() + " - verify failed - mets was saved but couldn't get reloaded with ugh", e);
                         }
                     }
                 }
             }
         }
-        myLogger.info("Conversion Session terminated normally on sub direcories of " + basePath + "\r\n" + "ruleset '" + prefPath + "' was used");
+        logger.info("Conversion Session terminated normally on sub direcories of " + basePath + "\r\n" + "ruleset '" + prefPath + "' was used");
 
     }
 
@@ -295,7 +295,7 @@ public class StarterMetaDataConversion {
                 to.write(buffer, 0, bytesRead); // write
             }
 
-            myLogger.debug("backup of file '" + fileFrom + "' written to '" + fileTo + "'");
+            logger.debug("backup of file '" + fileFrom + "' written to '" + fileTo + "'");
 
         } finally {
             if (from != null)
