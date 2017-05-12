@@ -42,7 +42,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Node;
 
 import ugh.exceptions.ContentFileNotLinkedException;
@@ -115,7 +116,7 @@ public class DigitalDocument implements Serializable {
 
     private static final String VERSION = "2.0-20100223";
 
-    private static final Logger LOGGER = Logger.getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger logger = LogManager.getLogger(DigitalDocument.class);
     private static final String LINE = "--------------------" + "--------------------" + "--------------------" + "--------------------";
 
     private DocStruct topPhysicalStruct;
@@ -459,7 +460,7 @@ public class DigitalDocument implements Serializable {
 
         // Update the logical and physical DocStruct recursively, if digdoc is
         // not null.
-        LOGGER.info("Updating DigitalDocument with data from Preferences");
+        logger.info("Updating DigitalDocument with data from Preferences");
 
         try {
             if (this.getLogicalDocStruct() != null) {
@@ -469,12 +470,12 @@ public class DigitalDocument implements Serializable {
                 updatePhysicalDocStruct(thePrefs);
             }
         } catch (PreferencesException e) {
-            LOGGER.warn("Updating DocStruct failed due to a PreferencesException!", e);
+            logger.warn("Updating DocStruct failed due to a PreferencesException!", e);
         }
 
         // Process files from the physical metadata, if no fileset is existing
         // yet.
-        LOGGER.info("Updating FileSet from physical metadata");
+        logger.info("Updating FileSet from physical metadata");
 
         restoreFileSetFromPhysicalMetadata();
 
@@ -557,7 +558,7 @@ public class DigitalDocument implements Serializable {
 
         // If struct is empty, just return.
         if (theStruct == null) {
-            LOGGER.warn("DocStruct is empty! Update of DocStruct from Prefs failed!");
+            logger.warn("DocStruct is empty! Update of DocStruct from Prefs failed!");
             return null;
         }
 
@@ -567,11 +568,11 @@ public class DigitalDocument implements Serializable {
         // Check, if the current DocStruct name (from DigDoc) is contained in
         // the Prefs.
         if (structTypeFromPrefs != null) {
-            LOGGER.debug("DocStruct '" + structTypeFromDigdoc.getName() + "' from DigitalDocument contained in prefs");
+            logger.debug("DocStruct '" + structTypeFromDigdoc.getName() + "' from DigitalDocument contained in prefs");
 
             // Update DocStructType from the prefs.
             theStruct.setType(structTypeFromPrefs);
-            LOGGER.trace("Updated DocStructType '" + structTypeFromDigdoc.getName() + "' from prefs");
+            logger.trace("Updated DocStructType '" + structTypeFromDigdoc.getName() + "' from prefs");
 
             // Update MetadataTypes from Prefs.
             structTypeFromPrefs.getAllMetadataTypes();
@@ -582,18 +583,18 @@ public class DigitalDocument implements Serializable {
                     MetadataType mtypeFromPrefs = thePrefs.getMetadataTypeByName(m.getType().getName());
                     if (mtypeFromPrefs != null) {
                         m.setType(mtypeFromPrefs);
-                        LOGGER.trace("Updated MetadataType '" + m.getType().getName() + "' from prefs");
+                        logger.trace("Updated MetadataType '" + m.getType().getName() + "' from prefs");
                     }
                 }
             }
         } else {
             PreferencesException pe =
                     new PreferencesException("DocStruct '" + structTypeFromDigdoc.getName() + "' from DigitalDocument NOT contained in prefs!");
-            LOGGER.error(pe.getMessage());
+            logger.error(pe.getMessage());
             throw new PreferencesException();
         }
 
-        LOGGER.debug("DocStructType '" + structTypeFromDigdoc.getName() + "' and all MetadataTypes updated from prefs");
+        logger.debug("DocStructType '" + structTypeFromDigdoc.getName() + "' and all MetadataTypes updated from prefs");
 
         // Recursively call all DocStructs.
         if (theStruct.getAllChildren() != null) {
@@ -633,7 +634,7 @@ public class DigitalDocument implements Serializable {
     private synchronized void sortMetadataRecursively(DocStruct theSruct, Prefs thePrefs) {
 
         if (thePrefs == null) {
-            LOGGER.warn("Cannot sort metadata according to prefs! No prefs available!");
+            logger.warn("Cannot sort metadata according to prefs! No prefs available!");
             return;
         }
 
@@ -799,7 +800,7 @@ public class DigitalDocument implements Serializable {
                                 // Add the current content file to page.
                                 ds.addContentFile(cf);
 
-                                LOGGER.trace("Added file '" + cf.getLocation() + "' to DocStruct '" + ds.getType().getName() + "'");
+                                logger.trace("Added file '" + cf.getLocation() + "' to DocStruct '" + ds.getType().getName() + "'");
                             }
                         }
                     }
@@ -955,7 +956,7 @@ public class DigitalDocument implements Serializable {
         theStruct.setDigitalDocument(this);
         theStruct.addContentFile(newCf);
 
-        LOGGER.trace("Added file '" + newCf.getLocation() + "' to DocStruct '" + theStruct.getType().getName() + "'");
+        logger.trace("Added file '" + newCf.getLocation() + "' to DocStruct '" + theStruct.getType().getName() + "'");
     }
 
     /***************************************************************************
@@ -982,29 +983,29 @@ public class DigitalDocument implements Serializable {
      **************************************************************************/
     public boolean equals(DigitalDocument digitalDocument) {
 
-        LOGGER.debug("test phys pair");
+        logger.debug("test phys pair");
         if (DigitalDocument.quickPairCheck(this.getPhysicalDocStruct(), digitalDocument.getPhysicalDocStruct()) == ListPairCheck.isNotEqual) {
-            LOGGER.debug("phys pair false returned");
+            logger.debug("phys pair false returned");
             return false;
         }
 
-        LOGGER.debug("test log pair");
+        logger.debug("test log pair");
         if (DigitalDocument.quickPairCheck(this.getLogicalDocStruct(), digitalDocument.getLogicalDocStruct()) == ListPairCheck.isNotEqual) {
-            LOGGER.debug("log pair false returned");
+            logger.debug("log pair false returned");
             return false;
         }
 
-        LOGGER.debug("in depth test phys pair");
+        logger.debug("in depth test phys pair");
         if (!(DigitalDocument.quickPairCheck(this.getPhysicalDocStruct(), digitalDocument.getPhysicalDocStruct()) == ListPairCheck.isEqual)
                 && !this.getPhysicalDocStruct().equals(digitalDocument.getPhysicalDocStruct())) {
-            LOGGER.debug("ind. phys pair false returned");
+            logger.debug("ind. phys pair false returned");
             return false;
         }
 
-        LOGGER.debug("in depth test log pair");
+        logger.debug("in depth test log pair");
         if (!(DigitalDocument.quickPairCheck(this.getLogicalDocStruct(), digitalDocument.getLogicalDocStruct()) == ListPairCheck.isEqual)
                 && !this.getLogicalDocStruct().equals(digitalDocument.getLogicalDocStruct())) {
-            LOGGER.debug("ind. log pair false returned");
+            logger.debug("ind. log pair false returned");
             return false;
         }
 
@@ -1153,11 +1154,11 @@ public class DigitalDocument implements Serializable {
 
         } catch (IOException e) {
             String message = "Couldn't obtain OutputStream!";
-            LOGGER.error(message, e);
+            logger.error(message, e);
             throw new WriteException(message, e);
         } catch (ClassNotFoundException e) {
             String message = "Could not find some class!";
-            LOGGER.error(message, e);
+            logger.error(message, e);
             throw new WriteException(message, e);
         }
 

@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -19,7 +20,7 @@ import ugh.exceptions.PreferencesException;
 
 public class Validator {
 
-    protected final Logger myLogger = Logger.getLogger(Validator.class);
+    protected final Logger logger = LogManager.getLogger(Validator.class);
 
     List<DocStruct> docStructsOhneSeiten;
 
@@ -41,7 +42,7 @@ public class Validator {
         try {
             dd = gdzfile.getDigitalDocument();
         } catch (Exception e) {
-            myLogger.error("Can not get DigitalDocument[" + id + "]", e);
+            logger.error("Can not get DigitalDocument[" + id + "]", e);
             ergebnis = false;
         }
 
@@ -52,7 +53,7 @@ public class Validator {
          */
         DocStruct logicalTop = dd.getLogicalDocStruct();
         if (logicalTop == null) {
-            myLogger.info("[" + id + "] " + "Verifizierung nicht erfolgreich, keine Seiten zugewiesen");
+            logger.info("[" + id + "] " + "Verifizierung nicht erfolgreich, keine Seiten zugewiesen");
             ergebnis = false;
         }
 
@@ -61,7 +62,7 @@ public class Validator {
         if (docStructsOhneSeiten.size() != 0) {
             for (Iterator<DocStruct> iter = docStructsOhneSeiten.iterator(); iter.hasNext();) {
                 DocStruct ds = iter.next();
-                myLogger.info("[" +id + "] Strukturelement ohne Seiten: " + ds.getType().getName());
+                logger.info("[" +id + "] Strukturelement ohne Seiten: " + ds.getType().getName());
             }
             ergebnis = false;
         }
@@ -74,13 +75,13 @@ public class Validator {
         try {
             seitenOhneDocstructs = checkSeitenOhneDocstructs(gdzfile);
         } catch (PreferencesException e1) {
-            myLogger.info("[" +id + "] Can not check pages without docstructs: ");
+            logger.info("[" +id + "] Can not check pages without docstructs: ");
             ergebnis = false;
         }
         if (seitenOhneDocstructs != null && seitenOhneDocstructs.size() != 0) {
             for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
                 String seite = iter.next();
-                myLogger.info("[" + id + "] " + "Seiten ohne Strukturelement: " + seite);
+                logger.info("[" + id + "] " + "Seiten ohne Strukturelement: " + seite);
             }
             ergebnis = false;
         }
@@ -93,7 +94,7 @@ public class Validator {
         if (mandatoryList.size() != 0) {
             for (Iterator<String> iter = mandatoryList.iterator(); iter.hasNext();) {
                 String temp = iter.next();
-                myLogger.info("[" + id + "] " + "Pflichtelement: " + temp);
+                logger.info("[" + id + "] " + "Pflichtelement: " + temp);
             }
             ergebnis = false;
         }

@@ -3,7 +3,8 @@ package converter.ruleSetProcessing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 
 /* this class is in charge of checking if a certain element is already existing in the xml tree,
@@ -14,8 +15,7 @@ import org.jdom.Element;
 
 public class SlubIntegrity {
 
-    protected final Logger myLogger = Logger
-            .getLogger(SlubIntegrity.class);
+    protected final Logger logger = LogManager.getLogger(SlubIntegrity.class);
 
     // these are instances on watch
     static private List<SlubIntegrity> myObjectsOnWatch = new ArrayList<SlubIntegrity>();
@@ -42,13 +42,13 @@ public class SlubIntegrity {
         myElementName = addElementName;
         myIdTagName = idTagName;
         if (id == null|| id.length() == 0) {
-            myLogger.debug("no id to watch for:" + myElementName + "/"
+            logger.debug("no id to watch for:" + myElementName + "/"
                     + myIdTagName + "/null");
             throw new Exception("no id to watch for");
         }
         myID = id;
         //System.out.println("lade " + id);
-        myLogger.debug("created new watchObject:" + myElementName + "/"
+        logger.debug("created new watchObject:" + myElementName + "/"
                 + myIdTagName + "/" + myID);
         myObjectsOnWatch.add(this);
     }

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.JDOMException;
 
 /**
@@ -17,8 +18,7 @@ import org.jdom.JDOMException;
  */
 
 public class ProcessStarter {
-    private static final Logger myLogger = Logger
-            .getLogger(ProcessStarter.class);
+    private static final Logger logger = LogManager.getLogger(ProcessStarter.class);
 
     /**
      * @param args
@@ -40,11 +40,11 @@ public class ProcessStarter {
         if (usedRulesSetPath.length() == 0)
             usedRulesSetPath = "c:/workspace/GoobiXMLProcessor/docs/auxData/usedRuleSets.xml";
 
-        myLogger.info("File " + usedRulesSetPath + " is used as usedRulesSet,\n\t metadata folder will be looked up in " + basePath + ".");
+        logger.info("File " + usedRulesSetPath + " is used as usedRulesSet,\n\t metadata folder will be looked up in " + basePath + ".");
 
         List<String> myIds = UsedRuleSetParser.getIds(usedRulesSetPath);
 
-        myLogger
+        logger
                 .info("The following ids match the search pattern and will be examined for the occurrence of replacement conditions:"
                         + myIds);
 
@@ -52,7 +52,7 @@ public class ProcessStarter {
 
             // validate filepath
             for (String id1 : myIds) {
-                myLogger.debug("validating filepath id:" + id1);
+                logger.debug("validating filepath id:" + id1);
                 Validatable validateFP = new ValidateFilePath();
                 validateFP.setBaseFolder(basePath);
                 validateFP.setID(id1);
@@ -61,7 +61,7 @@ public class ProcessStarter {
         }
         // if caught here filepath validator had failed
         catch (Exception e) {
-            myLogger
+            logger
                     .fatal("The program was terminated with an exception before examining any metadata because an inconsistency was detected in the filesystem. Folders supposed to be existent according to usedRules.xml or contained files within (meta.xml) are missing."
                             + e.getStackTrace());
             throw e;
@@ -72,7 +72,7 @@ public class ProcessStarter {
         // fix metadata and validate
         try {
             for (String id2 : myIds) {
-                myLogger.debug("processing id:" + id2);
+                logger.debug("processing id:" + id2);
                 MetaFixer fixMeta = new MetaFixer(id2, basePath);
                 //try{
                     if (fixMeta.replace()) {
@@ -81,19 +81,19 @@ public class ProcessStarter {
                     fixMeta.validate();
                 //} catch (Exception e) {
                     // TODO: take this error handler out before running in Dresden
-                    //myLogger.debug("probably missing file - error message is"
+                    //logger.debug("probably missing file - error message is"
                     //        + e.getMessage());
                 //}
             }
         }catch (FileNotFoundException e){
         // validation of fix failed
-            myLogger
+            logger
             .fatal("The program was terminated with an exception after replacement in metadata and still detecting replaceable strings in meta.xml."
                     + e.getStackTrace());
             throw e;
 
         }catch (Exception e) {
-            myLogger
+            logger
                     .fatal("The program was terminated with an exception after replacement in metadata and still detecting replaceable strings in meta.xml."
                             + e.getStackTrace());
             throw e;
@@ -101,7 +101,7 @@ public class ProcessStarter {
 
         try {
             for (String id3 : myFixedIDs) {
-                myLogger.debug("validating meta.xml.bak id:" + id3);
+                logger.debug("validating meta.xml.bak id:" + id3);
                 Validatable validateMetaBackup = new ValidateBackup();
                 validateMetaBackup.setBaseFolder(basePath);
                 validateMetaBackup.setID(id3);
@@ -109,13 +109,13 @@ public class ProcessStarter {
         }
 
         catch (Exception e) {
-            myLogger
+            logger
                     .fatal("The program was terminated with an exception after replacement in metadata and detecting missing backup files of the original data."
                             + e.getStackTrace());
             throw e;
         }
 
-        myLogger
+        logger
                 .info("Program terminated normally. The presented data was examined and replaced in case of occurrences of the conditions required");
 
         /*
@@ -150,12 +150,12 @@ public class ProcessStarter {
         // null);
         //
         // if (elements == null) {
-        // myLogger.error("usedRulesSet.xml not found for processing");
+        // logger.error("usedRulesSet.xml not found for processing");
         // return;
         // }
         //
         // for (Element e : elements) {
-        // myLogger.debug("processing id:" + e.getAttributeValue("id"));
+        // logger.debug("processing id:" + e.getAttributeValue("id"));
         // MetaFixer test = new MetaFixer(e.getAttributeValue("id"), basePath);
         // test.replace();
         // }

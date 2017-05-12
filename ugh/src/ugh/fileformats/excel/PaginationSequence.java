@@ -23,7 +23,8 @@ package ugh.fileformats.excel;
 
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -46,8 +47,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 public class PaginationSequence {
 
-    private static final Logger    LOGGER                = Logger
-                                                            .getLogger(ugh.dl.DigitalDocument.class);
+    private static final Logger    logger                = LogManager.getLogger(ugh.dl.DigitalDocument.class);
 
     protected int                physicalstart        = 0;
     protected int                physicalend            = 0;
@@ -91,7 +91,7 @@ public class PaginationSequence {
         // Get DocStructType for page.
         pagetype = this.mypreferences.getDocStrctTypeByName("page");
         if (pagetype == null) {
-            LOGGER
+            logger
                     .error("PaginationSequence.ConvertToPhysicalStructure: No DocStructType for 'page' available");
             return null;
         }
@@ -103,11 +103,11 @@ public class PaginationSequence {
                 .getMetadataTypeByName("physPageNumber");
 
         if (logpagenumbertype == null) {
-            LOGGER
+            logger
                     .error("Ppagination sequences can't be calculated; 'logicalPageNumber' metadata type is NOT defined! This may cause corrupt data!");
         }
         if (physpagenumbertype == null) {
-            LOGGER
+            logger
                     .error("Pagination sequences can't be calculated; 'physPageNumber' metadata type is NOT defined! This may cause corrupt data!");
         }
 
@@ -125,13 +125,13 @@ public class PaginationSequence {
                 logpagenumber = new Metadata(logpagenumbertype);
                 physpagenumber = new Metadata(physpagenumbertype);
             } catch (TypeNotAllowedForParentException e) {
-                LOGGER
+                logger
                         .error(
                                 "PaginationSequence.ConvertToPhysicalStructure: Type not allowed as child!",
                                 e);
                 return null;
             } catch (MetadataTypeNotAllowedException e) {
-                LOGGER
+                logger
                         .error(
                                 "PaginationSequence.ConvertToPhysicalStructure: Type must not be null!",
                                 e);
@@ -167,7 +167,7 @@ public class PaginationSequence {
                 page.addMetadata(logpagenumber);
                 page.addMetadata(physpagenumber);
             } catch (MetadataTypeNotAllowedException mtnaae) {
-                LOGGER.error(
+                logger.error(
                         "PaginationSequence: can't add pagenumbers to page!",
                         mtnaae);
                 return null;

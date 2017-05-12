@@ -6,7 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -17,7 +18,7 @@ import org.jdom.output.XMLOutputter;
 import org.xml.sax.InputSource;
 
 public class MetaFixer implements Validatable {
-    private static final Logger logger = Logger.getLogger(MetaFixer.class);
+    private static final Logger logger = LogManager.getLogger(MetaFixer.class);
     private boolean isChanged = false;
     private String fileName = null;
     private String backupName = null;

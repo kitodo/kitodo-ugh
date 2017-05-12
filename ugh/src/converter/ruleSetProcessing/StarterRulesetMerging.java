@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -12,8 +13,7 @@ import org.jdom.output.XMLOutputter;
 public class StarterRulesetMerging {
 
 
-    protected final Logger myLogger = Logger
-    .getLogger(StarterRulesetMerging.class);
+    protected final Logger logger = LogManager.getLogger(StarterRulesetMerging.class);
 
     static SlubReader sr = null;
     static ManuscriptReader mr = null;

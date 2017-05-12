@@ -16,7 +16,7 @@ public class SlubReader extends RulesetReader {
 
     public SlubReader(String filePath) {
         super(filePath);
-        super.myLogger.info("Slub ruleset path set as '" + filePath + "'");
+        super.logger.info("Slub ruleset path set as '" + filePath + "'");
 
         SlubIntegrity.createWatch("MetadataType", "Name");
         SlubIntegrity.createWatch("DocStrctType", "Name");
@@ -44,9 +44,9 @@ public class SlubReader extends RulesetReader {
         //now initiate the comparism process by feeding the clone of the manuscript root
         //into the SlubElement enhanced slubRoot
         if (!mySlubRoot.equals(manuscriptRoot)) {
-            super.myLogger.info("manuscript.xml differs from slub.xml");
+            super.logger.info("manuscript.xml differs from slub.xml");
         } else {
-            super.myLogger.info("manuscript.xml is equal to slub.xml");
+            super.logger.info("manuscript.xml is equal to slub.xml");
         }
 
     }

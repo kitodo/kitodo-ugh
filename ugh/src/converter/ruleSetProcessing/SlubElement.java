@@ -3,7 +3,8 @@ package converter.ruleSetProcessing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Comment;
 import org.jdom.Element;
@@ -11,8 +12,7 @@ import org.jdom.Element;
 public class SlubElement
 {
 
-    protected final Logger myLogger = Logger
-            .getLogger(StarterRulesetMerging.class);
+    protected final Logger logger = LogManager.getLogger(StarterRulesetMerging.class);
 
     private Element myElement = null;
     private Element myDiffElement = null;
@@ -39,7 +39,7 @@ public class SlubElement
     @SuppressWarnings("unchecked")
     public boolean equals(Element eleChecked)
     {
-        // myLogger.debug("check Element " + eleChecked.getName());
+        // logger.debug("check Element " + eleChecked.getName());
 
         boolean flagFound = false;
         boolean flagChildElementsDiffer = false;
@@ -172,7 +172,7 @@ public class SlubElement
                     if (!SlubIntegrity.isProtected(eleChecked))
                     {
                         eleChecked.getChildren().remove(childOfElementChecked);
-                        myLogger.debug("Removed Element:"
+                        logger.debug("Removed Element:"
                                 + eleChecked.getName());
                     }
                     break;
@@ -198,7 +198,7 @@ public class SlubElement
 
         if (flagChildElementsDiffer || flagAttributesDiffer)
         {
-            // myLogger.debug("element is different");
+            // logger.debug("element is different");
 
             myDiffElement = eleChecked;
 
