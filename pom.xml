@@ -27,6 +27,19 @@
     <name>Kitodo UGH</name>
     <url>https://github.com/kitodo/kitodo-ugh</url>
 
+    <distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>Release Repository</name>
+            <url>http://nexus.slub-dresden.de:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>Snapshot Repository</name>
+            <url>http://nexus.slub-dresden.de:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
