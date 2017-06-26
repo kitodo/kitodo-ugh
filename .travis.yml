@@ -1,9 +1,19 @@
-# Travis continuous integration for kitodo-ugh
+# Travis continuous integration for Kitodo.UGH
+
+dist: trusty
+
+sudo: required
 
 language: java
 
 jdk:
-  - oraclejdk7
-  - openjdk7
+  - oraclejdk8
+  - openjdk8
+
+addons:
+
+cache:
+
+env:
 
 script: mvn clean install
