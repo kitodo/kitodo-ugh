@@ -746,10 +746,6 @@ public class DocStruct implements Serializable {
                         mdnew.setMetadataList(newmdlist);
                         mdnew.setPersonList(newPersonList);
                         newStruct.addMetadataGroup(mdnew);
-
-                        mdnew.setMetadataList(newmdlist);
-                        newStruct.addMetadataGroup(mdnew);
-
                     }
                 }
 
