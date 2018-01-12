@@ -24,6 +24,7 @@ package ugh.dl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import org.kitodo.api.ugh.MetadataTypeInterface;
 
 /*******************************************************************************
  * <p>
@@ -79,7 +80,7 @@ import java.util.Map;
  *
  ******************************************************************************/
 
-public class MetadataType implements Serializable {
+public class MetadataType implements MetadataTypeInterface, Serializable {
 
     private static final long        serialVersionUID    = 1285824825128157626L;
 
@@ -111,6 +112,7 @@ public class MetadataType implements Serializable {
      * @param in
      * @return
      **************************************************************************/
+    @Override
     public boolean setName(String in) {
         this.name = in;
         return true;
@@ -120,6 +122,7 @@ public class MetadataType implements Serializable {
      * @param in
      * @return
      **************************************************************************/
+    @Override
     public boolean setNum(String in) {
 
         if (!in.equals("1m") && !in.equals("1o") && !in.equals("+")
@@ -162,6 +165,7 @@ public class MetadataType implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public String getName() {
         return this.name;
     }
@@ -185,6 +189,7 @@ public class MetadataType implements Serializable {
      * @param isIdentifier
      *            the isIdentifier to set
      **************************************************************************/
+    @Override
     public void setIdentifier(boolean isIdentifier) {
         this.isIdentifier = isIdentifier;
     }
@@ -200,6 +205,7 @@ public class MetadataType implements Serializable {
      *
      * @return number of MetadataType
      **************************************************************************/
+    @Override
     public String getNum() {
         return this.max_number;
     }
@@ -208,6 +214,7 @@ public class MetadataType implements Serializable {
      * @param in
      * @return
      **************************************************************************/
+    @Override
     public boolean setAllLanguages(HashMap<String, String> in) {
         this.allLanguages = in;
         return true;
@@ -216,6 +223,7 @@ public class MetadataType implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public HashMap<String, String> getAllLanguages() {
         return this.allLanguages;
     }
@@ -255,6 +263,7 @@ public class MetadataType implements Serializable {
      * @return the translation of this MetadataType; or null, if it has no
      *         translation for this language.
      **************************************************************************/
+    @Override
     public String getNameByLanguage(String lang) {
 
         if (this.allLanguages.get(lang) == null) {
@@ -306,6 +315,7 @@ public class MetadataType implements Serializable {
      * @param language
      * @return
      **************************************************************************/
+    @Override
     public String getLanguage(String theLanguage) {
 
         // Find language "inLanguage".
@@ -321,6 +331,7 @@ public class MetadataType implements Serializable {
     /***************************************************************************
      * @param value
      **************************************************************************/
+    @Override
     public void setIsPerson(boolean value) {
         this.isPerson = value;
     }
@@ -328,6 +339,7 @@ public class MetadataType implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public boolean getIsPerson() {
         return this.isPerson;
     }

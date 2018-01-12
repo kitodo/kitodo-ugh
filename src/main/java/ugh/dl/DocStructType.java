@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.kitodo.api.ugh.DocStructTypeInterface;
+import org.kitodo.api.ugh.MetadataTypeInterface;
 
 /*******************************************************************************
  * <p>
@@ -44,7 +46,7 @@ import java.util.Map;
  *
  ******************************************************************************/
 
-public class DocStructType implements Serializable {
+public class DocStructType implements DocStructTypeInterface, Serializable {
 
     private static final long serialVersionUID = -3819246407494198735L;
 
@@ -101,6 +103,7 @@ public class DocStructType implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public String getName() {
         return this.name;
     }
@@ -185,6 +188,7 @@ public class DocStructType implements Serializable {
      *
      * @return String, which is null, if it cannot be used as an anchor
      **************************************************************************/
+    @Override
     public String getAnchorClass() {
         return anchorClass;
     }
@@ -255,6 +259,7 @@ public class DocStructType implements Serializable {
      * @param lang language code
      * @return name of this DocStructType in the specified language; or null if no translation is available
      **************************************************************************/
+    @Override
     public String getNameByLanguage(String lang) {
 
         String languageName = this.allLanguages.get(lang);
@@ -332,9 +337,10 @@ public class DocStructType implements Serializable {
      *
      * @return List containing MetadataType objects; These MetadataType-objects are just local objects
      **************************************************************************/
-    public List<MetadataType> getAllMetadataTypes() {
+    @Override
+    public List<MetadataTypeInterface> getAllMetadataTypes() {
 
-        List<MetadataType> out = new LinkedList<MetadataType>();
+        List<MetadataTypeInterface> out = new LinkedList<MetadataTypeInterface>();
 
         Iterator<MetadataTypeForDocStructType> it = this.allMetadataTypes.iterator();
         while (it.hasNext()) {
@@ -390,7 +396,8 @@ public class DocStructType implements Serializable {
      * @param inType MetadataType - can be a global type
      * @return String containing the number (number can be: "1o", "1m", "*", "+")
      **************************************************************************/
-    public String getNumberOfMetadataType(MetadataType inType) {
+    @Override
+    public String getNumberOfMetadataType(MetadataTypeInterface inType) {
 
         Iterator<MetadataTypeForDocStructType> it = this.allMetadataTypes.iterator();
         while (it.hasNext()) {
@@ -677,6 +684,7 @@ public class DocStructType implements Serializable {
      *
      * @return
      **************************************************************************/
+    @Override
     public List<String> getAllAllowedDocStructTypes() {
         return this.allChildrenTypes;
     }

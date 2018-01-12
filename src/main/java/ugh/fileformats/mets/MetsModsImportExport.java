@@ -48,6 +48,16 @@ import org.apache.oro.text.perl.Perl5Util;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.MetsModsImportExportInterface;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.exceptions.DocStructHasNoTypeException;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,12 +81,7 @@ import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
-import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.ImportException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * @author Stefan Funk
@@ -87,7 +92,7 @@ import ugh.exceptions.WriteException;
  *
  ******************************************************************************/
 
-public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
+public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implements MetsModsImportExportInterface {
 
     /***************************************************************************
      * VERSION STRING
@@ -206,8 +211,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.digdoc = inDoc;
+    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.digdoc = (DigitalDocument) inDoc;
         return true;
     }
 
@@ -361,7 +366,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     if (inStruct.hasMetadataGroupType(mdt)) {
                         for (MetadataGroup group : inStruct.getAllMetadataGroupsByType(mdt)) {
                             boolean isEmpty = true;
-                            for (Metadata md : group.getMetadataList()) {
+                            for (MetadataInterface md : group.getMetadataList()) {
                                 if (md.getValue() != null && md.getValue().length() > 0) {
                                     isEmpty = false;
                                     break;
@@ -394,7 +399,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     // ... go through all the available metadata of that type.
                     if (inStruct.hasMetadataType(mdt) && inStruct.getAllPersonsByType(mdt) != null) {
 
-                        for (Person p : inStruct.getAllPersonsByType(mdt)) {
+                        for (PersonInterface p : inStruct.getAllPersonsByType(mdt)) {
                             // Only if the person has a firstname or a lastname, add
                             // it to the MODS!
                             if (((p.getFirstname() != null && !p.getFirstname().equals("")) || (p.getLastname() != null && !p.getLastname()
@@ -404,7 +409,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                                 // section's WriteXPath. The Query contains the path
                                 // which is used for creating new elements.
                                 if (mmo.getWriteXPath() != null) {
-                                    writeSingleModsPerson(mmo.getWriteXPath(), mmo, p, dommodsnode, domDoc);
+                                    writeSingleModsPerson(mmo.getWriteXPath(), mmo, (Person) p, dommodsnode, domDoc);
 
                                     // The node was successfully written! Remove the
                                     // person object from the checklist.
@@ -455,7 +460,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             // Get current metdata object list.
             List<Metadata> currentMdList = new LinkedList<Metadata>();
             if (inStruct.getAllMetadata() != null) {
-                for (Metadata m : inStruct.getAllMetadata()) {
+                for (MetadataInterface m : inStruct.getAllMetadata()) {
                     // Only if the metadata has a value AND its type is
                     // equal to the given metadata object, take it as
                     // current metadata.
@@ -464,7 +469,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                             && (m.getType().getName().equalsIgnoreCase(mmo.getInternalName())
                                     || m.getType().getName().equals(METADATA_PHYSICAL_PAGE_NUMBER)
                                     || m.getType().getName().equals(METADATA_LOGICAL_PAGE_NUMBER) || m.getType().getName().equals(METS_URN_NAME))) {
-                        currentMdList.add(m);
+                        currentMdList.add((Metadata) m);
                     }
                 }
             }
@@ -520,7 +525,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                 if (inStruct.hasMetadataGroupType(mdt)) {
                     for (MetadataGroup group : inStruct.getAllMetadataGroupsByType(mdt)) {
                         boolean isEmpty = true;
-                        for (Metadata md : group.getMetadataList()) {
+                        for (MetadataInterface md : group.getMetadataList()) {
                             if (md.getValue() != null && md.getValue().length() > 0) {
                                 isEmpty = false;
                                 break;
@@ -543,13 +548,13 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
             // Get the current person object list.
             List<Person> currentPerList = new LinkedList<Person>();
             if (inStruct.getAllPersons() != null) {
-                for (Person p : inStruct.getAllPersons()) {
+                for (PersonInterface p : inStruct.getAllPersons()) {
                     // Only if the person has a first or last name AND its
                     // type is equal to the given metadata object, take it
                     // as current person.
                     if (((p.getFirstname() != null && !p.getFirstname().equals("")) || (p.getLastname() != null && !p.getLastname().equals("")))
                             && p.getType().getName().equalsIgnoreCase(mmo.getInternalName())) {
-                        currentPerList.add(p);
+                        currentPerList.add((Person) p);
                     }
                 }
             }
@@ -967,14 +972,14 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                     // should be the only one).
                     DigitalDocument anchordd = anchorMets.getDigitalDocument();
                     DocStruct anchorStruct = anchordd.getLogicalDocStruct();
-                    List<Metadata> allMetadata = anchorStruct.getAllMetadata();
+                    List<MetadataInterface> allMetadata = anchorStruct.getAllMetadata();
 
                     // Iterate over all metadata and find an identifier with the
                     // value of identifierOfAnchor.
                     if (allMetadata != null) {
-                        for (Metadata md : allMetadata) {
+                        for (MetadataInterface md : allMetadata) {
                             if (md.getValue() != null && md.getValue().equals(identifierOfAnchor)) {
-                                if (md.getType().isIdentifier()) {
+                                if (((MetadataType) md.getType()).isIdentifier()) {
                                     // That's the anchor!
                                     anchorDocStruct = anchorStruct;
                                 } else {
@@ -997,7 +1002,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
 
         // Copy the anchor DocStruct, so it can be added as a parent: copy all
         // metadata, but not it's children.
-        DocStruct newanchor = anchorDocStruct.copy(true, false);
+        DocStruct newanchor = (DocStruct) anchorDocStruct.copy(true, false);
 
         return newanchor;
     }
@@ -1110,10 +1115,10 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         writeFptrs(inStruct, domDoc, div);
 
         // Get all children and write their divs recursive.
-        List<DocStruct> allChildren = inStruct.getAllChildren();
+        List<DocStructInterface> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
-            for (DocStruct child : allChildren) {
-                if (writePhysDivs(div, child) == null) {
+            for (DocStructInterface child : allChildren) {
+                if (writePhysDivs(div, (DocStruct) child) == null) {
                     // Error occurred while writing div for child.
                     return null;
                 }
@@ -1165,7 +1170,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         String orderlabel = "";
 
         if (inStruct.getAllMetadata() != null) {
-            for (Metadata md : inStruct.getAllMetadata()) {
+            for (MetadataInterface md : inStruct.getAllMetadata()) {
                 if (md.getType().getName().equals(METS_PREFS_LABEL_METADATA_STRING)) {
                     label = md.getValue();
                 } else if (md.getType().getName().equals(METS_PREFS_ORDERLABEL_METADATA_STRING)) {
@@ -1223,9 +1228,9 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         // current element is anchor file
         if (inStruct.getType().getAnchorClass() != null) {
             if (inStruct.getAllChildren() != null && inStruct.getAllChildren().size() > 0) {
-                DocStruct child = inStruct.getAllChildren().get(0);
+                DocStruct child = (DocStruct) inStruct.getAllChildren().get(0);
                 if (child.getAllMetadata() != null) {
-                    for (Metadata md : child.getAllMetadata()) {
+                    for (MetadataInterface md : child.getAllMetadata()) {
                         if (md.getType().getName().equals(RULESET_ORDER_NAME)) {
                             ordernumber = md.getValue();
                         }
@@ -1237,7 +1242,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         else if (inStruct.getParent() != null && inStruct.getParent().getType().getAnchorClass() != null
                 && !inStruct.getParent().getType().getAnchorClass().equals(inStruct.getType().getAnchorClass())) {
             if (inStruct.getAllMetadata() != null) {
-                for (Metadata md : inStruct.getAllMetadata()) {
+                for (MetadataInterface md : inStruct.getAllMetadata()) {
                     if (md.getType().getName().equals(RULESET_ORDER_NAME)) {
                         ordernumber = md.getValue();
                     }
@@ -1294,13 +1299,13 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         }
 
         // Get all children and write their divs.
-        List<DocStruct> allChildren = inStruct.getAllChildren();
+        List<DocStructInterface> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
-            for (DocStruct child : allChildren) {
-                if (anchorClass == null && child.isMetsPointerStruct()) {
+            for (DocStructInterface child : allChildren) {
+                if (anchorClass == null && ((DocStruct) child).isMetsPointerStruct()) {
                     continue;
                 }
-                if (writeLogDivs(div, child, anchorClass) == null) {
+                if (writeLogDivs(div, (DocStruct) child, anchorClass) == null) {
                     // Error occurred while writing div for child.
                     return null;
                 }
@@ -1589,17 +1594,17 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
         Map<String, Map<String, String>> xpathMap = mmo.getMetadataGroupXQueries();
 
         for (String metadataName : xpathMap.keySet()) {
-            for (Metadata md : theGroup.getMetadataList()) {
+            for (MetadataInterface md : theGroup.getMetadataList()) {
                 if (md.getType().getName().equals(metadataName) && md.getValue() != null && !md.getValue().isEmpty()) {
                     Map<String, String> xqueryMap = xpathMap.get(metadataName);
                     String xquery = xqueryMap.get(metadataName);
-                    writeSingleModsMetadata(xquery, md, createdNode, theDocument);
+                    writeSingleModsMetadata(xquery, (Metadata) md, createdNode, theDocument);
                 }
             }
-            for (Person p : theGroup.getPersonList()) {
+            for (PersonInterface p : theGroup.getPersonList()) {
                 if (p.getType().getName().equals(metadataName)) {
                     Map<String, String> xqueryMap = xpathMap.get(metadataName);
-                    writeSingleGroupPerson(p, xqueryMap, createdNode, theDocument);
+                    writeSingleGroupPerson((Person) p, xqueryMap, createdNode, theDocument);
                 }
             }
         }
@@ -2411,6 +2416,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
     /***************************************************************************
      * @param rightsOwner
      **************************************************************************/
+    @Override
     public void setRightsOwner(String rightsOwner) {
 
         if (rightsOwner == null) {
@@ -2430,6 +2436,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
     /***************************************************************************
      * @param rightsOwnerLogo
      **************************************************************************/
+    @Override
     public void setRightsOwnerLogo(String rightsOwnerLogo) {
 
         if (rightsOwnerLogo == null) {
@@ -2449,6 +2456,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
     /***************************************************************************
      * @param rightsOwnerSiteURL
      **************************************************************************/
+    @Override
     public void setRightsOwnerSiteURL(String rightsOwnerSiteURL) {
 
         if (rightsOwnerSiteURL == null) {
@@ -2468,6 +2476,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
     /***************************************************************************
      * @param rightsOwnerContact
      **************************************************************************/
+    @Override
     public void setRightsOwnerContact(String rightsOwnerContact) {
 
         if (rightsOwnerContact == null) {
@@ -2491,6 +2500,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      *
      * @param digiprovReference
      **************************************************************************/
+    @Override
     public void setDigiprovReference(String digiprovReference) {
 
         if (digiprovReference == null) {
@@ -2514,6 +2524,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      *
      * @param digiprovPresentation
      **************************************************************************/
+    @Override
     public void setDigiprovPresentation(String digiprovPresentation) {
 
         if (digiprovPresentation == null) {
@@ -2537,6 +2548,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      *
      * @param digiprovReference
      **************************************************************************/
+    @Override
     public void setDigiprovReferenceAnchor(String digiprovReferenceAnchor) {
 
         if (digiprovReferenceAnchor == null) {
@@ -2560,6 +2572,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      *
      * @param digiprovPresentation
      **************************************************************************/
+    @Override
     public void setDigiprovPresentationAnchor(String digiprovPresentationAnchor) {
 
         if (digiprovPresentationAnchor == null) {
@@ -2583,6 +2596,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      *
      * @param purlUrl
      **************************************************************************/
+    @Override
     public void setPurlUrl(String purlUrl) {
 
         if (purlUrl == null) {
@@ -2606,6 +2620,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
      *
      * @param contentIDs
      **************************************************************************/
+    @Override
     public void setContentIDs(String contentIDs) {
 
         if (contentIDs == null) {

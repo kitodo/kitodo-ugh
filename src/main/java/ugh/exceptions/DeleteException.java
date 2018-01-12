@@ -1,5 +1,7 @@
 package ugh.exceptions;
 
+import org.kitodo.api.ugh.exceptions.UGHException;
+
 /*******************************************************************************
  * ugh.exceptions / DeleteException.java
  *

@@ -1,5 +1,7 @@
 package ugh.dl;
 
+import org.kitodo.api.ugh.RomanNumeralInterface;
+
 /*******************************************************************************
  * ugh.dl / RomanNumberal.java
  *
@@ -39,7 +41,7 @@ package ugh.dl;
  *
  ******************************************************************************/
 
-public class RomanNumeral extends Number {
+public class RomanNumeral extends Number implements RomanNumeralInterface {
 
     private static final long    serialVersionUID    = -245445201389499368L;
 
@@ -281,6 +283,7 @@ public class RomanNumeral extends Number {
      * @exception NumberFormatException
      *                If the parameter is out of range.
      **************************************************************************/
+    @Override
     public void setValue(int v) throws NumberFormatException {
 
         if (v > MAX_NUM) {
@@ -309,6 +312,7 @@ public class RomanNumeral extends Number {
      * @exception NumberFormatException
      *                If the string parameter is not a valid RomanNumeral
      **************************************************************************/
+    @Override
     public void setValue(String value) throws NumberFormatException {
 
         this.intValue = convertRomanToInt(value);
@@ -382,6 +386,7 @@ public class RomanNumeral extends Number {
      *
      * @return a string representation of the Roman numeral
      **************************************************************************/
+    @Override
     public String getNumber() {
         return this.num.toString();
     }
@@ -422,6 +427,7 @@ public class RomanNumeral extends Number {
      *
      * @return the double value of the Roman numeral
      **************************************************************************/
+    @Override
     public double doubleValue() {
         return this.intValue;
     }
@@ -437,6 +443,7 @@ public class RomanNumeral extends Number {
      *
      * @return the float value of the Roman numeral
      **************************************************************************/
+    @Override
     public float floatValue() {
         return this.intValue;
     }
@@ -452,6 +459,7 @@ public class RomanNumeral extends Number {
      *
      * @return the int value of the Roman numeral
      **************************************************************************/
+    @Override
     public int intValue() {
         return this.intValue;
     }
@@ -467,6 +475,7 @@ public class RomanNumeral extends Number {
      *
      * @return the long value of the Roman numeral
      **************************************************************************/
+    @Override
     public long longValue() {
         return this.intValue;
     }
@@ -482,6 +491,7 @@ public class RomanNumeral extends Number {
      *
      * @return the short value of the Roman numeral
      **************************************************************************/
+    @Override
     public short shortValue() {
         return (short) this.intValue;
     }
@@ -495,6 +505,7 @@ public class RomanNumeral extends Number {
      *
      * @return the byte value of the Roman numeral
      **************************************************************************/
+    @Override
     public byte byteValue() {
         return (byte) this.intValue;
     }
@@ -508,6 +519,7 @@ public class RomanNumeral extends Number {
      *
      * @return a string representation of the Roman numeral.
      **************************************************************************/
+    @Override
     public String toString() {
         return this.num.toString();
     }

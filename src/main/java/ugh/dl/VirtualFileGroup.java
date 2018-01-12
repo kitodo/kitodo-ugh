@@ -22,6 +22,7 @@ package ugh.dl;
  ******************************************************************************/
 
 import java.io.Serializable;
+import org.kitodo.api.ugh.VirtualFileGroupInterface;
 
 /*******************************************************************************
  * <p>
@@ -36,7 +37,7 @@ import java.io.Serializable;
  *
  ******************************************************************************/
 
-public class VirtualFileGroup implements Serializable {
+public class VirtualFileGroup implements Serializable, VirtualFileGroupInterface {
 
     private static final long    serialVersionUID    = 8594056041230503891L;
 
@@ -77,6 +78,7 @@ public class VirtualFileGroup implements Serializable {
     /***************************************************************************
      * @param name
      **************************************************************************/
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -91,6 +93,7 @@ public class VirtualFileGroup implements Serializable {
     /***************************************************************************
      * @param pathToFiles
      **************************************************************************/
+    @Override
     public void setPathToFiles(String pathToFiles) {
         this.pathToFiles = pathToFiles;
     }
@@ -105,6 +108,7 @@ public class VirtualFileGroup implements Serializable {
     /***************************************************************************
      * @param mimetype
      **************************************************************************/
+    @Override
     public void setMimetype(String mimetype) {
         this.mimetype = mimetype;
     }
@@ -119,6 +123,7 @@ public class VirtualFileGroup implements Serializable {
     /***************************************************************************
      * @param fileSuffix
      **************************************************************************/
+    @Override
     public void setFileSuffix(String fileSuffix) {
 
         // If the given file suffix starts with a ".", remove the ".".
@@ -153,6 +158,7 @@ public class VirtualFileGroup implements Serializable {
     /***************************************************************************
      * @param ordinary
      **************************************************************************/
+    @Override
     public void setOrdinary(boolean ordinary) {
         this.ordinary = ordinary;
     }

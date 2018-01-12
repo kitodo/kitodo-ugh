@@ -41,6 +41,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.RDFFileInterface;
+import org.kitodo.api.ugh.ReferenceInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedAsChildException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedForParentException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -60,12 +72,6 @@ import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Reference;
 import ugh.dl.RomanNumeral;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * <p>
@@ -109,7 +115,7 @@ import ugh.exceptions.WriteException;
  ******************************************************************************/
 
 @Deprecated
-public class RDFFile implements ugh.dl.Fileformat {
+public class RDFFile implements ugh.dl.Fileformat, RDFFileInterface {
 
     /***************************************************************************
      * VERSION STRING
@@ -257,7 +263,7 @@ public class RDFFile implements ugh.dl.Fileformat {
                     if (!parseImageSet(currentNode)) {
                         // Error occurred while reading imageset.
                         String message = "Wrong file type! No <AGORA:ImageSet> element found!";
-                        ugh.exceptions.ReadException re = new ugh.exceptions.ReadException(
+                        org.kitodo.api.ugh.exceptions.ReadException re = new org.kitodo.api.ugh.exceptions.ReadException(
                                 message);
                         logger.error(message, re);
                         throw re;
@@ -841,8 +847,8 @@ public class RDFFile implements ugh.dl.Fileformat {
         Element docStructElement;
         String typename;
         Document domdoc = parentElement.getOwnerDocument();
-        List<Metadata> allmetadata;
-        List<DocStruct> allchildren;
+        List<MetadataInterface> allmetadata;
+        List<DocStructInterface> allchildren;
         List<Metadata> alreadyWritten = new LinkedList<Metadata>();
 
         // Create DocStruct element.
@@ -874,8 +880,8 @@ public class RDFFile implements ugh.dl.Fileformat {
         // Add single metadata to this element.
         allmetadata = inDocStruct.getAllMetadata();
         if (allmetadata != null) {
-            for (Metadata mymetadata : allmetadata) {
-                MetadataType mymetadatatype = mymetadata.getType();
+            for (MetadataInterface mymetadata : allmetadata) {
+                MetadataType mymetadatatype = (MetadataType) mymetadata.getType();
 
                 // Check, if metadata is an RDF-sequence or RDF-bag, get
                 // MetadataMatchingObject and check, if this metadata is member
@@ -892,9 +898,9 @@ public class RDFFile implements ugh.dl.Fileformat {
                 // Get name of RDFList.
                 String rdfListName = mmo.getRDFList();
                 if (rdfListName == null) {
-                    writeMetadata(docStructElement, mymetadata);
+                    writeMetadata(docStructElement, (Metadata) mymetadata);
                     // Add metadata to the list of already written metadata.
-                    alreadyWritten.add(mymetadata);
+                    alreadyWritten.add((Metadata) mymetadata);
                 }
             }
         }
@@ -912,7 +918,7 @@ public class RDFFile implements ugh.dl.Fileformat {
         allchildren = inDocStruct.getAllChildren();
         if (allchildren != null) {
             for (int i = 0; i < allchildren.size(); i++) {
-                writeDocStruct(docStructElement, allchildren.get(i));
+                writeDocStruct(docStructElement, (DocStruct) allchildren.get(i));
             }
         }
 
@@ -936,8 +942,8 @@ public class RDFFile implements ugh.dl.Fileformat {
 
         Document domdoc = parentElement.getOwnerDocument();
         List<PaginationSequence> allPaginationSequences = new LinkedList<PaginationSequence>();
-        List<DocStruct> allPhysicalPages;
-        List<Metadata> allMetadata;
+        List<DocStructInterface> allPhysicalPages;
+        List<MetadataInterface> allMetadata;
         DocStruct page;
         DocStruct topdoc = this.mydoc.getPhysicalDocStruct();
         Metadata singleMetadata;
@@ -988,7 +994,7 @@ public class RDFFile implements ugh.dl.Fileformat {
         allMetadata = topdoc.getAllMetadata();
         if (allMetadata != null) {
             for (int i = 0; i < allMetadata.size(); i++) {
-                singleMetadata = allMetadata.get(i);
+                singleMetadata = (Metadata) allMetadata.get(i);
                 writeMetadata(imageSetElement, singleMetadata);
             }
         }
@@ -1007,14 +1013,14 @@ public class RDFFile implements ugh.dl.Fileformat {
         currentPaginationSequence.physicalstart = 1;
 
         for (int i = 0; i < allPhysicalPages.size(); i++) {
-            page = allPhysicalPages.get(i);
+            page = (DocStruct) allPhysicalPages.get(i);
             allMetadata = page.getAllMetadata();
             // No metadata available.
             if (allMetadata == null) {
                 continue;
             }
             for (int x = 0; x < allMetadata.size(); x++) {
-                singleMetadata = allMetadata.get(x);
+                singleMetadata = (Metadata) allMetadata.get(x);
                 if (singleMetadata.getType().getName().equals("physPageNumber")) {
                     currentPhyicalPage = singleMetadata.getValue();
                 }
@@ -1391,16 +1397,16 @@ public class RDFFile implements ugh.dl.Fileformat {
         // Get XML-document.
         Document domdoc = parentElement.getOwnerDocument();
 
-        List<Metadata> ll = ds.getAllMetadata();
+        List<MetadataInterface> ll = ds.getAllMetadata();
         if (ll == null) {
             return true;
         }
 
         // Get all metadata and order them.
-        Iterator<Metadata> it = ll.iterator();
+        Iterator<MetadataInterface> it = ll.iterator();
 
         while (it.hasNext()) {
-            Metadata md = it.next();
+            Metadata md = (Metadata) it.next();
             MetadataType mdt = md.getType();
 
             // Check, if metadata type of this name belongs to a RDF:Li group.
@@ -1529,16 +1535,16 @@ public class RDFFile implements ugh.dl.Fileformat {
         Document domdoc = parentElement.getOwnerDocument();
 
         // Get list of all persons.
-        List<Person> ll = ds.getAllPersons();
+        List<PersonInterface> ll = ds.getAllPersons();
         if (ll == null) {
             return true;
         }
 
         // Get all metadata and order them.
-        Iterator<Person> it = ll.iterator();
+        Iterator<PersonInterface> it = ll.iterator();
 
         while (it.hasNext()) {
-            Person ps = it.next();
+            Person ps = (Person) it.next();
             MetadataType pst = ps.getType();
 
             // Check, if metadata type of this name belongs to a RDF:Li group.
@@ -1823,8 +1829,8 @@ public class RDFFile implements ugh.dl.Fileformat {
                         String message = "Can't add child to '"
                                 + inStruct.getType().getName() + "'";
                         logger.error(message);
-                        throw new TypeNotAllowedAsChildException(inStruct
-                                .getType());
+                        throw new TypeNotAllowedAsChildException("Child of type '" + inStruct.getType()
+                                .getName() + "' is not allowed for parent; unfortunately we don't have any information about the parent");
                     }
                 } else {
                     this.mydoc.setLogicalDocStruct(docStruct);
@@ -1924,8 +1930,8 @@ public class RDFFile implements ugh.dl.Fileformat {
                                     + "' can not be added to DocStruct '"
                                     + docStruct.getType().getName() + "'";
                             logger.error(message, e);
-                            throw new MetadataTypeNotAllowedException(singleMD
-                                    .getType(), docStruct.getType());
+                            throw new MetadataTypeNotAllowedException("Metadata of " + (singleMD.getType() == null ? "unknown type" : "type '" + singleMD
+                                    .getType() + "'") + " not allowed for DocStruct '" + docStruct.getType().getName() + "'");
                         }
                     }
 
@@ -2104,7 +2110,7 @@ public class RDFFile implements ugh.dl.Fileformat {
         // Build references; one for each page to the logical docstruct.
         //
         // Get all pages.
-        List<DocStruct> allChildren = this.mydoc.getPhysicalDocStruct()
+        List<DocStructInterface> allChildren = this.mydoc.getPhysicalDocStruct()
                 .getAllChildrenByTypeAndMetadataType("page", "physPageNumber");
         MetadataType myMDType = this.myPreferences
                 .getMetadataTypeByName("physPageNumber");
@@ -2112,7 +2118,7 @@ public class RDFFile implements ugh.dl.Fileformat {
             for (int x = 0; x < allChildren.size(); x++) {
                 String checkvalue = Integer.toString(i);
                 // Currentchild is the page.
-                DocStruct currentphyschild = allChildren.get(x);
+                DocStruct currentphyschild = (DocStruct) allChildren.get(x);
                 List<? extends Metadata> allMyMD = currentphyschild
                         .getAllMetadataByType(myMDType);
                 // Problem; there seem to be two "page"-metadata being
@@ -2131,7 +2137,7 @@ public class RDFFile implements ugh.dl.Fileformat {
                     } else {
                         // Set a single reference to the boundbook (physical
                         // struct).
-                        List<Reference> refs = mydocstruct
+                        List<ReferenceInterface> refs = mydocstruct
                                 .getAllReferences("to");
                         if (refs.size() == 0) {
                             // No references set, so set one to the bound book.
@@ -2157,8 +2163,8 @@ public class RDFFile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.mydoc = inDoc;
+    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.mydoc = (DigitalDocument) inDoc;
         return true;
     }
 

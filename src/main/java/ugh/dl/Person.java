@@ -1,27 +1,7 @@
 package ugh.dl;
 
-/*******************************************************************************
- * ugh.dl / Person.java
- *
- * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- *
- * http://gdz.sub.uni-goettingen.de
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This Library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-
-import ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 
 /*******************************************************************************
  * <p>
@@ -57,7 +37,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  *
  ******************************************************************************/
 
-public class Person extends Metadata {
+public class Person extends Metadata implements PersonInterface {
 
     private static final long    serialVersionUID    = -3667880952431707982L;
 
@@ -113,6 +93,7 @@ public class Person extends Metadata {
      * @param in
      * @return true is always returned
      **************************************************************************/
+    @Override
     public boolean setFirstname(String in) {
         this.firstname = in;
         return true;
@@ -125,6 +106,7 @@ public class Person extends Metadata {
      *
      * @return firstname of this person
      **************************************************************************/
+    @Override
     public String getFirstname() {
         return this.firstname;
     }
@@ -133,6 +115,7 @@ public class Person extends Metadata {
      * @param in
      * @return
      **************************************************************************/
+    @Override
     public boolean setLastname(String in) {
         this.lastname = in;
         return true;
@@ -141,6 +124,7 @@ public class Person extends Metadata {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public String getLastname() {
         return this.lastname;
     }
@@ -213,6 +197,7 @@ public class Person extends Metadata {
      * @param in
      * @return
      **************************************************************************/
+    @Override
     public boolean setRole(String in) {
         this.role = in;
         return true;
@@ -221,6 +206,7 @@ public class Person extends Metadata {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public String getRole() {
         if (role == null) {
             role = MDType.getName();
@@ -263,6 +249,7 @@ public class Person extends Metadata {
      *
      * @return the displayname
      **************************************************************************/
+    @Override
     public String getDisplayname() {
         return this.displayname;
     }
@@ -275,6 +262,7 @@ public class Person extends Metadata {
      * @param displayname
      *            the displayname to set
      **************************************************************************/
+    @Override
     public void setDisplayname(String displayname) {
         this.displayname = displayname;
     }
@@ -299,6 +287,7 @@ public class Person extends Metadata {
      *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         String result = "";
