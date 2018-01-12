@@ -29,6 +29,14 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.ReferenceInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedAsChildException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedForParentException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -39,10 +47,6 @@ import ugh.dl.FileSet;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Reference;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
 
 /*******************************************************************************
  * <p>
@@ -248,11 +252,11 @@ public class Excelfile implements ugh.dl.Fileformat {
             System.out.println("updating in Sheet \"Bibliographie\"!");
         }
         if (currentsheet.equals("Gliederung")) {
-            List<Metadata> allMD = inStruct.getAllMetadata();
+            List<MetadataInterface> allMD = inStruct.getAllMetadata();
             // Count the row in the excel spreadsheet.
             rowCounter++;
             for (int i = 0; i < allMD.size(); i++) {
-                Metadata md = allMD.get(i);
+                Metadata md = (Metadata) allMD.get(i);
                 MetadataType mdt = md.getType();
                 if (mdt == null) {
                     return false;
@@ -347,13 +351,13 @@ public class Excelfile implements ugh.dl.Fileformat {
         }
         if (reverse) {
             // All children.
-            List<DocStruct> allChildren = inStruct.getAllChildren();
+            List<DocStructInterface> allChildren = inStruct.getAllChildren();
             if (allChildren == null) {
                 // No children, so we can get out.
                 return true;
             }
             for (int i = 0; i < allChildren.size(); i++) {
-                DocStruct child = allChildren.get(i);
+                DocStruct child = (DocStruct) allChildren.get(i);
                 if (!UpdateAllMetadata(child, true, rowCounter)) {
                     return false;
                 }
@@ -389,8 +393,8 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.mydoc = inDoc;
+    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.mydoc = (DigitalDocument) inDoc;
         return true;
     }
 
@@ -1212,19 +1216,19 @@ public class Excelfile implements ugh.dl.Fileformat {
             // It's an anchor (e.g. a periodical...) so we cannot add any
             // children to this but we must get the next structure entity
             // (child) - e.g. the volume.
-            List<DocStruct> children = parent.getAllChildren();
+            List<DocStructInterface> children = parent.getAllChildren();
             if (children == null) {
                 System.out
                         .println("ERROR: ReadPaginationSequences: Parent is anchor but has no child");
                 return false;
             }
             // Get first child as new parent.
-            parent = children.get(0);
+            parent = (DocStruct) children.get(0);
         }
-        List<DocStruct> allpages = boundbook.getAllChildren();
+        List<DocStructInterface> allpages = boundbook.getAllChildren();
         for (int i = 0; i < allpages.size(); i++) {
             // Get single node.
-            DocStruct currentPage = allpages.get(i);
+            DocStruct currentPage = (DocStruct) allpages.get(i);
             parent.addReferenceTo(currentPage, "logical_physical");
             currentPage.addReferenceFrom(parent, "physical_physical");
         }
@@ -1270,7 +1274,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         //
         // Create File objects for images.
         for (int i = 0; i < allpages.size(); i++) {
-            DocStruct currentPage = allpages.get(i);
+            DocStruct currentPage = (DocStruct) allpages.get(i);
 
             // Create new Image object and add it to myImageSet.
             ugh.dl.ContentFile newimage = new ugh.dl.ContentFile();
@@ -1754,14 +1758,14 @@ public class Excelfile implements ugh.dl.Fileformat {
                     // It's an anchor (e.g. a periodical...) so we cannot add
                     // any children to this but we must get the next structure
                     // entity (child) - e.g. the volume.
-                    List<DocStruct> children = parent.getAllChildren();
+                    List<DocStructInterface> children = parent.getAllChildren();
                     if (children == null) {
                         System.out
                                 .println("ERROR: Parent is anchor but has no child");
                         return false;
                     }
                     // Get first child as new parent.
-                    parent = children.get(0);
+                    parent = (DocStruct) children.get(0);
                 }
 
                 // Aadd this new DocStruct object to the parent.
@@ -1837,13 +1841,13 @@ public class Excelfile implements ugh.dl.Fileformat {
             // It's an anchor (e.g. a periodical...) so we cannot add any
             // children to this but we must get the next structure entity
             // (child) - e.g. the volume.
-            List<DocStruct> children = parent.getAllChildren();
+            List<DocStructInterface> children = parent.getAllChildren();
             if (children == null) {
                 System.out.println("ERROR: Parent is anchor but has no child");
                 return false;
             }
             // Get first child as new parent.
-            parent = children.get(0);
+            parent = (DocStruct) children.get(0);
         }
 
         // Calculates the endpages of the children - NOT of the parent we know
@@ -1869,7 +1873,7 @@ public class Excelfile implements ugh.dl.Fileformat {
     public boolean CalculateEndPage(DocStruct inStruct)
             throws MetadataTypeNotAllowedException {
 
-        List<DocStruct> allchildren = inStruct.getAllChildren();
+        List<DocStructInterface> allchildren = inStruct.getAllChildren();
         if (allchildren == null) {
             return true;
         }
@@ -1880,7 +1884,7 @@ public class Excelfile implements ugh.dl.Fileformat {
             int physendpage = 0;
             int physstartpage = 0;
 
-            DocStruct currentchild = allchildren.get(i);
+            DocStruct currentchild = (DocStruct) allchildren.get(i);
 
             MetadataType pagenumberstartPhys = this.myPreferences
                     .getMetadataTypeByName("_pagephysstart");
@@ -1929,7 +1933,7 @@ public class Excelfile implements ugh.dl.Fileformat {
             } else {
                 // It's not the lastone; so the endpage is the startpage of the
                 // next one or one page before (depends on overlapping).
-                DocStruct nextstruct = allchildren.get(i + 1);
+                DocStruct nextstruct = (DocStruct) allchildren.get(i + 1);
                 mdlist = nextstruct.getAllMetadataByType(pagenumberstartPhys);
                 if (mdlist == null) {
                     System.out
@@ -1988,11 +1992,11 @@ public class Excelfile implements ugh.dl.Fileformat {
             // Create references from startpage to physendpage get uppermost
             // physical structure.
             DocStruct boundbook = this.mydoc.getPhysicalDocStruct();
-            List<DocStruct> allpages = boundbook.getAllChildren();
+            List<DocStructInterface> allpages = boundbook.getAllChildren();
             for (int x = physstartpage; x < physendpage + 1; x++) {
                 // x is physical pagenumber.
                 for (int y = 0; y < allpages.size(); y++) {
-                    DocStruct page = allpages.get(y);
+                    DocStruct page = (DocStruct) allpages.get(y);
                     MetadataType physpagetype = this.myPreferences
                             .getMetadataTypeByName("physPageNumber");
                     List<? extends Metadata> allmds = page
@@ -2019,7 +2023,7 @@ public class Excelfile implements ugh.dl.Fileformat {
                             } else {
                                 // Set a single reference to the boundbook
                                 // (physical struct).
-                                List<Reference> refs = currentchild
+                                List<ReferenceInterface> refs = currentchild
                                         .getAllReferences("to");
                                 if (refs == null || refs.size() == 0) {
                                     // No references set, so set one to the
@@ -2041,7 +2045,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
         // New for loop; call CalculateEndPage for every child.
         for (int i = 0; i < allchildren.size(); i++) {
-            DocStruct currentdoc = allchildren.get(i);
+            DocStruct currentdoc = (DocStruct) allchildren.get(i);
             if (!CalculateEndPage(currentdoc)) {
                 // Error occurred.
                 return false;

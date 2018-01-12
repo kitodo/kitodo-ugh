@@ -9,12 +9,12 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.exceptions.ReadException;
 import org.apache.logging.log4j.LogManager;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
-import ugh.exceptions.ReadException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsMods;
 

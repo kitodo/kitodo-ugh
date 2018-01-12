@@ -25,8 +25,10 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.MetadataTypeInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 
 /*******************************************************************************
  * <p>
@@ -47,7 +49,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  *
  ******************************************************************************/
 
-public class Metadata implements Serializable {
+public class Metadata implements MetadataInterface, Serializable {
 
     private static final long serialVersionUID = -2535548431060378914L;
 
@@ -100,8 +102,9 @@ public class Metadata implements Serializable {
      *
      * @param inDoc
      **************************************************************************/
-    public void setDocStruct(DocStruct inDoc) {
-        this.myDocStruct = inDoc;
+    @Override
+    public void setDocStruct(DocStructInterface inDoc) {
+        this.myDocStruct = (DocStruct) inDoc;
     }
 
     /***************************************************************************
@@ -112,6 +115,7 @@ public class Metadata implements Serializable {
      *
      * @return DocStruct instance.
      **************************************************************************/
+    @Override
     public DocStruct getDocStruct() {
         return this.myDocStruct;
     }
@@ -124,6 +128,7 @@ public class Metadata implements Serializable {
      *
      * @return MetadataType instance
      **************************************************************************/
+    @Override
     public MetadataType getType() {
         return this.MDType;
     }
@@ -137,8 +142,9 @@ public class Metadata implements Serializable {
      * @param inType
      * @return
      **************************************************************************/
-    public boolean setType(MetadataType inType) {
-        this.MDType = inType;
+    @Override
+    public boolean setType(MetadataTypeInterface inType) {
+        this.MDType = (MetadataType) inType;
         return true;
     }
 
@@ -149,6 +155,7 @@ public class Metadata implements Serializable {
      *
      * @return String containing the value.
      **************************************************************************/
+    @Override
     public String getValue() {
         return this.metadataValue;
     }
@@ -163,6 +170,7 @@ public class Metadata implements Serializable {
      *
      * @param inValue The value as String.
      **************************************************************************/
+    @Override
     public boolean setValue(String inValue) {
         this.metadataValue = inValue;
         this.updated = true;
@@ -337,6 +345,7 @@ public class Metadata implements Serializable {
      *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         String result = "";

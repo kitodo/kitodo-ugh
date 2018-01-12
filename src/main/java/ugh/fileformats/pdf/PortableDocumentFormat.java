@@ -33,8 +33,10 @@ import javax.imageio.ImageReader;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
-
+import org.kitodo.api.ugh.ContentFileInterface;
+import org.kitodo.api.ugh.DocStructInterface;
 import ugh.dl.ContentFile;
+import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
@@ -76,6 +78,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#getDigitalDocument()
      */
+    @Override
     public ugh.dl.DigitalDocument getDigitalDocument() {
         return this.mydoc;
     }
@@ -85,8 +88,9 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
-    public boolean setDigitalDocument(ugh.dl.DigitalDocument inDoc) {
-        this.mydoc = inDoc;
+    @Override
+    public boolean setDigitalDocument(org.kitodo.api.ugh.DigitalDocumentInterface inDoc) {
+        this.mydoc = (ugh.dl.DigitalDocument) inDoc;
         return true;
     }
 
@@ -95,6 +99,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
+    @Override
     public boolean read(String filename) {
         return false;
     }
@@ -104,6 +109,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#update(java.lang.String)
      */
+    @Override
     public boolean update(String filename) {
         return false;
     }
@@ -113,6 +119,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#write(java.lang.String)
      */
+    @Override
     public boolean write(String filename) {
         // Create instance for PDF object.
         com.lowagie.text.Document document = new com.lowagie.text.Document();
@@ -132,13 +139,13 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
 
         // Write all pages.
         DocStruct physicaldocStruct = this.mydoc.getPhysicalDocStruct();
-        List<DocStruct> allChildren = physicaldocStruct.getAllChildren();
-        Iterator<DocStruct> it = allChildren.iterator();
+        List<DocStructInterface> allChildren = physicaldocStruct.getAllChildren();
+        Iterator<DocStructInterface> it = allChildren.iterator();
         while (it.hasNext()) {
-            DocStruct child = it.next();
+            DocStruct child = (DocStruct) it.next();
             // Only for pages we check this.
             if (child.getType().getName().equals("page")) {
-                List<ContentFile> allContentFiles = child.getAllContentFiles();
+                List<ContentFileInterface> allContentFiles = child.getAllContentFiles();
                 writePDFSinglePage(allContentFiles, document);
             }
         }
@@ -153,15 +160,15 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      * @param document
      * @return
      **************************************************************************/
-    private boolean writePDFSinglePage(List<ContentFile> allFiles,
+    private boolean writePDFSinglePage(List<ContentFileInterface> allFiles,
             com.lowagie.text.Document document) {
         // Internal format name for ImageIO.
         String formatname = null;
 
         // Get the first contentfile used.
-        Iterator<ContentFile> it = allFiles.iterator();
+        Iterator<ContentFileInterface> it = allFiles.iterator();
         while (it.hasNext()) {
-            ContentFile cf = it.next();
+            ContentFile cf = (ContentFile) it.next();
             String mimetype = cf.getMimetype();
 
             // Get a reader for a specific mimetype first get ImageIO

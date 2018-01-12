@@ -26,12 +26,13 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.XStreamInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * @author Stefan Funk
@@ -44,7 +45,7 @@ import ugh.exceptions.WriteException;
  *
  ******************************************************************************/
 
-public class XStream implements ugh.dl.Fileformat {
+public class XStream implements ugh.dl.Fileformat, XStreamInterface {
 
     /***************************************************************************
      * VERSION STRING
@@ -81,7 +82,8 @@ public class XStream implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
-    public boolean read(String filename) throws ugh.exceptions.ReadException {
+    @Override
+    public boolean read(String filename) throws org.kitodo.api.ugh.exceptions.ReadException {
 
         logger.info("Reading XStream");
 
@@ -116,6 +118,7 @@ public class XStream implements ugh.dl.Fileformat {
      *
      * @see ugh.fileformats.mets.MetsModsGdz#write(java.lang.String)
      */
+    @Override
     @Deprecated
     public boolean write(String filename) throws WriteException {
 
@@ -151,6 +154,7 @@ public class XStream implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#GetDigitalDocument()
      */
+    @Override
     public DigitalDocument getDigitalDocument() {
         return this.digdoc;
     }
@@ -160,6 +164,7 @@ public class XStream implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#Update(java.lang.String)
      */
+    @Override
     @Deprecated
     public boolean update(String filename) {
         return false;
@@ -170,8 +175,9 @@ public class XStream implements ugh.dl.Fileformat {
      *
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.digdoc = inDoc;
+    @Override
+    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.digdoc = (DigitalDocument) inDoc;
 
         return false;
     }

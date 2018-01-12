@@ -25,13 +25,17 @@ package ugh.dl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.MetadataGroupInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.MetadataTypeInterface;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 
 /*******************************************************************************
  * <p>
@@ -50,7 +54,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  *
  ******************************************************************************/
 
-public class MetadataGroup implements Serializable {
+public class MetadataGroup implements MetadataGroupInterface, Serializable {
 
     private static final long serialVersionUID = -6283388063178498292L;
 
@@ -60,8 +64,8 @@ public class MetadataGroup implements Serializable {
     // Document structure to which this metadata type belongs to.
     protected DocStruct myDocStruct;
 
-    private List<Metadata> metadataList;
-    private List<Person> personList;
+    private List<MetadataInterface> metadataList;
+    private Collection<PersonInterface> personList;
 
     /***************************************************************************
      * <p>
@@ -80,15 +84,15 @@ public class MetadataGroup implements Serializable {
 
         this.MDType = theType;
 
-        metadataList = new LinkedList<Metadata>();
-        personList = new LinkedList<Person>();
-        for (MetadataType mdt : MDType.getMetadataTypeList()) {
+        metadataList = new LinkedList<MetadataInterface>();
+        personList = new LinkedList<PersonInterface>();
+        for (MetadataTypeInterface mdt : MDType.getMetadataTypeList()) {
             if (mdt.getIsPerson()) {
-                Person p = new Person(mdt);
+                Person p = new Person((MetadataType) mdt);
                 p.setRole(mdt.getName());
                 personList.add(p);
             } else {
-                Metadata md = new Metadata(mdt);
+                Metadata md = new Metadata((MetadataType) mdt);
                 metadataList.add(md);
             }
         }
@@ -126,6 +130,7 @@ public class MetadataGroup implements Serializable {
      *
      * @return MetadataGroupType instance
      **************************************************************************/
+    @Override
     public MetadataGroupType getType() {
         return this.MDType;
     }
@@ -144,27 +149,31 @@ public class MetadataGroup implements Serializable {
         return true;
     }
 
-    public List<Metadata> getMetadataList() {
+    @Override
+    public List<MetadataInterface> getMetadataList() {
         return metadataList;
     }
 
-    public void setMetadataList(List<Metadata> metadataList) {
+    public void setMetadataList(List<MetadataInterface> metadataList) {
         this.metadataList = metadataList;
     }
 
-    public void addMetadata(Metadata metadata) {
+    @Override
+    public void addMetadata(MetadataInterface metadata) {
         this.metadataList.add(metadata);
     }
 
-    public List<Person> getPersonList() {
+    @Override
+    public Collection<PersonInterface> getPersonList() {
         return personList;
     }
 
-    public void setPersonList(List<Person> personList) {
+    public void setPersonList(Collection<PersonInterface> personList) {
         this.personList = personList;
     }
 
-    public void addPerson(Person person) {
+    @Override
+    public void addPerson(PersonInterface person) {
         this.personList.add(person);
     }
     @Override
@@ -172,9 +181,10 @@ public class MetadataGroup implements Serializable {
         return "MetadataGroup [MDType=" + MDType + ", myDocStruct=" + myDocStruct + ", metadataList=" + metadataList + ", personList=" + personList + "]";
     }
 
-    public List<Metadata> getMetadataByType(String theType) {
-        List<Metadata> returnList = new ArrayList<Metadata>();
-        for (Metadata md : metadataList) {
+    @Override
+    public List<MetadataInterface> getMetadataByType(String theType) {
+        List<MetadataInterface> returnList = new ArrayList<MetadataInterface>();
+        for (MetadataInterface md : metadataList) {
             if (md.getType().getName().equals(theType)) {
                 returnList.add(md);
             }
@@ -182,9 +192,10 @@ public class MetadataGroup implements Serializable {
         return returnList;
     }
 
-    public List<Person> getPersonByType(String theType) {
-        List<Person> returnList = new ArrayList<Person>();
-        for (Person md : personList) {
+    @Override
+    public List<PersonInterface> getPersonByType(String theType) {
+        List<PersonInterface> returnList = new ArrayList<PersonInterface>();
+        for (PersonInterface md : personList) {
             if (md.getType().getName().equals(theType)) {
                 returnList.add(md);
             }

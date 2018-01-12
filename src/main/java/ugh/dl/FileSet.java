@@ -22,8 +22,12 @@ package ugh.dl;
  ******************************************************************************/
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.kitodo.api.ugh.ContentFileInterface;
+import org.kitodo.api.ugh.FileSetInterface;
+import org.kitodo.api.ugh.VirtualFileGroupInterface;
 
 /*******************************************************************************
  * <p>
@@ -47,7 +51,7 @@ import java.util.List;
  *
  ******************************************************************************/
 
-public class FileSet implements Serializable {
+public class FileSet implements FileSetInterface, Serializable {
 
     private static final long        serialVersionUID    = 6605222755528016675L;
 
@@ -57,7 +61,7 @@ public class FileSet implements Serializable {
                                                                 + "--------------------";
 
     // Containing all Images/Files belonging to a digital object.
-    private List<ContentFile>        allImages;
+    private List<ContentFileInterface>        allImages;
 
     // Metadata for the image/fileset.
     private List<Metadata>            allMetadata;
@@ -76,7 +80,7 @@ public class FileSet implements Serializable {
      * </p>
      **************************************************************************/
     public FileSet() {
-        this.allImages = new LinkedList<ContentFile>();
+        this.allImages = new LinkedList<ContentFileInterface>();
         this.allMetadata = new LinkedList<Metadata>();
         this.removedMetadata = new LinkedList<Metadata>();
         this.virtualFileGroups = new LinkedList<VirtualFileGroup>();
@@ -91,7 +95,8 @@ public class FileSet implements Serializable {
      *            ContentFile to be added
      * @return always true
      **************************************************************************/
-    public boolean addFile(ContentFile inImage) {
+    @Override
+    public boolean addFile(ContentFileInterface inImage) {
 
         // Only add the file, if it is not yet existing in the list.
         if (!this.allImages.contains(inImage)) {
@@ -111,7 +116,8 @@ public class FileSet implements Serializable {
      *            ContentFile to be removed
      * @return always true
      **************************************************************************/
-    public boolean removeFile(ContentFile inImage) {
+    @Override
+    public boolean removeFile(ContentFileInterface inImage) {
         this.allImages.remove(inImage);
         return true;
     }
@@ -138,7 +144,8 @@ public class FileSet implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
-    public List<ContentFile> getAllFiles() {
+    @Override
+    public Collection<ContentFileInterface> getAllFiles() {
         return this.allImages;
     }
 
@@ -167,8 +174,9 @@ public class FileSet implements Serializable {
     /***************************************************************************
      * @param virtualFileGroups
      **************************************************************************/
-    public void addVirtualFileGroup(VirtualFileGroup theFilegroup) {
-        this.virtualFileGroups.add(theFilegroup);
+    @Override
+    public void addVirtualFileGroup(VirtualFileGroupInterface theFilegroup) {
+        this.virtualFileGroups.add((VirtualFileGroup) theFilegroup);
     }
 
     /***************************************************************************
@@ -183,6 +191,7 @@ public class FileSet implements Serializable {
      *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         String result = LINE + "\nFileSet\n" + LINE + "\n";
@@ -192,10 +201,10 @@ public class FileSet implements Serializable {
             result += "NO FILES" + "\n";
         } else {
             StringBuffer resultBuffer = new StringBuffer();
-            for (ContentFile currentCF : this.getAllFiles()) {
-                resultBuffer.append("ContentFile (" + currentCF.getIdentifier()
+            for (ContentFileInterface currentCF : this.getAllFiles()) {
+                resultBuffer.append("ContentFile (" + ((ContentFile) currentCF).getIdentifier()
                         + "): '" + currentCF.getLocation() + "' ("
-                        + currentCF.getMimetype() + ")" + "\n");
+                        + ((ContentFile) currentCF).getMimetype() + ")" + "\n");
             }
             result += resultBuffer;
         }

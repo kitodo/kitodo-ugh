@@ -29,15 +29,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.kitodo.api.ugh.MetadataGroupTypeInterface;
+import org.kitodo.api.ugh.MetadataTypeInterface;
 
 /**
  * @author Robert Sehr
  */
-public class MetadataGroupType implements Serializable {
+public class MetadataGroupType implements MetadataGroupTypeInterface, Serializable {
 
     private static final long serialVersionUID = -2935555025180170310L;
 
-    private List<MetadataType> metadataTypeList = new ArrayList<MetadataType>();
+    private List<MetadataTypeInterface> metadataTypeList = new ArrayList<MetadataTypeInterface>();
 
     // Unique name of MetadataType.
     private String name;
@@ -47,25 +49,29 @@ public class MetadataGroupType implements Serializable {
     private String max_number;
 
     // Hash containing all languages.
-    private HashMap<String, String> allLanguages;
+    private Map<String, String> allLanguages;
 
-    public List<MetadataType> getMetadataTypeList() {
+    @Override
+    public List<MetadataTypeInterface> getMetadataTypeList() {
         return metadataTypeList;
     }
 
-    public void setMetadataTypeList(List<MetadataType> metadataTypeList) {
+    public void setMetadataTypeList(List<MetadataTypeInterface> metadataTypeList) {
         this.metadataTypeList = metadataTypeList;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    public void addMetadataType(MetadataType metadataToAdd) {
+    @Override
+    public void addMetadataType(MetadataTypeInterface metadataToAdd) {
         if (!metadataTypeList.contains(metadataToAdd)) {
             metadataTypeList.add(metadataToAdd);
         }
@@ -82,11 +88,13 @@ public class MetadataGroupType implements Serializable {
         return this.name.equals(((MetadataGroupType) obj).getName());
     }
 
-    public HashMap<String, String> getAllLanguages() {
+    @Override
+    public Map<String, String> getAllLanguages() {
         return allLanguages;
     }
 
-    public void setAllLanguages(HashMap<String, String> allLanguages) {
+    @Override
+    public void setAllLanguages(Map<String, String> allLanguages) {
         this.allLanguages = allLanguages;
     }
 
@@ -94,6 +102,7 @@ public class MetadataGroupType implements Serializable {
      * @param in
      * @return
      **************************************************************************/
+    @Override
     public boolean setNum(String in) {
 
         if (!in.equals("1m") && !in.equals("1o") && !in.equals("+") && !in.equals("*")) {
@@ -105,6 +114,7 @@ public class MetadataGroupType implements Serializable {
         return true;
     }
 
+    @Override
     public String getLanguage(String theLanguage) {
         for (Map.Entry<String, String> lang : getAllLanguages().entrySet()) {
             if (lang.getKey().equals(theLanguage)) {
@@ -138,9 +148,9 @@ public class MetadataGroupType implements Serializable {
         if (this.max_number != null) {
             newMDType.setNum(this.max_number);
         }
-        List<MetadataType> newList = new LinkedList<MetadataType>();
-        for (MetadataType mdt : metadataTypeList) {
-            newList.add(mdt.copy());
+        List<MetadataTypeInterface> newList = new LinkedList<MetadataTypeInterface>();
+        for (MetadataTypeInterface mdt : metadataTypeList) {
+            newList.add(((MetadataType) mdt).copy());
         }
         newMDType.setMetadataTypeList(newList);
 

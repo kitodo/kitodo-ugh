@@ -1,29 +1,10 @@
 package ugh.dl;
 
-/*******************************************************************************
- * ugh.dl / FileFormat.java
- *
- * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
- *
- * http://gdz.sub.uni-goettingen.de
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This Library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.FileformatInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * <p>
@@ -66,7 +47,7 @@ import ugh.exceptions.WriteException;
  * @see DigitalDocument
  ******************************************************************************/
 
-public interface Fileformat {
+public interface Fileformat extends FileformatInterface {
 
     /***************************************************************************
      * <p>
@@ -77,6 +58,7 @@ public interface Fileformat {
      * @return DigitalDocument the DigitalDocument instance
      * @throws PreferencesException
      **************************************************************************/
+    @Override
     public DigitalDocument getDigitalDocument() throws PreferencesException;
 
     /***************************************************************************
@@ -91,6 +73,7 @@ public interface Fileformat {
      *
      * @throws ReadException
      **************************************************************************/
+    @Override
     public boolean read(String filename) throws ReadException;
 
     /***************************************************************************
@@ -106,6 +89,7 @@ public interface Fileformat {
      * @throws WriteException
      * @throws PreferencesException
      **************************************************************************/
+    @Override
     public boolean write(String filename) throws WriteException,
             PreferencesException;
 
@@ -133,6 +117,7 @@ public interface Fileformat {
      * @param inDoc
      * @return true; only if a problem occurred, false is returned.
      **************************************************************************/
-    public boolean setDigitalDocument(DigitalDocument inDoc);
+    @Override
+    public boolean setDigitalDocument(DigitalDocumentInterface inDoc);
 
 }

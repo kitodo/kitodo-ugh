@@ -31,7 +31,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import ugh.UghCliVersion;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -39,9 +43,6 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.dl.VirtualFileGroup;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
@@ -484,8 +485,8 @@ public class UghConvert {
      **************************************************************************/
     private static boolean changeMetadataValue(DocStruct theDocstruct, String theMetadataName, String theValue) {
 
-        List<Metadata> mdlist = theDocstruct.getAllMetadata();
-        for (Metadata md : mdlist) {
+        List<MetadataInterface> mdlist = theDocstruct.getAllMetadata();
+        for (MetadataInterface md : mdlist) {
             if (md.getType().getName().equals(theMetadataName)) {
                 md.setValue(theValue);
                 foundMetadata = true;
@@ -493,10 +494,10 @@ public class UghConvert {
             }
         }
         if (!foundMetadata) {
-            List<DocStruct> children = theDocstruct.getAllChildren();
+            List<DocStructInterface> children = theDocstruct.getAllChildren();
             if (children != null && children.size() != 0) {
-                for (DocStruct ds : children) {
-                    foundMetadata = changeMetadataValue(ds, theMetadataName, theValue);
+                for (DocStructInterface ds : children) {
+                    foundMetadata = changeMetadataValue((DocStruct) ds, theMetadataName, theValue);
                 }
             }
         }
