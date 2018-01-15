@@ -466,9 +466,9 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                     // current metadata.
                     if (m.getValue() != null
                             && !m.getValue().equals("")
-                            && (m.getType().getName().equalsIgnoreCase(mmo.getInternalName())
-                                    || m.getType().getName().equals(METADATA_PHYSICAL_PAGE_NUMBER)
-                                    || m.getType().getName().equals(METADATA_LOGICAL_PAGE_NUMBER) || m.getType().getName().equals(METS_URN_NAME))) {
+                            && (((Metadata) m).getType().getName().equalsIgnoreCase(mmo.getInternalName())
+                                    || ((Metadata) m).getType().getName().equals(METADATA_PHYSICAL_PAGE_NUMBER)
+                                    || ((Metadata) m).getType().getName().equals(METADATA_LOGICAL_PAGE_NUMBER) || ((Metadata) m).getType().getName().equals(METS_URN_NAME))) {
                         currentMdList.add((Metadata) m);
                     }
                 }
@@ -553,7 +553,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                     // type is equal to the given metadata object, take it
                     // as current person.
                     if (((p.getFirstname() != null && !p.getFirstname().equals("")) || (p.getLastname() != null && !p.getLastname().equals("")))
-                            && p.getType().getName().equalsIgnoreCase(mmo.getInternalName())) {
+                            && ((Person) p).getType().getName().equalsIgnoreCase(mmo.getInternalName())) {
                         currentPerList.add((Person) p);
                     }
                 }
@@ -979,13 +979,13 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                     if (allMetadata != null) {
                         for (MetadataInterface md : allMetadata) {
                             if (md.getValue() != null && md.getValue().equals(identifierOfAnchor)) {
-                                if (((MetadataType) md.getType()).isIdentifier()) {
+                                if (((Metadata) md).getType().isIdentifier()) {
                                     // That's the anchor!
                                     anchorDocStruct = anchorStruct;
                                 } else {
                                     // Log an error, maybe only the metadata is
                                     // not set as identifier.
-                                    LOGGER.warn("Identifier '" + md.getType().getName()
+                                    LOGGER.warn("Identifier '" + ((Metadata) md).getType().getName()
                                             + "' found, but its type is NOT set to 'identifier' in the prefs!");
                                 }
                             }
@@ -1171,11 +1171,11 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 
         if (inStruct.getAllMetadata() != null) {
             for (MetadataInterface md : inStruct.getAllMetadata()) {
-                if (md.getType().getName().equals(METS_PREFS_LABEL_METADATA_STRING)) {
+                if (((Metadata) md).getType().getName().equals(METS_PREFS_LABEL_METADATA_STRING)) {
                     label = md.getValue();
-                } else if (md.getType().getName().equals(METS_PREFS_ORDERLABEL_METADATA_STRING)) {
+                } else if (((Metadata) md).getType().getName().equals(METS_PREFS_ORDERLABEL_METADATA_STRING)) {
                     orderlabel = md.getValue();
-                } else if (md.getType().getName().equals(METS_URN_NAME)) {
+                } else if (((Metadata) md).getType().getName().equals(METS_URN_NAME)) {
                     div.setAttribute(METS_CONTENTIDS_STRING, md.getValue());
                 }
             }
@@ -1231,7 +1231,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                 DocStruct child = (DocStruct) inStruct.getAllChildren().get(0);
                 if (child.getAllMetadata() != null) {
                     for (MetadataInterface md : child.getAllMetadata()) {
-                        if (md.getType().getName().equals(RULESET_ORDER_NAME)) {
+                        if (((Metadata) md).getType().getName().equals(RULESET_ORDER_NAME)) {
                             ordernumber = md.getValue();
                         }
                     }
@@ -1243,7 +1243,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                 && !inStruct.getParent().getType().getAnchorClass().equals(inStruct.getType().getAnchorClass())) {
             if (inStruct.getAllMetadata() != null) {
                 for (MetadataInterface md : inStruct.getAllMetadata()) {
-                    if (md.getType().getName().equals(RULESET_ORDER_NAME)) {
+                    if (((Metadata) md).getType().getName().equals(RULESET_ORDER_NAME)) {
                         ordernumber = md.getValue();
                     }
                 }
@@ -1595,14 +1595,14 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 
         for (String metadataName : xpathMap.keySet()) {
             for (MetadataInterface md : theGroup.getMetadataList()) {
-                if (md.getType().getName().equals(metadataName) && md.getValue() != null && !md.getValue().isEmpty()) {
+                if (((Metadata) md).getType().getName().equals(metadataName) && md.getValue() != null && !md.getValue().isEmpty()) {
                     Map<String, String> xqueryMap = xpathMap.get(metadataName);
                     String xquery = xqueryMap.get(metadataName);
                     writeSingleModsMetadata(xquery, (Metadata) md, createdNode, theDocument);
                 }
             }
             for (PersonInterface p : theGroup.getPersonList()) {
-                if (p.getType().getName().equals(metadataName)) {
+                if (((Person) p).getType().getName().equals(metadataName)) {
                     Map<String, String> xqueryMap = xpathMap.get(metadataName);
                     writeSingleGroupPerson((Person) p, xqueryMap, createdNode, theDocument);
                 }

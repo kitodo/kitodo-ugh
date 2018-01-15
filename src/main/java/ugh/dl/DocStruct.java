@@ -262,8 +262,17 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @return the type of this DocStruct
      */
-    @Override
     public DocStructType getType() {
+        return this.type;
+    }
+
+    /**
+     * Returns the type of this DocStruct.
+     *
+     * @return the type of this DocStruct
+     */
+    @Override
+    public DocStructType getDocStructType() {
         return this.type;
     }
 
@@ -295,7 +304,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         LinkedList<DocStruct> result = new LinkedList<DocStruct>();
         if (children != null) {
             for (DocStructInterface child : children) {
-                if (type.getAnchorClass().equals(child.getType().getAnchorClass())) {
+                if (type.getAnchorClass().equals(((DocStruct) child).getType().getAnchorClass())) {
                     result.addAll(((DocStruct) child).getAllRealSuccessors());
                 } else if (!((DocStruct) child).hasMetadata(MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE)) {
                     result.add(((DocStruct) child));
@@ -384,7 +393,7 @@ public class DocStruct implements DocStructInterface, Serializable {
                 // Wildcard; we do not have to check the doctype.
                 docTypeTestPassed = true;
             } else {
-                DocStructType singleType = (DocStructType) child.getType();
+                DocStructType singleType = ((DocStruct) child).getType();
                 String singlename = singleType.getName();
                 if (singlename != null && singlename.equals(theDocTypeName)) {
                     docTypeTestPassed = true;
@@ -412,7 +421,7 @@ public class DocStruct implements DocStructInterface, Serializable {
                         mdTypeTestPassed = true;
                         break;
                     } else {
-                        MetadataType mdtype = (MetadataType) md.getType();
+                        MetadataType mdtype = ((Metadata) md).getType();
                         String mdtypename = mdtype.getName();
 
                         if (mdtypename != null && mdtypename.equals(theMDTypeName)) {
@@ -472,7 +481,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         }
 
         for (MetadataInterface md : this.allMetadata) {
-            if (((MetadataType) md.getType()).isIdentifier) {
+            if (((Metadata) md).getType().isIdentifier) {
                 result.add(md);
             }
         }
@@ -521,7 +530,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             if (this.getAllMetadata() != null) {
                 for (MetadataInterface md : this.getAllMetadata()) {
                     try {
-                        Metadata mdnew = new Metadata((MetadataType) md.getType());
+                        Metadata mdnew = new Metadata(((Metadata) md).getType());
                         mdnew.setValue(md.getValue());
                         if (((Metadata) md).getValueQualifier() != null && ((Metadata) md).getValueQualifierType() != null) {
                             mdnew.setValueQualifier(((Metadata) md).getValueQualifier(), ((Metadata) md).getValueQualifierType());
@@ -547,12 +556,12 @@ public class DocStruct implements DocStructInterface, Serializable {
             if (this.getAllMetadataGroups() != null) {
                 for (MetadataGroupInterface md : this.getAllMetadataGroups()) {
                     try {
-                        MetadataGroup mdnew = new MetadataGroup((MetadataGroupType) md.getType());
+                        MetadataGroup mdnew = new MetadataGroup(((MetadataGroup) md).getType());
                         mdnew.setDocStruct(newStruct);
                         List<MetadataInterface> newmdlist = new LinkedList<MetadataInterface>();
                         Collection<PersonInterface> newPersonList = new LinkedList<PersonInterface>();
                         for (MetadataInterface meta : md.getMetadataList()) {
-                            Metadata newMeta = new Metadata((MetadataType) meta.getType());
+                            Metadata newMeta = new Metadata(((Metadata) meta).getType());
                             newMeta.setValue(meta.getValue());
                             if (((Metadata) meta).getValueQualifier() != null && ((Metadata) meta).getValueQualifierType() != null) {
                                 newMeta.setValueQualifier(((Metadata) meta).getValueQualifier(), ((Metadata) meta).getValueQualifierType());
@@ -564,15 +573,15 @@ public class DocStruct implements DocStructInterface, Serializable {
                         }
 
                         for (PersonInterface ps : md.getPersonList()) {
-                            Person newps = new Person((MetadataType) ps.getType());
+                            Person newps = new Person(((Person) ps).getType());
                             if (ps.getLastname() != null) {
                                 newps.setLastname(ps.getLastname());
                             }
                             if (ps.getFirstname() != null) {
                                 newps.setFirstname(ps.getFirstname());
                             }
-                            if (((Metadata) ps).getAuthorityID() != null && ps.getAuthorityURI() != null && ps.getAuthorityValue() != null) {
-                                newps.setAutorityFile(((Metadata) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                            if (((Person) ps).getAuthorityID() != null && ps.getAuthorityURI() != null && ps.getAuthorityValue() != null) {
+                                newps.setAutorityFile(((Person) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
                             }
                             if (((Person) ps).getInstitution() != null) {
                                 newps.setInstitution(((Person) ps).getInstitution());
@@ -610,7 +619,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             if (this.getAllPersons() != null) {
                 for (PersonInterface ps : this.getAllPersons()) {
                     try {
-                        Person newps = new Person((MetadataType) ps.getType());
+                        Person newps = new Person(((Person) ps).getType());
                         if (ps.getLastname() != null) {
                             newps.setLastname(ps.getLastname());
                         }
@@ -651,8 +660,8 @@ public class DocStruct implements DocStructInterface, Serializable {
         if ((recursive == null || recursive == true) && this.getAllChildren() != null) {
             for (DocStructInterface child : this.getAllChildren()) {
                 if (recursive == null
-                        && (type == null || type.getAnchorClass() == null || child.getType() == null || !type
-                                .getAnchorClass().equals(child.getType().getAnchorClass()))) {
+                        && (type == null || type.getAnchorClass() == null || ((DocStruct) child).getType() == null || !type
+                                .getAnchorClass().equals(((DocStruct) child).getType().getAnchorClass()))) {
                     continue;
                 }
                 DocStruct copiedChild = (DocStruct) child.copy(cpmetadata, recursive);
@@ -702,10 +711,10 @@ public class DocStruct implements DocStructInterface, Serializable {
             if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
                 if (allMetadata != null) {
                     for (MetadataInterface md : allMetadata) {
-                        if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
+                        if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(((Metadata) md).getType().getName())) {
                             continue;
                         }
-                        Metadata mdnew = new Metadata((MetadataType) md.getType());
+                        Metadata mdnew = new Metadata(((Metadata) md).getType());
                         mdnew.setValue(md.getValue());
                         if (((Metadata) md).getValueQualifier() != null && ((Metadata) md).getValueQualifierType() != null) {
                             mdnew.setValueQualifier(((Metadata) md).getValueQualifier(), ((Metadata) md).getValueQualifierType());
@@ -720,12 +729,12 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                 if (allMetadataGroups != null) {
                     for (MetadataGroupInterface md : this.getAllMetadataGroups()) {
-                        MetadataGroup mdnew = new MetadataGroup((MetadataGroupType) md.getType());
+                        MetadataGroup mdnew = new MetadataGroup(((MetadataGroup) md).getType());
                         mdnew.setDocStruct(newStruct);
                         List<MetadataInterface> newmdlist = new LinkedList<MetadataInterface>();
                         Collection<PersonInterface> newPersonList = new LinkedList<PersonInterface>();
                         for (MetadataInterface meta : md.getMetadataList()) {
-                            Metadata newMeta = new Metadata((MetadataType) meta.getType());
+                            Metadata newMeta = new Metadata(((Metadata) meta).getType());
                             newMeta.setValue(meta.getValue());
                             if (((Metadata) meta).getValueQualifier() != null && ((Metadata) meta).getValueQualifierType() != null) {
                                 newMeta.setValueQualifier(((Metadata) meta).getValueQualifier(), ((Metadata) meta).getValueQualifierType());
@@ -739,7 +748,7 @@ public class DocStruct implements DocStructInterface, Serializable {
                         }
 
                         for (PersonInterface ps : md.getPersonList()) {
-                            Person newps = new Person((MetadataType) ps.getType());
+                            Person newps = new Person(((Person) ps).getType());
                             if (ps.getLastname() != null) {
                                 newps.setLastname(ps.getLastname());
                             }
@@ -775,7 +784,7 @@ public class DocStruct implements DocStructInterface, Serializable {
                 if (this.getAllPersons() != null) {
                     for (PersonInterface ps : this.getAllPersons()) {
 
-                        Person newps = new Person((MetadataType) ps.getType());
+                        Person newps = new Person(((Person) ps).getType());
                         if (ps.getLastname() != null) {
                             newps.setLastname(ps.getLastname());
                         }
@@ -808,10 +817,10 @@ public class DocStruct implements DocStructInterface, Serializable {
                     && (anchorClass == null ? type.getAnchorClass() != null : !anchorClass
                             .equals(type.getAnchorClass()))) {
                 for (MetadataInterface md : allMetadata) {
-                    if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
+                    if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(((Metadata) md).getType().getName())) {
                         continue;
                     }
-                    Metadata mdnew = new Metadata((MetadataType) md.getType());
+                    Metadata mdnew = new Metadata(((Metadata) md).getType());
                     mdnew.setValue(md.getValue());
                     newStruct.addMetadata(mdnew);
                 }
@@ -823,10 +832,10 @@ public class DocStruct implements DocStructInterface, Serializable {
                     if (anchorClass == null ? child.getAnchorClass() == null : anchorClass.equals(child
                             .getAnchorClass())) {
                         for (MetadataInterface md : allMetadata) {
-                            if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(md.getType().getName())) {
+                            if (!FOREIGN_CHILD_METADATA_TYPES_TO_COPY.contains(((Metadata) md).getType().getName())) {
                                 continue;
                             }
-                            Metadata mdnew = new Metadata((MetadataType) md.getType());
+                            Metadata mdnew = new Metadata(((Metadata) md).getType());
                             mdnew.setValue(md.getValue());
                             newStruct.addMetadata(mdnew);
                         }
@@ -1108,7 +1117,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         List<MetadataGroupInterface> allMDs = this.getAllMetadataGroups();
         if (allMDs != null) {
             for (MetadataGroupInterface md : allMDs) {
-                MetadataGroupType mdt = (MetadataGroupType) md.getType();
+                MetadataGroupType mdt = ((MetadataGroup) md).getType();
                 if (inMDT != null && inMDT.getName().equals(mdt.getName())) {
                     return true;
                 }
@@ -1132,7 +1141,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         List<MetadataInterface> allMDs = this.getAllMetadata();
         if (allMDs != null) {
             for (MetadataInterface md : allMDs) {
-                MetadataType mdt = (MetadataType) md.getType();
+                MetadataType mdt = ((Metadata) md).getType();
                 if (inMDT != null && inMDT.getName().equals(mdt.getName())) {
                     return true;
                 }
@@ -1143,7 +1152,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         List<PersonInterface> allPersons = this.getAllPersons();
         if (allPersons != null) {
             for (PersonInterface per : allPersons) {
-                MetadataType mdt = (MetadataType) per.getType();
+                MetadataType mdt = ((Person) per).getType();
                 if (inMDT != null && inMDT.getName().equals(mdt.getName())) {
                     return true;
                 }
@@ -1609,7 +1618,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         // Check all metadata.
         if (inType != null && this.allMetadataGroups != null) {
             for (MetadataGroupInterface md : this.allMetadataGroups) {
-                if (md.getType() != null && md.getType().getName().equals(inType.getName())) {
+                if (((MetadataGroup) md).getType() != null && ((MetadataGroup) md).getType().getName().equals(inType.getName())) {
                     resultList.add((MetadataGroup) md);
                 }
             }
@@ -1828,7 +1837,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         // Check all metadata.
         if (inType != null && this.allMetadata != null) {
             for (MetadataInterface md : this.allMetadata) {
-                if (md.getType() != null && md.getType().getName().equals(inType.getName())) {
+                if (((Metadata) md).getType() != null && ((Metadata) md).getType().getName().equals(inType.getName())) {
                     resultList.add((Metadata) md);
                 }
             }
@@ -1837,7 +1846,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         // Check all persons.
         if (inType != null && this.persons != null) {
             for (PersonInterface md : this.persons) {
-                if (md.getType() != null && md.getType().getName().equals(inType.getName())) {
+                if (((Person) md).getType() != null && ((Person) md).getType().getName().equals(inType.getName())) {
                     resultList.add((Person) md);
                 }
             }
@@ -1867,7 +1876,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         // Check all persons.
         if (this.persons != null) {
             for (PersonInterface per : this.persons) {
-                if (per.getType() != null && per.getType().getName().equals(inType.getName())) {
+                if (((Person) per).getType() != null && ((Person) per).getType().getName().equals(inType.getName())) {
                     resultList.add(per);
                 }
             }
@@ -1899,7 +1908,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             for (MetadataInterface md : getAllMetadata()) {
                 // If the metadata does not start with the HIDDEN_METADATA_CHAR,
                 // add it to the result list.
-                if (md.getType().getName() != null && !md.getType().getName().startsWith(HIDDEN_METADATA_CHAR)) {
+                if (((Metadata) md).getType().getName() != null && !((Metadata) md).getType().getName().startsWith(HIDDEN_METADATA_CHAR)) {
                     result.add((Metadata) md);
                 }
             }
@@ -1976,7 +1985,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         if (this.allMetadataGroups != null) {
             for (MetadataGroupInterface md : this.allMetadataGroups) {
-                MetadataGroupType mdt = (MetadataGroupType) md.getType();
+                MetadataGroupType mdt = ((MetadataGroup) md).getType();
                 if (mdt == null) {
                     continue;
                 }
@@ -2055,7 +2064,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         if (this.allMetadata != null) {
             for (MetadataInterface md : this.allMetadata) {
-                MetadataType mdt = (MetadataType) md.getType();
+                MetadataType mdt = ((Metadata) md).getType();
                 if (mdt == null) {
                     continue;
                 }
@@ -2068,7 +2077,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         if (this.persons != null) {
             for (PersonInterface per : this.persons) {
-                MetadataType mdt = (MetadataType) per.getType();
+                MetadataType mdt = ((Person) per).getType();
                 if (mdt == null) {
                     continue;
                 }
@@ -2101,7 +2110,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         if (this.allMetadata != null) {
             for (MetadataInterface md : this.allMetadata) {
-                testtype = (MetadataType) md.getType();
+                testtype = ((Metadata) md).getType();
                 if (testtype != null && testtype.getName().equals(inTypeName)) {
                     // Another one is available.
                     counter++;
@@ -2111,7 +2120,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         if (allMetadataGroups != null) {
             for (MetadataGroupInterface mdg : allMetadataGroups) {
-                MetadataGroupType mgt = (MetadataGroupType) mdg.getType();
+                MetadataGroupType mgt = ((MetadataGroup) mdg).getType();
                 if (mgt != null && mgt.getName().equals(inTypeName)) {
                     // Another one is available.
                     counter++;
@@ -2122,7 +2131,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         if (this.persons != null) {
             for (PersonInterface per : this.persons) {
-                testtype = (MetadataType) per.getType();
+                testtype = ((Person) per).getType();
                 if (testtype != null && testtype.equals(inTypeName)) {
                     // Another one is available.
                     counter++;
@@ -2429,7 +2438,7 @@ public class DocStruct implements DocStructInterface, Serializable {
     @Override
     public boolean addChild(Integer index, DocStructInterface inchild) throws TypeNotAllowedAsChildException {
 
-        if (inchild == null || inchild.getType() == null) {
+        if (inchild == null || ((DocStruct) inchild).getType() == null) {
             logger.warn("DocStruct or DocStructType is null");
             return false;
         }
@@ -2817,7 +2826,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         boolean insert = false;
 
         // Check, if person is complete.
-        if (in.getType() == null) {
+        if (((Person) in).getType() == null) {
             IncompletePersonObjectException ipoe = new IncompletePersonObjectException();
             logger.error("Incomplete data for person metadata");
             throw ipoe;
@@ -2825,10 +2834,10 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         // Get MetadataType of this person get MetadataType from docstructType
         // object with the same name.
-        MetadataType mdtype = this.type.getMetadataTypeByType((MetadataType) in.getType());
+        MetadataType mdtype = this.type.getMetadataTypeByType(((Person) in).getType());
         if (mdtype == null) {
             MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException();
-            logger.error("MetadataType " + in.getType().getName() + " is not available for DocStruct '" + this.getType().getName() + "'");
+            logger.error("MetadataType " + ((Person) in).getType().getName() + " is not available for DocStruct '" + this.getType().getName() + "'");
             throw mtnae;
         }
 
@@ -2868,7 +2877,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         }
 
         MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException();
-        logger.error("Person MetadataType '" + in.getType().getName() + "' not allowed for DocStruct '" + this.getType().getName() + "'");
+        logger.error("Person MetadataType '" + ((Person) in).getType().getName() + "' not allowed for DocStruct '" + this.getType().getName() + "'");
         throw mtnae;
     }
 
@@ -2887,7 +2896,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             return false;
         }
 
-        if (in.getType() == null) {
+        if (((Person) in).getType() == null) {
             throw new IncompletePersonObjectException("Incomplete person: MetadataType is null");
         }
 
@@ -3064,7 +3073,7 @@ public class DocStruct implements DocStructInterface, Serializable {
                 continue;
             }
 
-            String compare = md.getType().getNameByLanguage(lang);
+            String compare = ((Metadata) md).getType().getNameByLanguage(lang);
 
             // Iterate over result list and find position for the metadata.
             boolean elementinserted = false;
@@ -3219,7 +3228,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             List<PersonInterface> op = this.getAllPersons();
             if (op != null && !op.isEmpty()) {
                 for (PersonInterface p : op) {
-                    if (p.getType() != null && mType.getName().equals(p.getType().getName())) {
+                    if (((Person) p).getType() != null && mType.getName().equals(((Person) p).getType().getName())) {
                         // Add to the new list and remove from the old, if names
                         // do match.
                         newPersons.add(p);
@@ -3232,7 +3241,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             List<MetadataInterface> om = this.getAllMetadata();
             if (om != null && !om.isEmpty()) {
                 for (MetadataInterface m : om) {
-                    if (mType.getName().equals(m.getType().getName())) {
+                    if (mType.getName().equals(((Metadata) m).getType().getName())) {
                         // Add to the new list and remove from the old, if names
                         // do match.
                         newMetadata.add(m);
@@ -3482,12 +3491,12 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                 for (MetadataInterface md2 : docStruct.getAllMetadata()) {
                     if (md1.equals(md2)) {
-                        logger.debug("equals=true: MD1=" + md1.getType().getName() + ";MD2=" + md2.getType().getName());
+                        logger.debug("equals=true: MD1=" + ((Metadata) md1).getType().getName() + ";MD2=" + ((Metadata) md2).getType().getName());
                         flagFound = true;
                         break;
                     }
 
-                    logger.debug("equals=false: MD1=" + md1.getType().getName() + ", MD2=" + md2.getType().getName());
+                    logger.debug("equals=false: MD1=" + ((Metadata) md1).getType().getName() + ", MD2=" + ((Metadata) md2).getType().getName());
                 }
 
                 // If equal Metadata couldn't be found this DocStruct cannot be
@@ -3507,12 +3516,12 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                 for (MetadataGroupInterface md2 : docStruct.getAllMetadataGroups()) {
                     if (md1.equals(md2)) {
-                        logger.debug("equals=true: MD1=" + md1.getType().getName() + ";MD2=" + md2.getType().getName());
+                        logger.debug("equals=true: MD1=" + ((MetadataGroup) md1).getType().getName() + ";MD2=" + ((MetadataGroup) md2).getType().getName());
                         flagFound = true;
                         break;
                     }
 
-                    logger.debug("equals=false: MD1=" + md1.getType().getName() + ", MD2=" + md2.getType().getName());
+                    logger.debug("equals=false: MD1=" + ((MetadataGroup) md1).getType().getName() + ", MD2=" + ((MetadataGroup) md2).getType().getName());
                 }
 
                 // If equal Metadata couldn't be found this DocStruct cannot be
@@ -3976,7 +3985,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         }
         for (DocStructInterface child : children) {
             for (MetadataInterface metadataElement : child.getAllMetadata()) {
-                if (metadataElement.getType().getName().equals(identifierField)
+                if (((Metadata) metadataElement).getType().getName().equals(identifierField)
                         && metadataElement.getValue().equals(identifier)) {
                     return (DocStruct) child;
                 }
@@ -3998,7 +4007,7 @@ public class DocStruct implements DocStructInterface, Serializable {
         LinkedList<Metadata> result = new LinkedList<Metadata>();
         if (allMetadata != null) {
             for (MetadataInterface metadata : allMetadata) {
-                if (metadata.getType().getName().equals(typeName)) {
+                if (((Metadata) metadata).getType().getName().equals(typeName)) {
                     result.add((Metadata) metadata);
                 }
             }

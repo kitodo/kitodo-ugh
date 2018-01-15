@@ -130,8 +130,19 @@ public class MetadataGroup implements MetadataGroupInterface, Serializable {
      *
      * @return MetadataGroupType instance
      **************************************************************************/
-    @Override
     public MetadataGroupType getType() {
+        return this.MDType;
+    }
+
+    /**
+     * Returns the type of the metadataGroup instance; The MetadataGroupType
+     * object which is returned, may have the same name, but be a different
+     * object than the MetadataGroupType object from another MetadataGroupType.
+     * 
+     * @return MetadataGroupType instance
+     **/
+    @Override
+    public MetadataGroupType getMetadataGroupType() {
         return this.MDType;
     }
 
@@ -185,7 +196,7 @@ public class MetadataGroup implements MetadataGroupInterface, Serializable {
     public List<MetadataInterface> getMetadataByType(String theType) {
         List<MetadataInterface> returnList = new ArrayList<MetadataInterface>();
         for (MetadataInterface md : metadataList) {
-            if (md.getType().getName().equals(theType)) {
+            if (((Metadata) md).getType().getName().equals(theType)) {
                 returnList.add(md);
             }
         }
@@ -196,7 +207,7 @@ public class MetadataGroup implements MetadataGroupInterface, Serializable {
     public List<PersonInterface> getPersonByType(String theType) {
         List<PersonInterface> returnList = new ArrayList<PersonInterface>();
         for (PersonInterface md : personList) {
-            if (md.getType().getName().equals(theType)) {
+            if (((Metadata) md).getType().getName().equals(theType)) {
                 returnList.add(md);
             }
         }

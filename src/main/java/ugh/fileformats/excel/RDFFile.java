@@ -881,7 +881,7 @@ public class RDFFile implements ugh.dl.Fileformat, RDFFileInterface {
         allmetadata = inDocStruct.getAllMetadata();
         if (allmetadata != null) {
             for (MetadataInterface mymetadata : allmetadata) {
-                MetadataType mymetadatatype = (MetadataType) mymetadata.getType();
+                MetadataType mymetadatatype = ((Metadata) mymetadata).getType();
 
                 // Check, if metadata is an RDF-sequence or RDF-bag, get
                 // MetadataMatchingObject and check, if this metadata is member

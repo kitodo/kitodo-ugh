@@ -128,8 +128,19 @@ public class Metadata implements MetadataInterface, Serializable {
      *
      * @return MetadataType instance
      **************************************************************************/
-    @Override
     public MetadataType getType() {
+        return this.MDType;
+    }
+
+    /**
+     * Returns the type of the metadata instance; The MetadataType object which
+     * is returned, may have the same name, but be a different object than the
+     * MetadataType object from another MetadataType.
+     *
+     * @return MetadataType instance
+     */
+    @Override
+    public MetadataType getMetadataType() {
         return this.MDType;
     }
 
@@ -170,8 +181,22 @@ public class Metadata implements MetadataInterface, Serializable {
      *
      * @param inValue The value as String.
      **************************************************************************/
-    @Override
     public boolean setValue(String inValue) {
+        this.metadataValue = inValue;
+        this.updated = true;
+        return true;
+    }
+
+    /**
+     * Sets the Metadata value and returns true, if it was set correctly.
+     * Otherwise false The only parameter is the value of the type String, all
+     * other types (integer, long etc.) must be converted to a string before.
+     * 
+     * @param inValue
+     *            The value as String.
+     **/
+    @Override
+    public boolean setStringValue(String inValue) {
         this.metadataValue = inValue;
         this.updated = true;
         return true;

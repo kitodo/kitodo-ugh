@@ -487,8 +487,8 @@ public class UghConvert {
 
         List<MetadataInterface> mdlist = theDocstruct.getAllMetadata();
         for (MetadataInterface md : mdlist) {
-            if (md.getType().getName().equals(theMetadataName)) {
-                md.setValue(theValue);
+            if (((Metadata) md).getType().getName().equals(theMetadataName)) {
+                ((Metadata) md).setValue(theValue);
                 foundMetadata = true;
                 break;
             }

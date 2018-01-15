@@ -112,8 +112,20 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
      * @param in
      * @return
      **************************************************************************/
-    @Override
     public boolean setName(String in) {
+        this.name = in;
+        return true;
+    }
+
+    /**
+     * Sets the name of the metadata type.
+     * 
+     * @param in
+     *            name to set
+     * @return always {@code true}
+     */
+    @Override
+    public boolean setNameReturnTrue(String in) {
         this.name = in;
         return true;
     }
