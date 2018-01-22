@@ -74,7 +74,7 @@ public interface Fileformat extends FileformatInterface {
      * @throws ReadException
      **************************************************************************/
     @Override
-    public boolean read(String filename) throws ReadException;
+    public void read(String filename) throws ReadException;
 
     /***************************************************************************
      * <p>
@@ -90,7 +90,7 @@ public interface Fileformat extends FileformatInterface {
      * @throws PreferencesException
      **************************************************************************/
     @Override
-    public boolean write(String filename) throws WriteException,
+    public void write(String filename) throws WriteException,
             PreferencesException;
 
     /***************************************************************************
@@ -118,6 +118,6 @@ public interface Fileformat extends FileformatInterface {
      * @return true; only if a problem occurred, false is returned.
      **************************************************************************/
     @Override
-    public boolean setDigitalDocument(DigitalDocumentInterface inDoc);
+    public void setDigitalDocument(DigitalDocumentInterface inDoc);
 
 }

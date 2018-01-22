@@ -156,10 +156,9 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
      * </p>
      *
      * @param dsType Is a DocStructType object.
-     * @throws TypeNotAllowedForParentException Is thrown, if this docstruct is not allowed for a parent.
      **************************************************************************/
     @Override
-    public DocStruct createDocStruct(DocStructTypeInterface dsType) throws TypeNotAllowedForParentException {
+    public DocStruct createDocStruct(DocStructTypeInterface dsType) {
 
         DocStruct ds = new DocStruct((DocStructType) dsType);
         ds.setDigitalDocument(this);
@@ -176,7 +175,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
      * @return
      **************************************************************************/
     @Override
-    public boolean setLogicalDocStruct(DocStructInterface inStruct) {
+    public void setLogicalDocStruct(DocStructInterface inStruct) {
 
         if (this.topLogicalStruct != null) {
             this.topLogicalStruct.setLogical(false);
@@ -185,8 +184,6 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
         this.topLogicalStruct = (DocStruct) inStruct;
         // Set DocStruct and all children to logical.
         ((DocStruct) inStruct).setLogical(true);
-
-        return true;
     }
 
     /***************************************************************************
@@ -202,7 +199,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
      * @return
      **************************************************************************/
     @Override
-    public boolean setPhysicalDocStruct(DocStructInterface inStruct) {
+    public void setPhysicalDocStruct(DocStructInterface inStruct) {
 
         if (this.topPhysicalStruct != null) {
             this.topPhysicalStruct.setPhysical(false);
@@ -211,8 +208,6 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
         this.topPhysicalStruct = (DocStruct) inStruct;
         // Set DocStruct and all children to physical.
         ((DocStruct) inStruct).setPhysical(true);
-
-        return true;
     }
 
     /***************************************************************************

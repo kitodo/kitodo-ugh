@@ -110,7 +110,7 @@ public class Prefs implements PrefsInterface, Serializable {
      * @throws PreferencesException
      **************************************************************************/
     @Override
-    public boolean loadPrefs(String filename) throws PreferencesException {
+    public void loadPrefs(String filename) throws PreferencesException {
 
         Document document;
         NodeList childlist;
@@ -246,8 +246,6 @@ public class Prefs implements PrefsInterface, Serializable {
         mdt = new MetadataType();
         mdt.setName(HIDDEN_METADATA_CHAR + "PaginationNo");
         this.allMetadataTypes.add(mdt);
-
-        return true;
     }
 
     /***************************************************************************
@@ -573,7 +571,7 @@ public class Prefs implements PrefsInterface, Serializable {
         if (node != null) {
             String nodevalue = node.getNodeValue();
             if (nodevalue != null && nodevalue.equals("person")) {
-                currenMdType.setIsPerson(true);
+                currenMdType.setPerson(true);
             }
             if (nodevalue != null && nodevalue.equals("identifier")) {
                 currenMdType.setIdentifier(true);
@@ -971,7 +969,7 @@ public class Prefs implements PrefsInterface, Serializable {
         Iterator<MetadataType> it = this.allMetadataTypes.iterator();
         while (it.hasNext()) {
             currentMdType = it.next();
-            if (currentMdType.getIsPerson()) {
+            if (currentMdType.isPerson()) {
                 allPersons.add(currentMdType);
             }
         }

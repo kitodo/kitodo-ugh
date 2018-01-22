@@ -87,7 +87,7 @@ public class MetadataGroup implements MetadataGroupInterface, Serializable {
         metadataList = new LinkedList<MetadataInterface>();
         personList = new LinkedList<PersonInterface>();
         for (MetadataTypeInterface mdt : MDType.getMetadataTypeList()) {
-            if (mdt.getIsPerson()) {
+            if (mdt.isPerson()) {
                 Person p = new Person((MetadataType) mdt);
                 p.setRole(mdt.getName());
                 personList.add(p);

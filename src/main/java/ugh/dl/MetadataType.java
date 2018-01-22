@@ -112,22 +112,9 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
      * @param in
      * @return
      **************************************************************************/
-    public boolean setName(String in) {
-        this.name = in;
-        return true;
-    }
-
-    /**
-     * Sets the name of the metadata type.
-     * 
-     * @param in
-     *            name to set
-     * @return always {@code true}
-     */
     @Override
-    public boolean setNameReturnTrue(String in) {
+    public void setName(String in) {
         this.name = in;
-        return true;
     }
 
     /***************************************************************************
@@ -135,16 +122,14 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
      * @return
      **************************************************************************/
     @Override
-    public boolean setNum(String in) {
+    public void setNum(String in) {
 
         if (!in.equals("1m") && !in.equals("1o") && !in.equals("+")
                 && !in.equals("*")) {
             // Unknown syntax.
-            return false;
+            return;
         }
         this.max_number = in;
-
-        return true;
     }
 
     /***************************************************************************
@@ -170,7 +155,7 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
             newMDType.setNum(this.max_number);
         }
         newMDType.setIdentifier(this.isIdentifier());
-        newMDType.setIsPerson(this.isPerson);
+        newMDType.setPerson(this.isPerson);
         return newMDType;
     }
 
@@ -227,9 +212,8 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
      * @return
      **************************************************************************/
     @Override
-    public boolean setAllLanguages(HashMap<String, String> in) {
+    public void setAllLanguages(HashMap<String, String> in) {
         this.allLanguages = in;
-        return true;
     }
 
     /***************************************************************************
@@ -344,7 +328,7 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
      * @param value
      **************************************************************************/
     @Override
-    public void setIsPerson(boolean value) {
+    public void setPerson(boolean value) {
         this.isPerson = value;
     }
 
@@ -352,7 +336,7 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
      * @return
      **************************************************************************/
     @Override
-    public boolean getIsPerson() {
+    public boolean isPerson() {
         return this.isPerson;
     }
 

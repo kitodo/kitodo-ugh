@@ -123,12 +123,6 @@ public class PaginationSequence {
 
                 logpagenumber = new Metadata(logpagenumbertype);
                 physpagenumber = new Metadata(physpagenumbertype);
-            } catch (TypeNotAllowedForParentException e) {
-                logger
-                        .error(
-                                "PaginationSequence.ConvertToPhysicalStructure: Type not allowed as child!",
-                                e);
-                return null;
             } catch (MetadataTypeNotAllowedException e) {
                 logger
                         .error(

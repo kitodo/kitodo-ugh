@@ -122,9 +122,8 @@ public class ContentFile implements ContentFileInterface, Serializable {
      * @return always true
      **************************************************************************/
     @Override
-    public boolean setLocation(String in) {
+    public void setLocation(String in) {
         this.Location = in;
-        return true;
     }
 
     /***************************************************************************

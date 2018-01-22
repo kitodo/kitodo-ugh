@@ -502,9 +502,8 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
         this.digdoc = (DigitalDocument) inDoc;
-        return true;
     }
 
     /*
@@ -513,7 +512,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String theFilename) throws ReadException {
+    public void read(String theFilename) throws ReadException {
 
         LOGGER.info("Reading METS file...");
 
@@ -580,8 +579,6 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         mapLogAndPhysDocStruct(metsElement);
 
         this.digdoc.sortMetadataRecursively(this.myPreferences);
-
-        return true;
     }
 
     private void readAmdSec(Mets metsElement) {
@@ -644,7 +641,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
      * @see ugh.fileformats.mets.MetsModsGdz#write(java.lang.String)
      */
     @Override
-    public boolean write(String filename) throws WriteException, PreferencesException {
+    public void write(String filename) throws WriteException, PreferencesException {
 
         LOGGER.info("Writing METS ....");
 
@@ -736,8 +733,6 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         this.digdoc = myDigDoc;
 
         LOGGER.info("Writing METS complete");
-
-        return success;
     }
 
     /***************************************************************************
@@ -1055,13 +1050,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
             // Create DocStruct.
             DocStruct newDocStruct = null;
-            try {
-                newDocStruct = this.getDigitalDocument().createDocStruct(myType);
-            } catch (TypeNotAllowedForParentException e) {
-                String message = "Can't create this DocStruct of type '" + type + "' at the current position in tree";
-                LOGGER.error(message, e);
-                throw new ReadException(message, e);
-            }
+            newDocStruct = this.getDigitalDocument().createDocStruct(myType);
 
             // get the corresponding amdSec
             List admList = dt.getADMID();
@@ -1210,27 +1199,20 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
             // (B) Create DocStruct for the topmost <div>.
             DocStruct newDocStruct = null;
-            try {
-                newDocStruct = this.getDigitalDocument().createDocStruct(myType);
-                newDocStruct.setIdentifier(id);
-                newDocStruct.setOrigObject(topmostdiv);
+            newDocStruct = this.getDigitalDocument().createDocStruct(myType);
+            newDocStruct.setIdentifier(id);
+            newDocStruct.setOrigObject(topmostdiv);
 
-                // get the corresponding amdSec
-                List admList = topmostdiv.getADMID();
-                if (admList != null) {
-                    for (Object object : admList) {
-                        String admid = (String) object;
-                        AmdSec amdSec = digdoc.getAmdSec(admid);
-                        if (amdSec != null) {
-                            newDocStruct.setAmdSec(amdSec);
-                        }
+            // get the corresponding amdSec
+            List admList = topmostdiv.getADMID();
+            if (admList != null) {
+                for (Object object : admList) {
+                    String admid = (String) object;
+                    AmdSec amdSec = digdoc.getAmdSec(admid);
+                    if (amdSec != null) {
+                        newDocStruct.setAmdSec(amdSec);
                     }
                 }
-
-            } catch (TypeNotAllowedForParentException e) {
-                String message = "Can't create this DocStruct of type '" + type + "' at the current position in tree (logical tree)";
-                LOGGER.error(message, e);
-                throw new ReadException(message, e);
             }
 
             LOGGER.info("DocStruct of type '" + type + "' created");
@@ -2047,13 +2029,13 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                                 }
 
                                 // Create and add person.
-                                if (mdt.getIsPerson()) {
+                                if (mdt.isPerson()) {
                                     List<PersonInterface> metadataList = new ArrayList<PersonInterface>(metadataGroup.getPersonList());
                                     for (PersonInterface ps : metadataList) {
 
                                         if (((Person) ps).getType().getName().equals(mdt.getName())) {
-                                            if ((ps.getLastname() == null || ps.getLastname().isEmpty())
-                                                    && (ps.getFirstname() == null || ps.getFirstname().isEmpty())) {
+                                            if ((ps.getLastName() == null || ps.getLastName().isEmpty())
+                                                    && (ps.getFirstName() == null || ps.getFirstName().isEmpty())) {
 
                                                 ps.setRole(mdt.getName());
 
@@ -2077,10 +2059,10 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
                                                     // Get and set values.
                                                     if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
-                                                        ps.setFirstname(value);
+                                                        ps.setFirstName(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_LASTNAME_STRING)) {
-                                                        ps.setLastname(value);
+                                                        ps.setLastName(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_AFFILIATION_STRING)) {
                                                         ((Person) ps).setAffiliation(value);
@@ -2099,7 +2081,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                                                         ((Person) ps).setPersontype(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_DISPLAYNAME_STRING)) {
-                                                        ps.setDisplayname(value);
+                                                        ps.setDisplayName(value);
                                                     }
                                                 }
 
@@ -2148,7 +2130,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                     }
 
                     // Create and add person.
-                    if (mdt.getIsPerson()) {
+                    if (mdt.isPerson()) {
                         Person ps;
                         try {
                             ps = new Person(mdt);
@@ -2173,10 +2155,10 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
                                 // Get and set values.
                                 if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
-                                    ps.setFirstname(value);
+                                    ps.setFirstName(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_LASTNAME_STRING)) {
-                                    ps.setLastname(value);
+                                    ps.setLastName(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_AFFILIATION_STRING)) {
                                     ps.setAffiliation(value);
@@ -2195,7 +2177,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                                     ps.setPersontype(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_DISPLAYNAME_STRING)) {
-                                    ps.setDisplayname(value);
+                                    ps.setDisplayName(value);
                                 }
                             }
                         }
@@ -2212,7 +2194,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                             throw new ImportException(message, e);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message =
-                                    "Person '" + mdt.getName() + "' " + ps.getDisplayname() + ") is not allowed as a child for '"
+                                    "Person '" + mdt.getName() + "' " + ps.getDisplayName() + ") is not allowed as a child for '"
                                             + inStruct.getType().getName() + "' during MODS import!";
                             LOGGER.error(message, e);
                             throw new ImportException(message);
@@ -2287,15 +2269,9 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
             // Create DocStruct for the topmost <div>.
             DocStruct newDocStruct = null;
-            try {
-                newDocStruct = this.getDigitalDocument().createDocStruct(myType);
-                newDocStruct.setIdentifier(id);
-                newDocStruct.setOrigObject(topmostdiv);
-            } catch (TypeNotAllowedForParentException e) {
-                String message = "Can't create this DocStruct of type '" + type + "' at the current tree position (physical structMap)!";
-                LOGGER.error(message);
-                throw new ReadException(message);
-            }
+            newDocStruct = this.getDigitalDocument().createDocStruct(myType);
+            newDocStruct.setIdentifier(id);
+            newDocStruct.setOrigObject(topmostdiv);
 
             // Handle children for the topmost <div>. Parse the child divs and
             // create appropriate DocStruct elements for them.
@@ -4275,30 +4251,30 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         // Set the displayname of the current person, use
         // "lastname, name" as we were told in the MODS
         // profile, only if the displayName is not yet set.
-        if ((thePerson.getLastname() != null && !thePerson.getLastname().equals(""))
-                || (thePerson.getFirstname() != null && !thePerson.getFirstname().equals(""))) {
-            if (thePerson.getLastname() != null && !thePerson.getLastname().equals("") && thePerson.getFirstname() != null
-                    && !thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname() + ", " + thePerson.getFirstname());
-            } else if (thePerson.getFirstname() == null || thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname());
+        if ((thePerson.getLastName() != null && !thePerson.getLastName().equals(""))
+                || (thePerson.getFirstName() != null && !thePerson.getFirstName().equals(""))) {
+            if (thePerson.getLastName() != null && !thePerson.getLastName().equals("") && thePerson.getFirstName() != null
+                    && !thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName() + ", " + thePerson.getFirstName());
+            } else if (thePerson.getFirstName() == null || thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName());
             } else {
-                thePerson.setDisplayname(thePerson.getFirstname());
+                thePerson.setDisplayName(thePerson.getFirstName());
             }
         }
 
         // Create the subnodes.
-        if (thePerson.getLastname() != null && !thePerson.getLastname().equals("")) {
+        if (thePerson.getLastName() != null && !thePerson.getLastName().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_LASTNAME_STRING;
             Node lastnameNode = createNode(theXQuery, createdNode, theDocument);
-            Node lastnamevalueNode = theDocument.createTextNode(thePerson.getLastname());
+            Node lastnamevalueNode = theDocument.createTextNode(thePerson.getLastName());
             lastnameNode.appendChild(lastnamevalueNode);
             createdNode.appendChild(lastnameNode);
         }
-        if (thePerson.getFirstname() != null && !thePerson.getFirstname().equals("")) {
+        if (thePerson.getFirstName() != null && !thePerson.getFirstName().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_FIRSTNAME_STRING;
             Node firstnameNode = createNode(theXQuery, createdNode, theDocument);
-            Node firstnamevalueNode = theDocument.createTextNode(thePerson.getFirstname());
+            Node firstnamevalueNode = theDocument.createTextNode(thePerson.getFirstName());
             firstnameNode.appendChild(firstnamevalueNode);
             createdNode.appendChild(firstnameNode);
         }
@@ -4333,10 +4309,10 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         }
 
 
-        if (thePerson.getDisplayname() != null && !thePerson.getDisplayname().equals("")) {
+        if (thePerson.getDisplayName() != null && !thePerson.getDisplayName().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_DISPLAYNAME_STRING;
             Node displaynameNode = createNode(theXQuery, createdNode, theDocument);
-            Node displaynamevalueNode = theDocument.createTextNode(thePerson.getDisplayname());
+            Node displaynamevalueNode = theDocument.createTextNode(thePerson.getDisplayName());
             displaynameNode.appendChild(displaynamevalueNode);
             createdNode.appendChild(displaynameNode);
         }
@@ -4355,7 +4331,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         Node createdNode = createNode(theXQuery, theStartingNode, theDocument);
 
         for (MetadataInterface md : theGroup.getMetadataList()) {
-            if (!((Metadata) md).getType().getIsPerson()) {
+            if (!((Metadata) md).getType().isPerson()) {
                 String xquery = "./#" + this.goobiNamespacePrefix + ":metadata[@name='" + ((Metadata) md).getType().getName() + "']";
                 writeSingleModsMetadata(xquery, (Metadata) md, createdNode, theDocument);
 
@@ -4363,7 +4339,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         }
         for (PersonInterface p : theGroup.getPersonList()) {
             if (p != null && p.getRole() != null && !p.getRole().equals("")
-                    && (p.getFirstname() != null || p.getLastname() != null || p.getDisplayname() != null)) {
+                    && (p.getFirstName() != null || p.getLastName() != null || p.getDisplayName() != null)) {
                 String xquery = "./#" + this.goobiNamespacePrefix + ":metadata[@type='person'][@name='" + p.getRole() + "']";
                 writeSingleModsPerson(xquery, (Person) p, createdNode, theDocument);
             }
@@ -4609,7 +4585,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
         if (inStruct.getAllPersons() != null) {
             for (PersonInterface p : inStruct.getAllPersons()) {
                 if (p != null && p.getRole() != null && !p.getRole().equals("")
-                        && (p.getFirstname() != null || p.getLastname() != null || p.getDisplayname() != null)) {
+                        && (p.getFirstName() != null || p.getLastName() != null || p.getDisplayName() != null)) {
                     String xquery =
                             "./" + this.modsNamespacePrefix + ":mods/" + this.modsNamespacePrefix + ":extension/" + this.goobiNamespacePrefix
                                     + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@type='person'][@name='" + p.getRole() + "']";

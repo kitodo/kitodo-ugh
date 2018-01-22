@@ -83,7 +83,7 @@ public class XStream implements ugh.dl.Fileformat, XStreamInterface {
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String filename) throws org.kitodo.api.ugh.exceptions.ReadException {
+    public void read(String filename) throws org.kitodo.api.ugh.exceptions.ReadException {
 
         logger.info("Reading XStream");
 
@@ -107,8 +107,6 @@ public class XStream implements ugh.dl.Fileformat, XStreamInterface {
         this.digdoc.sortMetadataRecursively(this.myPreferences);
 
         logger.info("Reading XStream complete");
-
-        return true;
     }
 
     /*
@@ -120,7 +118,7 @@ public class XStream implements ugh.dl.Fileformat, XStreamInterface {
      */
     @Override
     @Deprecated
-    public boolean write(String filename) throws WriteException {
+    public void write(String filename) throws WriteException {
 
         logger.info("Writing XStream");
 
@@ -138,8 +136,6 @@ public class XStream implements ugh.dl.Fileformat, XStreamInterface {
         }
 
         logger.info("Writing XStream complete");
-
-        return true;
     }
 
     /***************************************************************************
@@ -176,10 +172,8 @@ public class XStream implements ugh.dl.Fileformat, XStreamInterface {
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
         this.digdoc = (DigitalDocument) inDoc;
-
-        return false;
     }
 
 }

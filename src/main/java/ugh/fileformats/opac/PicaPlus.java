@@ -513,9 +513,8 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
         this.mydoc = (DigitalDocument) inDoc;
-        return false;
     }
 
     /***************************************************************************
@@ -524,7 +523,7 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
      * </p>
      **************************************************************************/
     @Override
-    public boolean read(Node inNode) throws ReadException {
+    public void read(Node inNode) throws ReadException {
 
         DocStruct ds = null;
         DocStruct dsOld = null;
@@ -591,8 +590,6 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
         }
 
         logger.info("Parsing picaplus record complete");
-
-        return true;
     }
 
     /***************************************************************************
@@ -601,7 +598,7 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
      * </p>
      **************************************************************************/
     @Override
-    public boolean read(String filename) throws ReadException {
+    public void read(String filename) throws ReadException {
 
         // DOM Document.
         Document document;
@@ -711,8 +708,6 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
             logger.error(message, e);
             throw new ReadException(message, e);
         }
-
-        return true;
     }
 
     /***************************************************************************
@@ -1038,13 +1033,7 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
                                 + mmo.getInternalName() + "'");
                     }
 
-                    try {
-                        ds = this.mydoc.createDocStruct(dst);
-                    } catch (TypeNotAllowedForParentException e) {
-                        logger.warn("DocStructType '" + dst.getName()
-                                + "' is not allowed for parent DocStruct", e);
-                        return null;
-                    }
+                    ds = this.mydoc.createDocStruct(dst);
                     this.mydoc.setLogicalDocStruct(ds);
                     result.add(ds);
 
@@ -1135,10 +1124,10 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
 
                     // Check if mmo is lastname, firstname.
                     if (mmo.isFirstname()) {
-                        per.setFirstname(content);
+                        per.setFirstName(content);
                     }
                     if (mmo.isLastname()) {
-                        per.setLastname(content);
+                        per.setLastName(content);
                     }
 //                    if (mmo.isPersonIdentifier()) {
 //                        per.setIdentifier(content);
@@ -1186,11 +1175,11 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
                                 firstname = firstname.replace("/", "");
                                 firstname = firstname.replaceAll("\\s+", " ");
                             }
-                            if (per.getLastname() == null) {
-                                per.setLastname(lastname);
+                            if (per.getLastName() == null) {
+                                per.setLastName(lastname);
                             }
-                            if (per.getFirstname() == null) {
-                                per.setFirstname(firstname);
+                            if (per.getFirstName() == null) {
+                                per.setFirstName(firstname);
                             }
                         }
                     }
@@ -1330,9 +1319,7 @@ public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
      * @see ugh.dl.Fileformat#write(java.lang.String)
      */
     @Override
-    public boolean write(String theFilename) throws WriteException {
-        return false;
-    }
+    public void write(String theFilename) throws WriteException { }
 
     /***************************************************************************
      *

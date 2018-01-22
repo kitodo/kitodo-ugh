@@ -211,9 +211,8 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
         this.digdoc = (DigitalDocument) inDoc;
-        return true;
     }
 
     /*
@@ -222,12 +221,12 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String filename) throws ReadException {
+    public void read(String filename) throws ReadException {
         // The reading of the METS is already existing in the method
         // parseMODSForLogicalDOM for import of external METS/MODS files
         // configured by the METS section in the prefs.
 
-        return super.read(filename);
+        super.read(filename);
     }
 
     /*
@@ -402,7 +401,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                         for (PersonInterface p : inStruct.getAllPersonsByType(mdt)) {
                             // Only if the person has a firstname or a lastname, add
                             // it to the MODS!
-                            if (((p.getFirstname() != null && !p.getFirstname().equals("")) || (p.getLastname() != null && !p.getLastname()
+                            if (((p.getFirstName() != null && !p.getFirstName().equals("")) || (p.getLastName() != null && !p.getLastName()
                                     .equals("")))) {
 
                                 // Create the node according to the prefs' METS/MODS
@@ -552,7 +551,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                     // Only if the person has a first or last name AND its
                     // type is equal to the given metadata object, take it
                     // as current person.
-                    if (((p.getFirstname() != null && !p.getFirstname().equals("")) || (p.getLastname() != null && !p.getLastname().equals("")))
+                    if (((p.getFirstName() != null && !p.getFirstName().equals("")) || (p.getLastName() != null && !p.getLastName().equals("")))
                             && ((Person) p).getType().getName().equalsIgnoreCase(mmo.getInternalName())) {
                         currentPerList.add((Person) p);
                     }
@@ -753,7 +752,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                     //
 
                     // Handle Persons.
-                    if (mdt.getIsPerson()) {
+                    if (mdt.isPerson()) {
                         Person ps = null;
                         try {
                             ps = new Person(mdt);
@@ -813,10 +812,10 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 
 
                         if (lastnamevalue != null) {
-                            ps.setLastname(lastnamevalue[0]);
+                            ps.setLastName(lastnamevalue[0]);
                         }
                         if (firstnamevalue != null) {
-                            ps.setFirstname(firstnamevalue[0]);
+                            ps.setFirstName(firstnamevalue[0]);
                         }
                         if (affiliationvalue != null) {
                             ps.setAffiliation(affiliationvalue[0]);
@@ -825,7 +824,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                             ps.setAutorityFile(authorityfileidvalue[0], authorityuri[0], authorityvalue[0]);
                         }
                         if (displaynamevalue != null) {
-                            ps.setDisplayname(displaynamevalue[0]);
+                            ps.setDisplayName(displaynamevalue[0]);
                         }
                         if (persontypevalue != null) {
                             ps.setPersontype(persontypevalue[0]);
@@ -839,7 +838,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                             throw new ImportException(message, e);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message =
-                                    "Person '" + mdt.getName() + "' (" + ps.getDisplayname() + ") is not allowed as a child for '"
+                                    "Person '" + mdt.getName() + "' (" + ps.getDisplayName() + ") is not allowed as a child for '"
                                             + inStruct.getType().getName() + "' during MODS import!";
                             LOGGER.error(message, e);
                             // throw new ImportException(message, e);
@@ -1613,15 +1612,15 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
     private void writeSingleGroupPerson(Person thePerson, Map<String, String> xpathMap, Node theDomModsNode, Document theDomDoc)
             throws PreferencesException {
 
-        if ((thePerson.getLastname() != null && !thePerson.getLastname().equals(""))
-                || (thePerson.getFirstname() != null && !thePerson.getFirstname().equals(""))) {
-            if (thePerson.getLastname() != null && !thePerson.getLastname().equals("") && thePerson.getFirstname() != null
-                    && !thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname() + ", " + thePerson.getFirstname());
-            } else if (thePerson.getFirstname() == null || thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname());
+        if ((thePerson.getLastName() != null && !thePerson.getLastName().equals(""))
+                || (thePerson.getFirstName() != null && !thePerson.getFirstName().equals(""))) {
+            if (thePerson.getLastName() != null && !thePerson.getLastName().equals("") && thePerson.getFirstName() != null
+                    && !thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName() + ", " + thePerson.getFirstName());
+            } else if (thePerson.getFirstName() == null || thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName());
             } else {
-                thePerson.setDisplayname(thePerson.getFirstname());
+                thePerson.setDisplayName(thePerson.getFirstName());
             }
         }
 
@@ -1632,22 +1631,22 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
             xquery = xpathMap.get(key);
 
 
-            if (key.equalsIgnoreCase(METS_PREFS_FIRSTNAMEXPATH_STRING) && thePerson.getFirstname() != null) {
+            if (key.equalsIgnoreCase(METS_PREFS_FIRSTNAMEXPATH_STRING) && thePerson.getFirstName() != null) {
                 if (xquery == null) {
-                    LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s firstname '" + thePerson.getFirstname() + "'");
+                    LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s firstname '" + thePerson.getFirstName() + "'");
                 } else {
                     Node firstnameNode = createNode(xquery, createdNode, theDomDoc);
-                    Node firstnamevalueNode = theDomDoc.createTextNode(thePerson.getFirstname());
+                    Node firstnamevalueNode = theDomDoc.createTextNode(thePerson.getFirstName());
                     firstnameNode.appendChild(firstnamevalueNode);
                     createdNode.appendChild(firstnameNode);
                 }
 
-            } else if (key.equalsIgnoreCase(METS_PREFS_LASTNAMEXPATH_STRING) && thePerson.getLastname() != null) {
+            } else if (key.equalsIgnoreCase(METS_PREFS_LASTNAMEXPATH_STRING) && thePerson.getLastName() != null) {
                 if (xquery == null) {
-                    LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s lastname '" + thePerson.getLastname() + "'");
+                    LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s lastname '" + thePerson.getLastName() + "'");
                 } else {
                     Node lastnameNode = createNode(xquery, createdNode, theDomDoc);
-                    Node lastnamevalueNode = theDomDoc.createTextNode(thePerson.getLastname());
+                    Node lastnamevalueNode = theDomDoc.createTextNode(thePerson.getLastName());
                     lastnameNode.appendChild(lastnamevalueNode);
                     createdNode.appendChild(lastnameNode);
                 }
@@ -1661,12 +1660,12 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
                     createdNode.appendChild(affiliationNode);
                 }
 
-            } else if (key.equalsIgnoreCase(METS_PREFS_DISPLAYNAMEXPATH_STRING) && thePerson.getDisplayname() != null) {
+            } else if (key.equalsIgnoreCase(METS_PREFS_DISPLAYNAMEXPATH_STRING) && thePerson.getDisplayName() != null) {
                 if (xquery == null) {
-                    LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s displayName '" + thePerson.getDisplayname() + "'");
+                    LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s displayName '" + thePerson.getDisplayName() + "'");
                 } else {
                     Node displaynameNode = createNode(xquery, createdNode, theDomDoc);
-                    Node displaynamevalueNode = theDomDoc.createTextNode(thePerson.getDisplayname());
+                    Node displaynamevalueNode = theDomDoc.createTextNode(thePerson.getDisplayName());
                     displaynameNode.appendChild(displaynamevalueNode);
                     createdNode.appendChild(displaynameNode);
                 }
@@ -1730,37 +1729,37 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 
         // Set the displayname of the current person, if NOT already set! Use
         // "lastname, name" as we were told in the MODS profile.
-        if ((thePerson.getLastname() != null && !thePerson.getLastname().equals(""))
-                || (thePerson.getFirstname() != null && !thePerson.getFirstname().equals(""))) {
-            if (thePerson.getLastname() != null && !thePerson.getLastname().equals("") && thePerson.getFirstname() != null
-                    && !thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname() + ", " + thePerson.getFirstname());
-            } else if (thePerson.getFirstname() == null || thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname());
+        if ((thePerson.getLastName() != null && !thePerson.getLastName().equals(""))
+                || (thePerson.getFirstName() != null && !thePerson.getFirstName().equals(""))) {
+            if (thePerson.getLastName() != null && !thePerson.getLastName().equals("") && thePerson.getFirstName() != null
+                    && !thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName() + ", " + thePerson.getFirstName());
+            } else if (thePerson.getFirstName() == null || thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName());
             } else {
-                thePerson.setDisplayname(thePerson.getFirstname());
+                thePerson.setDisplayName(thePerson.getFirstName());
             }
         }
 
         // Create the subnodes.
-        if (thePerson.getLastname() != null) {
+        if (thePerson.getLastName() != null) {
             xquery = theMMO.getLastnameXQuery();
             if (xquery == null) {
-                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s lastname '" + thePerson.getLastname() + "'");
+                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s lastname '" + thePerson.getLastName() + "'");
             } else {
                 Node lastnameNode = createNode(xquery, createdNode, theDomDoc);
-                Node lastnamevalueNode = theDomDoc.createTextNode(thePerson.getLastname());
+                Node lastnamevalueNode = theDomDoc.createTextNode(thePerson.getLastName());
                 lastnameNode.appendChild(lastnamevalueNode);
                 createdNode.appendChild(lastnameNode);
             }
         }
-        if (thePerson.getFirstname() != null) {
+        if (thePerson.getFirstName() != null) {
             xquery = theMMO.getFirstnameXQuery();
             if (xquery == null) {
-                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s firstname '" + thePerson.getFirstname() + "'");
+                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s firstname '" + thePerson.getFirstName() + "'");
             } else {
                 Node firstnameNode = createNode(xquery, createdNode, theDomDoc);
-                Node firstnamevalueNode = theDomDoc.createTextNode(thePerson.getFirstname());
+                Node firstnamevalueNode = theDomDoc.createTextNode(thePerson.getFirstName());
                 firstnameNode.appendChild(firstnamevalueNode);
                 createdNode.appendChild(firstnameNode);
             }
@@ -1792,13 +1791,13 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 //                createdNode.appendChild(authorityfileidNode);
 //            }
         }
-        if (thePerson.getDisplayname() != null) {
+        if (thePerson.getDisplayName() != null) {
             xquery = theMMO.getDisplayNameXQuery();
             if (xquery == null) {
-                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s displayName '" + thePerson.getDisplayname() + "'");
+                LOGGER.warn("No XQuery given for " + thePerson.getType().getName() + "'s displayName '" + thePerson.getDisplayName() + "'");
             } else {
                 Node displaynameNode = createNode(xquery, createdNode, theDomDoc);
-                Node displaynamevalueNode = theDomDoc.createTextNode(thePerson.getDisplayname());
+                Node displaynamevalueNode = theDomDoc.createTextNode(thePerson.getDisplayName());
                 displaynameNode.appendChild(displaynamevalueNode);
                 createdNode.appendChild(displaynameNode);
             }

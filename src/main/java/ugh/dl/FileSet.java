@@ -96,14 +96,12 @@ public class FileSet implements FileSetInterface, Serializable {
      * @return always true
      **************************************************************************/
     @Override
-    public boolean addFile(ContentFileInterface inImage) {
+    public void addFile(ContentFileInterface inImage) {
 
         // Only add the file, if it is not yet existing in the list.
         if (!this.allImages.contains(inImage)) {
             this.allImages.add(inImage);
         }
-
-        return true;
     }
 
     /***************************************************************************
@@ -117,9 +115,8 @@ public class FileSet implements FileSetInterface, Serializable {
      * @return always true
      **************************************************************************/
     @Override
-    public boolean removeFile(ContentFileInterface inImage) {
+    public void removeFile(ContentFileInterface inImage) {
         this.allImages.remove(inImage);
-        return true;
     }
 
     /***************************************************************************

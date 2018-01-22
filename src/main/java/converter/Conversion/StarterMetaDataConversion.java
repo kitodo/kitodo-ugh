@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.FileformatInterface;
 import org.kitodo.api.ugh.exceptions.ReadException;
 import org.apache.logging.log4j.LogManager;
 
@@ -91,10 +92,10 @@ public class StarterMetaDataConversion {
                 logger.debug("loading:'" + newFile.getAbsolutePath() + "' as RDF in ugh");
 
                 try {
-                    if (rdfInput.read(procFile.getAbsolutePath())) {
+                    rdfInput.read(procFile.getAbsolutePath());
 
                         metsOutput = new MetsMods(pref);
-                        metsOutput.setDigitalDocument(rdfInput.getDigitalDocument());
+                        ((FileformatInterface) metsOutput).setDigitalDocument(rdfInput.getDigitalDocument());
 
                         // Sort first so equals method returns equals
                         metsOutput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
@@ -118,13 +119,6 @@ public class StarterMetaDataConversion {
                         }
                         /*######## End of 1. Equals Validator  #########*/
 
-
-                    } else {
-                        logger.info("File " + procFile.getAbsolutePath() + " could not be read, will not be written");
-                        rollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
-                        flagError = true;
-                    }
-
                 } catch (Exception e) {
                     logger.debug("read error for file " + procFile.getAbsolutePath(), e);
                     rollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
@@ -135,18 +129,11 @@ public class StarterMetaDataConversion {
 
                 if (!flagError) {
                     try {
-                        if (!metsOutput.write(procFile.getAbsolutePath())) {
-
-                            logger.error("File " + procFile.getAbsolutePath() + " couldn't be written in mets format");
-
-                            rollbackLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - processing cancelled");
-                            flagError = true;
-                        } else {
+                        ((FileformatInterface) metsOutput).write(procFile.getAbsolutePath());
 
                             logger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
 
                             saveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
-                        }
 
                     } catch (Exception e) {
 
@@ -167,10 +154,10 @@ public class StarterMetaDataConversion {
                         // method
                         metsOutput = new MetsMods(pref);
                         try {
-                            metsOutput.read(procFile.getAbsolutePath());
+                            ((FileformatInterface) metsOutput).read(procFile.getAbsolutePath());
                             Fileformat rdfCompare = new RDFFile(pref);
 
-                            rdfCompare.setDigitalDocument(metsOutput.getDigitalDocument());
+                            ((FileformatInterface) rdfCompare).setDigitalDocument(metsOutput.getDigitalDocument());
 
                             // Sort first so equals method returns equals
                             rdfCompare.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
@@ -209,7 +196,7 @@ public class StarterMetaDataConversion {
                             File fileA = new File(procFile.getAbsolutePath().replace(".xml", ".fromMets.rdf.xml"));
                             File fileB = new File(procFile.getAbsolutePath().replace(".xml", ".orig.rdf.xml"));
 
-                            rdfCompare.write(fileA.getAbsolutePath());
+                            ((FileformatInterface) rdfCompare).write(fileA.getAbsolutePath());
                             rdfInput.write(fileB.getAbsolutePath());
 
 

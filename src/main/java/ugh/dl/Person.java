@@ -94,9 +94,8 @@ public class Person extends Metadata implements PersonInterface {
      * @return true is always returned
      **************************************************************************/
     @Override
-    public boolean setFirstname(String in) {
+    public void setFirstName(String in) {
         this.firstname = in;
-        return true;
     }
 
     /***************************************************************************
@@ -107,7 +106,7 @@ public class Person extends Metadata implements PersonInterface {
      * @return firstname of this person
      **************************************************************************/
     @Override
-    public String getFirstname() {
+    public String getFirstName() {
         return this.firstname;
     }
 
@@ -116,16 +115,15 @@ public class Person extends Metadata implements PersonInterface {
      * @return
      **************************************************************************/
     @Override
-    public boolean setLastname(String in) {
+    public void setLastName(String in) {
         this.lastname = in;
-        return true;
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
     @Override
-    public String getLastname() {
+    public String getLastName() {
         return this.lastname;
     }
 
@@ -198,9 +196,8 @@ public class Person extends Metadata implements PersonInterface {
      * @return
      **************************************************************************/
     @Override
-    public boolean setRole(String in) {
+    public void setRole(String in) {
         this.role = in;
-        return true;
     }
 
     /***************************************************************************
@@ -250,7 +247,7 @@ public class Person extends Metadata implements PersonInterface {
      * @return the displayname
      **************************************************************************/
     @Override
-    public String getDisplayname() {
+    public String getDisplayName() {
         return this.displayname;
     }
 
@@ -263,7 +260,7 @@ public class Person extends Metadata implements PersonInterface {
      *            the displayname to set
      **************************************************************************/
     @Override
-    public void setDisplayname(String displayname) {
+    public void setDisplayName(String displayname) {
         this.displayname = displayname;
     }
 
@@ -292,24 +289,24 @@ public class Person extends Metadata implements PersonInterface {
 
         String result = "";
 
-        if (this.getType() != null && this.getLastname() != null
-                && !this.getLastname().equals("")) {
+        if (this.getType() != null && this.getLastName() != null
+                && !this.getLastName().equals("")) {
             // Get person type and value.
             result += "Person ("
                     + this.getType().getName()
                     + "): "
-                    + (this.getLastname() == null ? "NULL" : "\""
-                            + this.getLastname() + "\"")
+                    + (this.getLastName() == null ? "NULL" : "\""
+                            + this.getLastName() + "\"")
                     + ", "
-                    + (this.getFirstname() == null ? "NULL" : "\""
-                            + this.getFirstname() + "\"") + "\n";
+                    + (this.getFirstName() == null ? "NULL" : "\""
+                            + this.getFirstName() + "\"") + "\n";
         } else if (this.getType() == null) {
             result += "Person (WITHOUT TYPE!!): "
-                    + (this.getLastname() == null ? "NULL" : "\""
-                            + this.getLastname() + "\"")
+                    + (this.getLastName() == null ? "NULL" : "\""
+                            + this.getLastName() + "\"")
                     + ", "
-                    + (this.getFirstname() == null ? "NULL" : "\""
-                            + this.getFirstname() + "\"") + "\n";
+                    + (this.getFirstName() == null ? "NULL" : "\""
+                            + this.getFirstName() + "\"") + "\n";
         }
 
         return result;
@@ -335,13 +332,13 @@ public class Person extends Metadata implements PersonInterface {
         // while respective attribute of person is not null a nullpointer
         // exception is thrown indicating that compared objects are different.
         try {
-            if (!((this.getFirstname() == null && person.getFirstname() == null) || this
-                    .getFirstname().equals(person.getFirstname()))) {
+            if (!((this.getFirstName() == null && person.getFirstName() == null) || this
+                    .getFirstName().equals(person.getFirstName()))) {
                 return false;
             }
 
-            if (!((this.getLastname() == null && person.getLastname() == null) || this
-                    .getLastname().equals(person.getLastname()))) {
+            if (!((this.getLastName() == null && person.getLastName() == null) || this
+                    .getLastName().equals(person.getLastName()))) {
                 return false;
             }
 
@@ -350,8 +347,8 @@ public class Person extends Metadata implements PersonInterface {
                 return false;
             }
 
-            if (!((this.getDisplayname() == null && person.getDisplayname() == null) || this
-                    .getDisplayname().equals(person.getDisplayname()))) {
+            if (!((this.getDisplayName() == null && person.getDisplayName() == null) || this
+                    .getDisplayName().equals(person.getDisplayName()))) {
                 return false;
             }
 

@@ -288,12 +288,11 @@ public class UghConvert {
         //
         // Read the file and get the DigitalDocument.
         //
-        boolean readOutcome = false;
         try {
             if (!commandLine.hasOption('q')) {
                 System.out.println("Reading source file '" + inputFile.getAbsolutePath() + "'");
             }
-            readOutcome = fileFrom.read(inputFile.getAbsolutePath());
+            fileFrom.read(inputFile.getAbsolutePath());
             document = fileFrom.getDigitalDocument();
         } catch (ReadException e) {
             System.out.println("?READ  ERROR\nREADY.");
@@ -305,14 +304,8 @@ public class UghConvert {
             return 11;
         }
 
-        if (readOutcome) {
-            if (!commandLine.hasOption('q')) {
-                System.out.println(convertFrom + " file '" + inputFile.getAbsolutePath() + "' read");
-            }
-        } else {
-            System.out.println("?READ  ERROR\nREADY.");
-            System.out.println(convertFrom + " file '" + inputFile.getAbsolutePath() + "' could not be read");
-            return 12;
+        if (!commandLine.hasOption('q')) {
+            System.out.println(convertFrom + " file '" + inputFile.getAbsolutePath() + "' read");
         }
 
         // Give some verbose output.
@@ -437,7 +430,6 @@ public class UghConvert {
         //
         // Set the DigitalDocument and write the file.
         //
-        boolean writeOutcome = false;
         try {
             // Set the digital document.
             fileTo.setDigitalDocument(document);
@@ -448,7 +440,7 @@ public class UghConvert {
                 }
             }
 
-            writeOutcome = fileTo.write(outputFile.getAbsolutePath());
+            fileTo.write(outputFile.getAbsolutePath());
         } catch (PreferencesException e) {
             e.printStackTrace();
             System.out.println("?READ  ERROR\nREADY.");
@@ -461,16 +453,10 @@ public class UghConvert {
             return 15;
         }
 
-        if (writeOutcome) {
-            if (!commandLine.hasOption('q')) {
-                System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' written");
-            }
-        } else {
-            System.out.println("?WRITE  ERROR\nREADY.");
-            System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' could not be written");
-            return 16;
+        if (!commandLine.hasOption('q')) {
+            System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' written");
         }
-
+        
         return 0;
     }
 

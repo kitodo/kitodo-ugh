@@ -89,9 +89,8 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(org.kitodo.api.ugh.DigitalDocumentInterface inDoc) {
+    public void setDigitalDocument(org.kitodo.api.ugh.DigitalDocumentInterface inDoc) {
         this.mydoc = (ugh.dl.DigitalDocument) inDoc;
-        return true;
     }
 
     /*
@@ -100,8 +99,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String filename) {
-        return false;
+    public void read(String filename) {
     }
 
     /*
@@ -120,7 +118,7 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#write(java.lang.String)
      */
     @Override
-    public boolean write(String filename) {
+    public void write(String filename) {
         // Create instance for PDF object.
         com.lowagie.text.Document document = new com.lowagie.text.Document();
         // Open file.
@@ -129,9 +127,9 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
         } catch (IOException ioe) {
             System.err.println("Can't open file " + filename
                     + " for writing the PDF file");
-            return false;
+            return;
         } catch (DocumentException de) {
-            return false;
+            return;
         }
 
         // Set common metadata for PDF, open PDF document.
@@ -151,8 +149,6 @@ public class PortableDocumentFormat implements ugh.dl.Fileformat {
         }
 
         document.close();
-
-        return true;
     }
 
     /***************************************************************************

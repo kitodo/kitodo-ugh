@@ -154,9 +154,8 @@ public class Metadata implements MetadataInterface, Serializable {
      * @return
      **************************************************************************/
     @Override
-    public boolean setType(MetadataTypeInterface inType) {
+    public void setType(MetadataTypeInterface inType) {
         this.MDType = (MetadataType) inType;
-        return true;
     }
 
     /***************************************************************************
@@ -196,10 +195,9 @@ public class Metadata implements MetadataInterface, Serializable {
      *            The value as String.
      **/
     @Override
-    public boolean setStringValue(String inValue) {
+    public void setStringValue(String inValue) {
         this.metadataValue = inValue;
         this.updated = true;
-        return true;
     }
 
     /***************************************************************************
@@ -214,11 +212,10 @@ public class Metadata implements MetadataInterface, Serializable {
      * @param value value of the record in the authority file
      *
      **************************************************************************/
-    public boolean setAutorityFile(String authorityID, String authorityURI, String authorityValue) {
+    public void setAutorityFile(String authorityID, String authorityURI, String authorityValue) {
         this.authorityID = authorityID;
         this.authorityURI = authorityURI;
         this.authorityValue = authorityValue;
-        return true;
     }
 
     /***************************************************************************

@@ -227,9 +227,8 @@ public class DocStruct implements DocStructInterface, Serializable {
      * Creates a new DocStruct with a given type. The type can be changed later using the method {@link #setType(DocStructType)}.
      *
      * @param inType type of this DocStruct
-     * @throws TypeNotAllowedForParentException is never thrown
      */
-    protected DocStruct(DocStructType inType) throws TypeNotAllowedForParentException {
+    protected DocStruct(DocStructType inType) {
 
         // We have to check, if this type is allowed here, this depends on the
         // parent DocStruct.
@@ -248,13 +247,11 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @return always true
      */
     @Override
-    public boolean setType(DocStructTypeInterface inType) {
+    public void setType(DocStructTypeInterface inType) {
 
         // Usually we had to check, if the new type is allowed. Search for
         // parent and see if the parent allows this type.
         this.type = (DocStructType) inType;
-
-        return true;
     }
 
     /**
@@ -508,15 +505,7 @@ public class DocStruct implements DocStructInterface, Serializable {
     @Override
     public DocStructInterface copy(boolean cpmetadata, Boolean recursive) {
 
-        DocStruct newStruct = null;
-        try {
-            newStruct = new DocStruct(this.getType());
-        } catch (TypeNotAllowedForParentException e) {
-            // This should never happen as we are creating the same
-            // DocStructType.
-            String message = "This " + e.getClass().getName() + " should not have been occurred!";
-            logger.error(message, e);
-        }
+        DocStruct newStruct = new DocStruct(this.getType());
 
         // Copy the link to the parent.
         newStruct.setParent(this.getParent());
@@ -574,11 +563,11 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                         for (PersonInterface ps : md.getPersonList()) {
                             Person newps = new Person(((Person) ps).getType());
-                            if (ps.getLastname() != null) {
-                                newps.setLastname(ps.getLastname());
+                            if (ps.getLastName() != null) {
+                                newps.setLastName(ps.getLastName());
                             }
-                            if (ps.getFirstname() != null) {
-                                newps.setFirstname(ps.getFirstname());
+                            if (ps.getFirstName() != null) {
+                                newps.setFirstName(ps.getFirstName());
                             }
                             if (((Person) ps).getAuthorityID() != null && ps.getAuthorityURI() != null && ps.getAuthorityValue() != null) {
                                 newps.setAutorityFile(((Person) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
@@ -620,11 +609,11 @@ public class DocStruct implements DocStructInterface, Serializable {
                 for (PersonInterface ps : this.getAllPersons()) {
                     try {
                         Person newps = new Person(((Person) ps).getType());
-                        if (ps.getLastname() != null) {
-                            newps.setLastname(ps.getLastname());
+                        if (ps.getLastName() != null) {
+                            newps.setLastName(ps.getLastName());
                         }
-                        if (ps.getFirstname() != null) {
-                            newps.setFirstname(ps.getFirstname());
+                        if (ps.getFirstName() != null) {
+                            newps.setFirstName(ps.getFirstName());
                         }
 
                         if (((Metadata) ps).getAuthorityID() != null && ps.getAuthorityURI() != null && ps.getAuthorityValue() != null) {
@@ -749,11 +738,11 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                         for (PersonInterface ps : md.getPersonList()) {
                             Person newps = new Person(((Person) ps).getType());
-                            if (ps.getLastname() != null) {
-                                newps.setLastname(ps.getLastname());
+                            if (ps.getLastName() != null) {
+                                newps.setLastName(ps.getLastName());
                             }
-                            if (ps.getFirstname() != null) {
-                                newps.setFirstname(ps.getFirstname());
+                            if (ps.getFirstName() != null) {
+                                newps.setFirstName(ps.getFirstName());
                             }
                             if (((Metadata) ps).getAuthorityID() != null && ps.getAuthorityURI() != null
                                     && ps.getAuthorityValue() != null) {
@@ -785,11 +774,11 @@ public class DocStruct implements DocStructInterface, Serializable {
                     for (PersonInterface ps : this.getAllPersons()) {
 
                         Person newps = new Person(((Person) ps).getType());
-                        if (ps.getLastname() != null) {
-                            newps.setLastname(ps.getLastname());
+                        if (ps.getLastName() != null) {
+                            newps.setLastName(ps.getLastName());
                         }
-                        if (ps.getFirstname() != null) {
-                            newps.setFirstname(ps.getFirstname());
+                        if (ps.getFirstName() != null) {
+                            newps.setFirstName(ps.getFirstName());
                         }
 
                         if (((Person) ps).getAuthorityID() != null && ps.getAuthorityURI() != null
@@ -1263,13 +1252,9 @@ public class DocStruct implements DocStructInterface, Serializable {
      *             if the {@code ContentFile} is not linked to this instance
      */
     @Override
-    public boolean removeContentFile(ContentFileInterface theContentFile) throws ContentFileNotLinkedException {
+    public void removeContentFile(ContentFileInterface theContentFile) throws ContentFileNotLinkedException {
 
         boolean removed = false;
-
-        if (this.contentFileReferences == null) {
-            return false;
-        }
 
         List<ContentFileReference> copiedContentFileReferences = new LinkedList<ContentFileReference>(this.contentFileReferences);
 
@@ -1289,8 +1274,6 @@ public class DocStruct implements DocStructInterface, Serializable {
             String message = "Content file '" + theContentFile.getLocation() + "' is not a member of DocStruct '" + this.getType().getName() + "'";
             throw new ContentFileNotLinkedException(message);
         }
-
-        return true;
     }
 
     /**
@@ -1357,7 +1340,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @return true, if successful
      */
     @Override
-    public boolean removeReferenceTo(DocStructInterface inStruct) {
+    public void removeReferenceTo(DocStructInterface inStruct) {
 
         @SuppressWarnings("unchecked")
         List<Reference> ll = new LinkedList<Reference>((Collection<? extends Reference>) this.docStructRefsTo);
@@ -1374,8 +1357,6 @@ public class DocStruct implements DocStructInterface, Serializable {
                 }
             }
         }
-
-        return true;
     }
 
     /**
@@ -1438,7 +1419,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @see MetadataGroup
      */
     @Override
-    public boolean addMetadataGroup(MetadataGroupInterface theMetadataGroup) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+    public void addMetadataGroup(MetadataGroupInterface theMetadataGroup) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 
         MetadataGroupType inMdType = ((MetadataGroup) theMetadataGroup).getType();
         String inMdName = inMdType.getName();
@@ -1519,8 +1500,6 @@ public class DocStruct implements DocStructInterface, Serializable {
             logger.error(mtnae.getMessage());
             throw mtnae;
         }
-
-        return true;
     }
 
     /**
@@ -1538,10 +1517,9 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @see #canMetadataGroupBeRemoved(MetadataGroupType)
      */
     @Override
-    public boolean removeMetadataGroup(MetadataGroupInterface inMD) {
+    public void removeMetadataGroup(MetadataGroupInterface inMD) {
         ((MetadataGroup) inMD).myDocStruct = null;
         this.allMetadataGroups.remove(inMD);
-        return true;
     }
 
     /**
@@ -1656,7 +1634,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @see Metadata
      */
     @Override
-    public boolean addMetadata(MetadataInterface theMetadata) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
+    public void addMetadata(MetadataInterface theMetadata) throws MetadataTypeNotAllowedException, DocStructHasNoTypeException {
 
         MetadataType inMdType = ((Metadata) theMetadata).getType();
         String inMdName = inMdType.getName();
@@ -1737,8 +1715,6 @@ public class DocStruct implements DocStructInterface, Serializable {
             logger.error(mtnae.getMessage());
             throw mtnae;
         }
-
-        return true;
     }
 
     /**
@@ -1755,10 +1731,9 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @see #canMetadataBeRemoved(MetadataType)
      */
     @Override
-    public boolean removeMetadata(MetadataInterface inMD) {
+    public void removeMetadata(MetadataInterface inMD) {
         ((Metadata) inMD).myDocStruct = null;
         this.allMetadata.remove(inMD);
-        return true;
     }
 
     /**
@@ -2297,7 +2272,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                     // Then check persons here.
                     boolean used = false;
-                    if (mdt.getIsPerson() && this.getAllPersons() != null) {
+                    if (mdt.isPerson() && this.getAllPersons() != null) {
                         for (PersonInterface per : this.getAllPersons()) {
                             // If the person of the current metadata type is
                             // already used, set the flag.
@@ -2367,7 +2342,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                 // Then check persons here.
                 boolean used = false;
-                if (mdt.getIsPerson() && this.getAllPersons() != null) {
+                if (mdt.isPerson() && this.getAllPersons() != null) {
                     for (PersonInterface per : this.getAllPersons()) {
                         // If the person of the current metadata type is
                         // already used, set the flag.
@@ -2412,8 +2387,8 @@ public class DocStruct implements DocStructInterface, Serializable {
      *             member of this instance's DocStruct type
      */
     @Override
-    public boolean addChild(DocStructInterface inchild) throws TypeNotAllowedAsChildException {
-        return addChild((Integer) null, inchild);
+    public void addChild(DocStructInterface inchild) throws TypeNotAllowedAsChildException {
+        addChild((Integer) null, inchild);
     }
 
     /**
@@ -2436,11 +2411,11 @@ public class DocStruct implements DocStructInterface, Serializable {
      *             member of this instance's DocStruct type
      */
     @Override
-    public boolean addChild(Integer index, DocStructInterface inchild) throws TypeNotAllowedAsChildException {
+    public void addChild(Integer index, DocStructInterface inchild) throws TypeNotAllowedAsChildException {
 
         if (inchild == null || ((DocStruct) inchild).getType() == null) {
             logger.warn("DocStruct or DocStructType is null");
-            return false;
+            return;
         }
 
         DocStructType childtype;
@@ -2484,7 +2459,6 @@ public class DocStruct implements DocStructInterface, Serializable {
         }
 
         // Child was added.
-        return true;
     }
 
     /**
@@ -2503,17 +2477,17 @@ public class DocStruct implements DocStructInterface, Serializable {
      *             if a child should be added, but it's DocStruct type isn't
      *             member of this instance's DocStruct type
      */
-    public boolean addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
+    public void addChild(String where, DocStruct inchild) throws TypeNotAllowedAsChildException {
         if (where == null || inchild == null || inchild.getType() == null) {
             logger.warn("DocStruct or DocStructType is null");
-            return false;
+            return;
         }
 
         // get next position of index
         int next = where.indexOf(44) + 1;
 
-        return next != 0 ? ((DocStruct) children.get(Integer.parseInt(where.substring(0, next - 1)))).addChild(where.substring(next),
-                inchild) : addChild(Integer.valueOf(where), inchild);
+        if( next != 0 ){ ((DocStruct) children.get(Integer.parseInt(where.substring(0, next - 1)))).addChild(where.substring(next),
+                inchild) ;}else{ addChild(Integer.valueOf(where), inchild); }
     }
 
     /**
@@ -2522,7 +2496,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @return true, if child was removed, otherwise false
      */
     @Override
-    public boolean removeChild(DocStructInterface inchild) {
+    public void removeChild(DocStructInterface inchild) {
 
         if (this.children.remove(inchild)) {
             // Delete reference to parent.
@@ -2538,10 +2512,7 @@ public class DocStruct implements DocStructInterface, Serializable {
 
             // Delete the parent reference.
             ((DocStruct) inchild).setParent(null);
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -2816,7 +2787,7 @@ public class DocStruct implements DocStructInterface, Serializable {
     }
 
     @Override
-    public boolean addPerson(PersonInterface in) throws MetadataTypeNotAllowedException, IncompletePersonObjectException {
+    public void addPerson(PersonInterface in) throws MetadataTypeNotAllowedException, IncompletePersonObjectException {
 
         // Max number of persons (from configuration).
         String maxnumberallowed = null;
@@ -2873,7 +2844,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             }
             this.persons.add(in);
 
-            return true;
+            return;
         }
 
         MetadataTypeNotAllowedException mtnae = new MetadataTypeNotAllowedException();
@@ -2891,9 +2862,9 @@ public class DocStruct implements DocStructInterface, Serializable {
      *            if {@code in} does not have a {@link MetadataType}
      */
     @Override
-    public boolean removePerson(PersonInterface in) throws IncompletePersonObjectException {
+    public void removePerson(PersonInterface in) throws IncompletePersonObjectException {
         if (this.persons == null) {
-            return false;
+            return;
         }
 
         if (((Person) in).getType() == null) {
@@ -2901,8 +2872,6 @@ public class DocStruct implements DocStructInterface, Serializable {
         }
 
         this.persons.remove(in);
-
-        return true;
     }
 
     /**
@@ -3142,7 +3111,7 @@ public class DocStruct implements DocStructInterface, Serializable {
             @SuppressWarnings("unchecked")
             List<Person> iteratorList = new LinkedList<Person>((Collection<? extends Person>) personlist);
             for (Person per : iteratorList) {
-                if (per.getLastname() == null && per.getFirstname() == null && per.getInstitution() == null) {
+                if (per.getLastName() == null && per.getFirstName() == null && per.getInstitution() == null) {
                     // Delete this person from list of all Persons.
                     if (this.getAllPersons() != null) {
                         this.getAllPersons().remove(per);

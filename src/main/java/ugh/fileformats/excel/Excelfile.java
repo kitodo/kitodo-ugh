@@ -143,14 +143,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         DocStructType dst = this.myPreferences
                 .getDocStrctTypeByName("BoundBook");
         DocStruct boundBook = null;
-        try {
-            boundBook = this.mydoc.createDocStruct(dst);
-        } catch (TypeNotAllowedForParentException tnafpe) {
-            System.err
-                    .println("ERROR: Excelfile: BoundBook as physical type is not available or not allowed as root.");
-            System.err.println("Check config-file...");
-            return;
-        }
+        boundBook = this.mydoc.createDocStruct(dst);
 
         this.mydoc.setPhysicalDocStruct(boundBook);
         FileSet fs = new FileSet();
@@ -373,8 +366,7 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#write(java.lang.String)
      */
     @Override
-    public boolean write(String inFile) {
-        return false;
+    public void write(String inFile) {
     }
 
     /*
@@ -393,9 +385,8 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocumentInterface inDoc) {
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
         this.mydoc = (DigitalDocument) inDoc;
-        return true;
     }
 
     /*
@@ -404,7 +395,7 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String filename) {
+    public void read(String filename) {
         // Excelsheet for bibliographic information.
         org.apache.poi.hssf.usermodel.HSSFSheet bibSheet;
         // Excelsheet for bibliographic information.
@@ -413,7 +404,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         org.apache.poi.hssf.usermodel.HSSFSheet logSheet;
 
         if (filename == null) {
-            return false;
+            return;
         }
 
         // Get output stream.
@@ -423,7 +414,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         } catch (Exception e) {
             System.err.println("ERROR: Can't write file " + filename);
             System.err.println(e);
-            return false;
+            return;
         }
         int numberofsheets = this.excelworkbook.getNumberOfSheets();
         bibSheet = this.excelworkbook.getSheet("Bibliographie");
@@ -437,7 +428,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
         if (bibSheet == null) {
             System.err.println("ERROR: Can't find table \"Bibliographie\"");
-            return false;
+            return;
         }
 
         for (int x = 0; x < bibSheet.getPhysicalNumberOfRows(); x++) {
@@ -456,7 +447,7 @@ public class Excelfile implements ugh.dl.Fileformat {
                 } else {
                     System.err
                             .println("ERROR: Can't read version information; wrong cell type");
-                    return false;
+                    return;
                 }
             }
             if (this.excel_version != null) {
@@ -465,7 +456,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         }
         if (this.excel_version == null) {
             System.err.println("ERROR: Can't read version of excel-sheet");
-            return false;
+            return;
         }
         System.out.println("DEBUG: found Excel-version " + this.excel_version);
 
@@ -476,12 +467,12 @@ public class Excelfile implements ugh.dl.Fileformat {
             System.err.println("ERROR: while reading bibliographiy table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
+            return;
         } catch (MetadataTypeNotAllowedException e) {
             System.err.println("ERROR: while reading bibliographiy table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
+            return;
         }
 
         // Read pagination sequences.
@@ -489,20 +480,20 @@ public class Excelfile implements ugh.dl.Fileformat {
         if (pagSheet == null) {
             System.err
                     .println("ERROR: Can't find table \"Sequenzen_Paginierung\"");
-            return false;
+            return;
         }
         try {
             ReadPaginationSequences(pagSheet, "test");
         } catch (MetadataTypeNotAllowedException e1) {
             System.err.println("ERROR: Error reading pagination sequence");
-            return false;
+            return;
         }
 
         // Read logical struture.
         logSheet = this.excelworkbook.getSheet("Gliederung");
         if (logSheet == null) {
             System.err.println("ERROR: Can't find table \"Gliederung\"");
-            return false;
+            return;
         }
 
         try {
@@ -511,15 +502,11 @@ public class Excelfile implements ugh.dl.Fileformat {
             System.err.println("ERROR: Can't read Gliederung table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
         } catch (MetadataTypeNotAllowedException e) {
             System.err.println("ERROR: Can't read Gliederung table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
         }
-
-        return true;
     }
 
     /***************************************************************************
@@ -1634,11 +1621,7 @@ public class Excelfile implements ugh.dl.Fileformat {
                             partOfMdvalue.wasUpdated(false);
                             try {
                                 // Addit to new DocStruct instance.
-                                if (!newStruct.addMetadata(partOfMdvalue)) {
-                                    System.err
-                                            .println("ERROR: Can't add metadata to new document structure - line "
-                                                    + x + ".");
-                                }
+                                newStruct.addMetadata(partOfMdvalue);
                             } catch (MetadataTypeNotAllowedException mtnaae) {
                                 System.err
                                         .println("ERROR: ReadGliederung: can't add metadata - line"
@@ -1661,11 +1644,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
                         try {
                             // Add it to new DocStruct instance.
-                            if (!newStruct.addMetadata(md)) {
-                                System.err
-                                        .println("ERROR: Can't add metadata to new document structure - line "
-                                                + x + ".");
-                            }
+                            newStruct.addMetadata(md);
                         } catch (MetadataTypeNotAllowedException mtnae) {
                             System.err
                                     .println("ERROR: ReadPaginationSequences: Can't add metadata - line "
@@ -1770,15 +1749,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
                 // Aadd this new DocStruct object to the parent.
                 try {
-                    if (!parent.addChild(newStruct)) {
-                        System.err
-                                .println("ERROR: Can't read Gliederung; can't add child");
-                        System.err.println("       "
-                                + newStruct.getType().getName()
-                                + " can't be added to "
-                                + parent.getType().getName());
-                        return false;
-                    }
+                    parent.addChild(newStruct);
                 } catch (TypeNotAllowedAsChildException tnaace) {
                     // Type is not allowed to be added; wrong configuration.
                     System.err
