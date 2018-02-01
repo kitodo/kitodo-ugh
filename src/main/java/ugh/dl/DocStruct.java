@@ -1342,8 +1342,8 @@ public class DocStruct implements DocStructInterface, Serializable {
     @Override
     public void removeReferenceTo(DocStructInterface inStruct) {
 
-        @SuppressWarnings("unchecked")
-        List<Reference> ll = new LinkedList<Reference>((Collection<? extends Reference>) this.docStructRefsTo);
+        @SuppressWarnings({"rawtypes", "unchecked" })
+        List<Reference> ll = new LinkedList<Reference>((Collection) this.docStructRefsTo);
 
         for (Reference ref : ll) {
             if (ref.getTarget().equals(inStruct)) {
@@ -1371,8 +1371,8 @@ public class DocStruct implements DocStructInterface, Serializable {
      */
     public boolean removeReferenceFrom(DocStruct inStruct) {
 
-        @SuppressWarnings("unchecked")
-        List<Reference> ll = new LinkedList<Reference>((Collection<? extends Reference>) this.docStructRefsFrom);
+        @SuppressWarnings({"rawtypes", "unchecked" })
+        List<Reference> ll = new LinkedList<Reference>((Collection) this.docStructRefsFrom);
 
         for (Reference ref : ll) {
             if (ref.getTarget().equals(inStruct)) {
@@ -2968,7 +2968,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      *            otherwise at the end
      * @return meta-data and persons
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes" })
     public List<Metadata> showMetadataForm(String lang, boolean personsTop) throws MetadataTypeNotAllowedException {
 
         // Get all MetadataType elements which have the DefaultDisplay attribute
@@ -3074,10 +3074,10 @@ public class DocStruct implements DocStructInterface, Serializable {
             // Just add persons, if any person is available.
             if (personsTop) {
                 // On top of list.
-                resultList.addAll(0, (Collection<? extends Metadata>) this.getAllPersons());
+                resultList.addAll(0, (Collection) this.getAllPersons());
             } else {
                 // At end of list..
-                resultList.addAll((Collection<? extends Metadata>) this.getAllPersons());
+                resultList.addAll((Collection) this.getAllPersons());
             }
         }
 
@@ -3108,8 +3108,8 @@ public class DocStruct implements DocStructInterface, Serializable {
             List<PersonInterface> personlist = this.getAllPersons();
             // Copy person list, so we can iterate over this list and delete
             // from the persons list.
-            @SuppressWarnings("unchecked")
-            List<Person> iteratorList = new LinkedList<Person>((Collection<? extends Person>) personlist);
+            @SuppressWarnings({"rawtypes", "unchecked" })
+            List<Person> iteratorList = new LinkedList<Person>((Collection) personlist);
             for (Person per : iteratorList) {
                 if (per.getLastName() == null && per.getFirstName() == null && per.getInstitution() == null) {
                     // Delete this person from list of all Persons.
@@ -3125,8 +3125,8 @@ public class DocStruct implements DocStructInterface, Serializable {
             List<MetadataInterface> metadatalist = this.getAllMetadata();
             // Copy Metadata list, so we can iterate over this list and delete
             // from the metadata list.
-            @SuppressWarnings("unchecked")
-            List<Metadata> iteratorList = new LinkedList<Metadata>((Collection<? extends Metadata>) metadatalist);
+            @SuppressWarnings({"rawtypes", "unchecked" })
+            List<Metadata> iteratorList = new LinkedList<Metadata>((Collection) metadatalist);
             for (Metadata md : iteratorList) {
                 if (md.getValue() == null) {
                     if (this.getAllMetadata() != null) {
@@ -3140,8 +3140,8 @@ public class DocStruct implements DocStructInterface, Serializable {
         if (this.getAllMetadataGroups() != null) {
             List<MetadataGroupInterface> metadatalist = this.getAllMetadataGroups();
 
-            @SuppressWarnings("unchecked")
-            List<MetadataGroup> iteratorList = new LinkedList<MetadataGroup>((Collection<? extends MetadataGroup>) metadatalist);
+            @SuppressWarnings({"rawtypes", "unchecked" })
+            List<MetadataGroup> iteratorList = new LinkedList<MetadataGroup>((Collection) metadatalist);
             for (MetadataGroup md : iteratorList) {
                 boolean isEmpty = true;
                 for (MetadataInterface meta : md.getMetadataList()) {
@@ -3164,7 +3164,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      * @param thePrefs
      *            preferences file to use for sorting
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes" })
     public synchronized void sortMetadata(Prefs thePrefs) {
 
         List<MetadataInterface> newMetadata = new LinkedList<MetadataInterface>();
@@ -3173,10 +3173,10 @@ public class DocStruct implements DocStructInterface, Serializable {
         List<Person> oldPersons = new LinkedList<Person>();
 
         if (this.allMetadata != null) {
-            oldMetadata = new LinkedList<Metadata>((Collection<? extends Metadata>) this.allMetadata);
+            oldMetadata = new LinkedList<Metadata>((Collection) this.allMetadata);
         }
         if (this.persons != null) {
-            oldPersons = new LinkedList<Person>((Collection<? extends Person>) this.persons);
+            oldPersons = new LinkedList<Person>((Collection) this.persons);
         }
 
         // Get all MetadataTypes defined in the prefs for this DocStruct.
@@ -3238,7 +3238,7 @@ public class DocStruct implements DocStructInterface, Serializable {
     /**
      * Sorts the meta-data and persons in this instance alphabetically.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes" })
     public synchronized void sortMetadataAbcdefg() {
 
         // Create empty (sorted) TreeSets and lists.
@@ -3249,10 +3249,10 @@ public class DocStruct implements DocStructInterface, Serializable {
 
         // Add all metadata to the new TreeSets (sorted).
         if (this.allMetadata != null) {
-            newMetadata.addAll((Collection<? extends Metadata>) this.allMetadata);
+            newMetadata.addAll((Collection) this.allMetadata);
         }
         if (this.persons != null) {
-            newPersons.addAll((Collection<? extends Person>) this.persons);
+            newPersons.addAll((Collection) this.persons);
         }
 
         // Re-transfer the sorted sets to the linked lists.
