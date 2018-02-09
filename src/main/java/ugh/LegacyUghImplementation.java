@@ -45,81 +45,189 @@ import ugh.fileformats.mets.MetsModsImportExport;
 import ugh.fileformats.mets.XStream;
 import ugh.fileformats.opac.PicaPlus;
 
+/**
+ * Factory comprising the API constructors.
+ *
+ * @see "https://en.wikipedia.org/wiki/Abstract_factory_pattern"
+ */
 public class LegacyUghImplementation implements FactoryInterface {
 
+    /**
+     * Creates a new content file.
+     *
+     * @return the new content file
+     */
     @Override
     public ContentFileInterface createContentFile() {
         return new ContentFile();
     }
 
+    /**
+     * Creates a new digital document.
+     *
+     * @return the new digital document
+     */
     @Override
     public DigitalDocumentInterface createDigitalDocument() {
         return new DigitalDocument();
     }
 
+    /**
+     * Creates a new meta-data entry.
+     *
+     * @param metadataType
+     *            the type of the entry
+     * @return the new meta-data entry
+     * @throws MetadataTypeNotAllowedException
+     *             if the type is {@code null}
+     */
     @Override
-    public MetadataInterface createMetadata(MetadataTypeInterface metadataType)
-            throws MetadataTypeNotAllowedException {
+    public MetadataInterface createMetadata(MetadataTypeInterface metadataType) throws MetadataTypeNotAllowedException {
         return new Metadata((MetadataType) metadataType);
     }
 
+    /**
+     * Creates a new meta-data group.
+     *
+     * @param metadataGroupType
+     *            the type of the meta-data group
+     * @return the new meta-data group
+     * @throws MetadataTypeNotAllowedException
+     *             if the type is {@code null}
+     */
     @Override
     public MetadataGroupInterface createMetadataGroup(MetadataGroupTypeInterface metadataGroupType)
             throws MetadataTypeNotAllowedException {
         return new MetadataGroup((MetadataGroupType) metadataGroupType);
     }
 
+    /**
+     * Creates a new, empty meta-data group type.
+     *
+     * @return the new meta-data group type
+     */
     @Override
     public MetadataGroupTypeInterface createMetadataGroupType() {
         return new MetadataGroupType();
     }
 
+    /**
+     * Creates a new, empty meta-data type.
+     *
+     * @return the new meta-data type
+     */
     @Override
     public MetadataTypeInterface createMetadataType() {
         return new MetadataType();
     }
 
+    /**
+     * Creates a new METS-intern read-writer.
+     *
+     * @param prefs
+     *            rule set to base the read-writer on
+     * @return the new METS read-writer
+     * @throws PreferencesException
+     *             if there is no {@code <METS>} section in the rule set
+     */
     @Override
     public MetsModsInterface createMetsMods(PrefsInterface prefs) throws PreferencesException {
         return new MetsMods((Prefs) prefs);
     }
 
+    /**
+     * Creates a new METS/MODS export writer.
+     *
+     * @param prefs
+     *            rule set to base the writer on
+     * @return the new METS read-writer
+     * @throws PreferencesException
+     *             if there is no {@code <METS>} section in the rule set
+     */
     @Override
     public MetsModsImportExportInterface createMetsModsImportExport(PrefsInterface prefs) throws PreferencesException {
         return new MetsModsImportExport((Prefs) prefs);
     }
-    
+
+    /**
+     * Creates a new person-type meta-data entry.
+     *
+     * @param metadataType
+     *            the type of the entry
+     * @return the new person entry
+     * @throws MetadataTypeNotAllowedException
+     *             if the type is {@code null}
+     */
     @Override
-    public PersonInterface createPerson(MetadataTypeInterface metadataType)
-            throws MetadataTypeNotAllowedException {
+    public PersonInterface createPerson(MetadataTypeInterface metadataType) throws MetadataTypeNotAllowedException {
         return new Person((MetadataType) metadataType);
     }
 
+    /**
+     * Creates a new PICA plus import reader.
+     *
+     * @param prefs
+     *            rule set to base the reader on
+     * @return the new PICA plus reader
+     */
     @Override
     public PrefsInterface createPrefs() {
         return new Prefs();
     }
 
+    /**
+     * Creates a new, empty rule set.
+     *
+     * @return the new rule set.
+     */
     @Override
     public FileformatInterface createRDFFile(PrefsInterface prefs) throws PreferencesException {
         return new RDFFile((Prefs) prefs);
     }
 
+    /**
+     * Creates a new Agora-RDF read-writer.
+     *
+     * @param prefs
+     *            rule set to base the read-writer on
+     * @return the new RDF read-writer
+     * @throws PreferencesException
+     *             if there is no {@code <RDF>} section in the rule set
+     */
     @Override
     public RomanNumeralInterface createRomanNumeral() {
         return new RomanNumeral();
     }
 
+    /**
+     * Creates a new roman numeral with a value of I.
+     *
+     * @return the new roman numeral
+     */
     @Override
     public VirtualFileGroupInterface createVirtualFileGroup() {
         return new VirtualFileGroup();
     }
 
+    /**
+     * Creates a new virtual file group.
+     *
+     * @return the new virtual file group
+     */
     @Override
     public FileformatInterface createXStream(PrefsInterface prefs) throws PreferencesException {
         return new XStream((Prefs) prefs);
     }
 
+    /**
+     * Creates a new XStream-intern read-writer.
+     *
+     * @param prefs
+     *            rule set to base the read-writer on
+     * @return the new XStream read-writer
+     * @throws PreferencesException
+     *             is never thrown
+     */
     @Override
     public PicaPlusInterface createPicaPlus(PrefsInterface prefs) {
         return new PicaPlus((Prefs) prefs);
