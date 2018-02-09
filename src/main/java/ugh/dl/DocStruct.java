@@ -1053,21 +1053,6 @@ public class DocStruct implements DocStructInterface, Serializable {
     }
 
     /**
-     * Replaces all meta-data on this instance. {@link Metadata} which is
-     * already members of this instance will be overwritten, the elements passed
-     * in are not added. The meta-data is contained in a List.
-     *
-     * @param inList
-     *            list of meta-data to set
-     * @return always true
-     */
-    public boolean setAllMetadata(List<MetadataInterface> inList) {
-        this.allMetadata = inList;
-
-        return true;
-    }
-
-    /**
      * Returns all content files from this instance. If no {@link ContentFile}
      * is available, {@code null} is returned.
      *
