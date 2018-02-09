@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.kitodo.api.ugh.ContentFileInterface;
 import org.kitodo.api.ugh.FileSetInterface;
 import org.kitodo.api.ugh.VirtualFileGroupInterface;

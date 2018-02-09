@@ -24,6 +24,7 @@ package ugh.dl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.kitodo.api.ugh.MetadataTypeInterface;
 
 /*******************************************************************************

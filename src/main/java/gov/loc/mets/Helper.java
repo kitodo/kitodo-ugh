@@ -1,5 +1,3 @@
-package gov.loc.mets;
-
 /*******************************************************************************
  * gov.loc.mets / Helper.java
  *
@@ -20,15 +18,7 @@ package gov.loc.mets;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
-import gov.loc.mets.DivType.Fptr;
-import gov.loc.mets.FileType.FLocat;
-import gov.loc.mets.MdSecType.MdWrap;
-import gov.loc.mets.MdSecType.MdWrap.XmlData;
-import gov.loc.mets.MetsType.FileSec;
-import gov.loc.mets.MetsType.StructLink;
-import gov.loc.mets.MetsType.FileSec.FileGrp;
-import gov.loc.mets.StructLinkType.SmLink;
+package gov.loc.mets;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -44,6 +34,15 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import gov.loc.mets.DivType.Fptr;
+import gov.loc.mets.FileType.FLocat;
+import gov.loc.mets.MdSecType.MdWrap;
+import gov.loc.mets.MdSecType.MdWrap.XmlData;
+import gov.loc.mets.MetsType.FileSec;
+import gov.loc.mets.MetsType.FileSec.FileGrp;
+import gov.loc.mets.MetsType.StructLink;
+import gov.loc.mets.StructLinkType.SmLink;
 
 /*******************************************************************************
  * <p>

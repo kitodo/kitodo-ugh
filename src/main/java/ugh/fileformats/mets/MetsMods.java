@@ -1,5 +1,3 @@
-package ugh.fileformats.mets;
-
 /*******************************************************************************
  * ugh.fileformats.mets / MetsMods.java
  *
@@ -20,24 +18,7 @@ package ugh.fileformats.mets;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
-import gov.loc.mets.AmdSecType;
-import gov.loc.mets.DivType;
-import gov.loc.mets.DivType.Fptr;
-import gov.loc.mets.FileType;
-import gov.loc.mets.FileType.FLocat;
-import gov.loc.mets.Helper;
-import gov.loc.mets.MdSecType;
-import gov.loc.mets.MdSecType.MdWrap;
-import gov.loc.mets.MdSecType.MdWrap.XmlData;
-import gov.loc.mets.MetsDocument;
-import gov.loc.mets.MetsDocument.Mets;
-import gov.loc.mets.MetsType.FileSec;
-import gov.loc.mets.MetsType.FileSec.FileGrp;
-import gov.loc.mets.MetsType.StructLink;
-import gov.loc.mets.StructLinkType.SmLink;
-import gov.loc.mets.StructMapType;
-import gov.loc.mods.v3.ModsDocument;
+package ugh.fileformats.mets;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -98,7 +79,6 @@ import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 import org.kitodo.api.ugh.exceptions.PreferencesException;
 import org.kitodo.api.ugh.exceptions.ReadException;
 import org.kitodo.api.ugh.exceptions.TypeNotAllowedAsChildException;
-import org.kitodo.api.ugh.exceptions.TypeNotAllowedForParentException;
 import org.kitodo.api.ugh.exceptions.UGHException;
 import org.kitodo.api.ugh.exceptions.WriteException;
 import org.w3c.dom.Attr;
@@ -128,10 +108,48 @@ import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
-import ugh.dl.Reference;
 import ugh.dl.VirtualFileGroup;
 import ugh.exceptions.ImportException;
 import ugh.exceptions.MissingModsMappingException;
+
+/*******************************************************************************
+ * ugh.fileformats.mets / MetsMods.java
+ *
+ * Copyright 2010 Center for Retrospective Digitization, Göttingen (GDZ)
+ *
+ * http://gdz.sub.uni-goettingen.de
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * This Library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+import gov.loc.mets.AmdSecType;
+import gov.loc.mets.DivType;
+import gov.loc.mets.DivType.Fptr;
+import gov.loc.mets.FileType;
+import gov.loc.mets.FileType.FLocat;
+import gov.loc.mets.Helper;
+import gov.loc.mets.MdSecType;
+import gov.loc.mets.MdSecType.MdWrap;
+import gov.loc.mets.MdSecType.MdWrap.XmlData;
+import gov.loc.mets.MetsDocument;
+import gov.loc.mets.MetsDocument.Mets;
+import gov.loc.mets.MetsType.FileSec;
+import gov.loc.mets.MetsType.FileSec.FileGrp;
+import gov.loc.mets.MetsType.StructLink;
+import gov.loc.mets.StructLinkType.SmLink;
+import gov.loc.mets.StructMapType;
+import gov.loc.mods.v3.ModsDocument;
 
 /*******************************************************************************
  * @author Stefan Funk

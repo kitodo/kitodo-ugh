@@ -1,5 +1,3 @@
-package ugh.fileformats.pdf;
-
 /*******************************************************************************
  * ugh.fileformats.pdf / PortableDocumentFormat.java
  *
@@ -20,6 +18,13 @@ package ugh.fileformats.pdf;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package ugh.fileformats.pdf;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfWriter;
+import com.sun.media.jai.codec.FileSeekableStream;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
@@ -33,19 +38,14 @@ import javax.imageio.ImageReader;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
+
 import org.kitodo.api.ugh.ContentFileInterface;
 import org.kitodo.api.ugh.DocStructInterface;
+
 import ugh.dl.ContentFile;
-import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
-import com.lowagie.text.pdf.PdfWriter;
-import com.sun.media.jai.codec.FileSeekableStream;
 
 /*******************************************************************************
  * @author Markus Enders

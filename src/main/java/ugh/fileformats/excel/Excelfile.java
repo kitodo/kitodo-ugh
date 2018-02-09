@@ -46,7 +46,6 @@ import ugh.dl.DocStructType;
 import ugh.dl.FileSet;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
-import ugh.dl.Reference;
 
 /*******************************************************************************
  * <p>

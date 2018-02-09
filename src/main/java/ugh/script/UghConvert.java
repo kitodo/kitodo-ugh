@@ -36,6 +36,7 @@ import org.kitodo.api.ugh.MetadataInterface;
 import org.kitodo.api.ugh.exceptions.PreferencesException;
 import org.kitodo.api.ugh.exceptions.ReadException;
 import org.kitodo.api.ugh.exceptions.WriteException;
+
 import ugh.UghCliVersion;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;

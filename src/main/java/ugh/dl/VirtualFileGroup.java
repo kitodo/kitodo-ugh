@@ -22,6 +22,7 @@ package ugh.dl;
  ******************************************************************************/
 
 import java.io.Serializable;
+
 import org.kitodo.api.ugh.VirtualFileGroupInterface;
 
 /*******************************************************************************
