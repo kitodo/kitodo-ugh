@@ -151,7 +151,6 @@ public class Metadata implements MetadataInterface, Serializable {
      * </p>
      *
      * @param inType
-     * @return
      **************************************************************************/
     @Override
     public void setType(MetadataTypeInterface inType) {
@@ -187,9 +186,9 @@ public class Metadata implements MetadataInterface, Serializable {
     }
 
     /**
-     * Sets the Metadata value and returns true, if it was set correctly.
-     * Otherwise false The only parameter is the value of the type String, all
-     * other types (integer, long etc.) must be converted to a string before.
+     * Sets the Metadata value. The only parameter is the value of the type
+     * String, all other types (integer, long etc.) must be converted to a
+     * string before.
      * 
      * @param inValue
      *            The value as String.

@@ -120,7 +120,6 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
     @Override
     public void setNum(String in) {
@@ -210,7 +209,6 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
     @Override
     public void setAllLanguages(HashMap<String, String> in) {

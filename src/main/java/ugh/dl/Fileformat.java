@@ -88,9 +88,6 @@ public interface Fileformat extends FileformatInterface {
      *
      * @param filename
      *            full path to file, which should be read
-     * @return a boolean value, true if everything was okay; false, if there
-     *         there was an error (IO Error etc...).
-     *
      * @throws ReadException
      **************************************************************************/
     @Override
@@ -104,8 +101,6 @@ public interface Fileformat extends FileformatInterface {
      *
      * @param filename
      *            full path to the file
-     * @return true, if everything is okay. Otherwise false, if an error occurred
-     *         (IO-Error etc...)
      * @throws WriteException
      * @throws PreferencesException
      **************************************************************************/
@@ -135,7 +130,6 @@ public interface Fileformat extends FileformatInterface {
      * </p>
      *
      * @param inDoc
-     * @return true; only if a problem occurred, false is returned.
      **************************************************************************/
     @Override
     public void setDigitalDocument(DigitalDocumentInterface inDoc);

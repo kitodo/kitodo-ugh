@@ -111,7 +111,6 @@ public class Person extends Metadata implements PersonInterface {
      * </p>
      *
      * @param in
-     * @return true is always returned
      **************************************************************************/
     @Override
     public void setFirstName(String in) {
@@ -132,7 +131,6 @@ public class Person extends Metadata implements PersonInterface {
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
     @Override
     public void setLastName(String in) {
@@ -213,7 +211,6 @@ public class Person extends Metadata implements PersonInterface {
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
     @Override
     public void setRole(String in) {

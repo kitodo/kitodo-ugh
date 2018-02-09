@@ -100,7 +100,6 @@ public class MetadataGroupType implements MetadataGroupTypeInterface, Serializab
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
     @Override
     public void setNum(String in) {

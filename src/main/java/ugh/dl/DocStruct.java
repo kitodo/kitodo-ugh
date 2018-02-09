@@ -245,7 +245,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      * possible to create documents that are not valid against the current preferences file.
      *
      * @param inType type to set
-     * @return always true
      */
     @Override
     public void setType(DocStructTypeInterface inType) {
@@ -1168,7 +1167,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param theFile
      *            content file to add
-     * @return always true
      * @see ContentFile
      * @see ContentFileReference
      * @see FileSet
@@ -1248,7 +1246,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param theContentFile
      *            the content file to be removed
-     * @return true, if successful
      * @throws ContentFileNotLinkedException
      *             if the {@code ContentFile} is not linked to this instance
      */
@@ -1338,7 +1335,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param target
      *            {@code DocStruct}
-     * @return true, if successful
      */
     @Override
     public void removeReferenceTo(DocStructInterface inStruct) {
@@ -1407,8 +1403,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param theMetadataGroup
      *            meta-data group to be added
-     * @return true, if the meta-data group was successfully added, false
-     *         otherwise
      * @throws MetadataTypeNotAllowedException
      *             if the {@code DocStructType} of this instance does not allow
      *             the {@code MetadataGroupType}, or if the maximum number of
@@ -1514,7 +1508,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param theMd
      *            meta-data group which should be removed
-     * @return true, if the meta-data group was removed, false otherwise
      * @see #canMetadataGroupBeRemoved(MetadataGroupType)
      */
     @Override
@@ -1623,7 +1616,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param theMetadata
      *            meta-data object to add
-     * @return true, if the meta-data object could be added
      * @throws MetadataTypeNotAllowedException
      *             if this instance does not allow the meta-data type to be
      *             added, or if the maximum allowed number of meta-data of this
@@ -1728,7 +1720,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param theMd
      *            meta-datum which should be removed
-     * @return true, if the meta-datum removed, false otherwise
      * @see #canMetadataBeRemoved(MetadataType)
      */
     @Override
@@ -2382,7 +2373,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param inchild
      *            DocStruct to be added
-     * @return whether inchild isn’t null and its type isn’t null
      * @throws TypeNotAllowedAsChildException
      *             if a child should be added, but it's DocStruct type isn't
      *             member of this instance's DocStruct type
@@ -2406,7 +2396,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *            index at which the child is to be inserted
      * @param inchild
      *            DocStruct to be added
-     * @return wether inchild isn’t null and its type isn’t null
      * @throws TypeNotAllowedAsChildException
      *             if a child should be added, but it's DocStruct type isn't
      *             member of this instance's DocStruct type
@@ -2493,8 +2482,6 @@ public class DocStruct implements DocStructInterface, Serializable {
 
     /**
      * Removes a child from this instance.
-     *
-     * @return true, if child was removed, otherwise false
      */
     @Override
     public void removeChild(DocStructInterface inchild) {
@@ -2858,7 +2845,6 @@ public class DocStruct implements DocStructInterface, Serializable {
      *
      * @param in
      *            person which should be removed
-     * @return true, if {@code in} is not {@code null}
      * @throws IncompletePersonObjectException
      *            if {@code in} does not have a {@link MetadataType}
      */
