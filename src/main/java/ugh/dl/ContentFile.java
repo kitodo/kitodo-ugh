@@ -120,7 +120,6 @@ public class ContentFile implements ContentFileInterface, Serializable {
      * TODO Check, if file is really available!
      *
      * @param in
-     * @return always true
      **************************************************************************/
     @Override
     public void setLocation(String in) {

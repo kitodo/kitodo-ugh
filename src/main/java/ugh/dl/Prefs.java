@@ -106,7 +106,6 @@ public class Prefs implements PrefsInterface, Serializable {
      * </p>
      *
      * @param filename
-     * @return
      * @throws PreferencesException
      **************************************************************************/
     @Override

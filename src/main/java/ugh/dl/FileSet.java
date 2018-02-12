@@ -113,7 +113,6 @@ public class FileSet implements FileSetInterface, Serializable {
      *
      * @param inImage
      *            ContentFile to be removed
-     * @return always true
      **************************************************************************/
     @Override
     public void removeFile(ContentFileInterface inImage) {

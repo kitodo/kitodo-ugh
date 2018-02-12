@@ -2440,14 +2440,13 @@ public class DocStruct implements DocStructInterface, Serializable {
      * Adds a DocStruct object to a child of this instance, where is the
      * position to add it. The new child will automatically become the last
      * child in the list. When adding a DocStruct, configuration is checked,
-     * wether a DocStruct of this type can be added. If not, it is not added and
-     * false is returned. The parent of this child is set automatically.
+     * whether a DocStruct of this type can be added. If not, it is not added.
+     * The parent of this child is set automatically.
      *
      * @param where
      *            where to add the DocStruct
      * @param inchild
      *            DocStruct to be added
-     * @return true, if child was added; otherwise false
      * @throws TypeNotAllowedAsChildException
      *             if a child should be added, but it's DocStruct type isn't
      *             member of this instance's DocStruct type
@@ -2675,7 +2674,7 @@ public class DocStruct implements DocStructInterface, Serializable {
      * allowed to be added to this instance.
      *
      * @param inType
-     *            the {@code DocStructType} in question
+     *            the {@code DocStructTypeInterface} in question
      * @return true, if {@code DocStruct} of this type can be added; otherwise
      *         false
      */

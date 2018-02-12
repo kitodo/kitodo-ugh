@@ -111,7 +111,6 @@ public class MetadataType implements MetadataTypeInterface, Serializable {
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
     @Override
     public void setName(String in) {

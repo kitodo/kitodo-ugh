@@ -171,7 +171,6 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
 
     /***************************************************************************
      * @param inStruct
-     * @return
      **************************************************************************/
     @Override
     public void setLogicalDocStruct(DocStructInterface inStruct) {
@@ -195,7 +194,6 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
 
     /***************************************************************************
      * @param inStruct
-     * @return
      **************************************************************************/
     @Override
     public void setPhysicalDocStruct(DocStructInterface inStruct) {
