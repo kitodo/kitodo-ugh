@@ -2049,18 +2049,18 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                                 // Create and add person.
                                 if (mdt.isPerson()) {
                                     List<PersonInterface> metadataList = new ArrayList<PersonInterface>(metadataGroup.getPersonList());
-                                    for (PersonInterface ps : metadataList) {
+                                    for (PersonInterface person : metadataList) {
 
-                                        if (((Person) ps).getType().getName().equals(mdt.getName())) {
-                                            if ((ps.getLastName() == null || ps.getLastName().isEmpty())
-                                                    && (ps.getFirstName() == null || ps.getFirstName().isEmpty())) {
+                                        if (((Person) person).getType().getName().equals(mdt.getName())) {
+                                            if ((person.getLastName() == null || person.getLastName().isEmpty())
+                                                    && (person.getFirstName() == null || person.getFirstName().isEmpty())) {
 
-                                                ps.setRole(mdt.getName());
+                                                person.setRole(mdt.getName());
 
                                             } else {
-                                                ps = new Person(mdt);
-                                                ps.setRole(mdt.getName());
-                                                metadataGroup.addPerson(ps);
+                                                person = new Person(mdt);
+                                                person.setRole(mdt.getName());
+                                                metadataGroup.addPerson(person);
                                             }
                                             // Iterate over every person's data.
                                             NodeList personNodelist = metadata.getChildNodes();
@@ -2077,13 +2077,13 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
                                                     // Get and set values.
                                                     if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
-                                                        ps.setFirstName(value);
+                                                        person.setFirstName(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_LASTNAME_STRING)) {
-                                                        ps.setLastName(value);
+                                                        person.setLastName(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_AFFILIATION_STRING)) {
-                                                        ((Person) ps).setAffiliation(value);
+                                                        ((Person) person).setAffiliation(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_AUTHORITYID_STRING)) {
                                                         authorityID =value;
@@ -2096,16 +2096,16 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                                                     }
 
                                                     if (name.equals(GOOBI_PERSON_PERSONTYPE_STRING)) {
-                                                        ((Person) ps).setPersontype(value);
+                                                        ((Person) person).setPersontype(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_DISPLAYNAME_STRING)) {
-                                                        ps.setDisplayName(value);
+                                                        person.setDisplayName(value);
                                                     }
                                                 }
 
                                             }
                                             if (authorityID != null && authorityURI != null && authortityValue != null) {
-                                                ps.setAutorityFile(authorityID, authorityURI, authortityValue);
+                                                person.setAutorityFile(authorityID, authorityURI, authortityValue);
                                             }
                                         }
                                     }
@@ -2149,15 +2149,15 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
                     // Create and add person.
                     if (mdt.isPerson()) {
-                        Person ps;
+                        Person person;
                         try {
-                            ps = new Person(mdt);
+                            person = new Person(mdt);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message = "Can't add person! MetadataType must not be null!";
                             LOGGER.error(message, e);
                             throw new ReadException(message, e);
                         }
-                        ps.setRole(mdt.getName());
+                        person.setRole(mdt.getName());
 
                         // Iterate over every person's data.
                         NodeList personNodelist = metabagu.getChildNodes();
@@ -2173,13 +2173,13 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
                                 // Get and set values.
                                 if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
-                                    ps.setFirstName(value);
+                                    person.setFirstName(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_LASTNAME_STRING)) {
-                                    ps.setLastName(value);
+                                    person.setLastName(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_AFFILIATION_STRING)) {
-                                    ps.setAffiliation(value);
+                                    person.setAffiliation(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_AUTHORITYID_STRING)) {
                                     authorityFileID =value;
@@ -2192,18 +2192,18 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                                 }
 
                                 if (name.equals(GOOBI_PERSON_PERSONTYPE_STRING)) {
-                                    ps.setPersontype(value);
+                                    person.setPersontype(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_DISPLAYNAME_STRING)) {
-                                    ps.setDisplayName(value);
+                                    person.setDisplayName(value);
                                 }
                             }
                         }
                         if (authorityFileID != null && authorityURI != null && authortityValue != null) {
-                            ps.setAutorityFile(authorityFileID, authorityURI, authortityValue);
+                            person.setAutorityFile(authorityFileID, authorityURI, authortityValue);
                         }
                         try {
-                            inStruct.addPerson(ps);
+                            inStruct.addPerson(person);
 
                             LOGGER.debug("Added person '" + mdt.getName() + "' to DocStruct '" + inStruct.getType().getName() + "'");
                         } catch (DocStructHasNoTypeException e) {
@@ -2212,7 +2212,7 @@ public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
                             throw new ImportException(message, e);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message =
-                                    "Person '" + mdt.getName() + "' " + ps.getDisplayName() + ") is not allowed as a child for '"
+                                    "Person '" + mdt.getName() + "' " + person.getDisplayName() + ") is not allowed as a child for '"
                                             + inStruct.getType().getName() + "' during MODS import!";
                             LOGGER.error(message, e);
                             throw new ImportException(message);

@@ -1540,26 +1540,26 @@ public class RDFFile implements ugh.dl.Fileformat, RDFFileInterface {
         Iterator<PersonInterface> it = ll.iterator();
 
         while (it.hasNext()) {
-            Person ps = (Person) it.next();
-            MetadataType pst = ps.getType();
+            Person person = (Person) it.next();
+            MetadataType pst = person.getType();
 
             // Check, if metadata type of this name belongs to a RDF:Li group.
             if (pst == null) {
                 // No Metadatatype was found. Check, if type is set; if not; set
                 // a new type based on the role.
-                String role = ps.getRole();
+                String role = person.getRole();
                 if (role == null) {
                     logger
                             .error("Neither type nor role set; can't write person");
                     continue;
                 }
-                pst = this.myPreferences.getMetadataTypeByName(ps.getRole());
+                pst = this.myPreferences.getMetadataTypeByName(person.getRole());
                 if (pst == null) {
                     logger
                             .error("Role cannot be found in MetadataType; can't write person");
                     continue;
                 }
-                ps.setType(pst);
+                person.setType(pst);
             }
             String pstname = pst.getName();
             MatchingMetadataObject mmo = getMMOByName(pstname);
@@ -1575,13 +1575,13 @@ public class RDFFile implements ugh.dl.Fileformat, RDFFileInterface {
                     // Key already available, list exists just add this
                     // metadata.
                     List<Person> mdlist = allRDFLIs.get(rdflistname);
-                    mdlist.add(ps);
+                    mdlist.add(person);
                 } else {
                     // Key is not available; so there is no list with this name,
                     // create one.
                     List<Person> mdlist = new LinkedList<Person>();
                     // Add metadata to this list.
-                    mdlist.add(ps);
+                    mdlist.add(person);
                     allRDFLIs.put(rdflistname, mdlist);
                     allRDF.put(rdflistname, rdflistname);
                 }
@@ -1616,13 +1616,13 @@ public class RDFFile implements ugh.dl.Fileformat, RDFFileInterface {
             Iterator<Metadata> it3 = (Iterator<Metadata>) mds.iterator();
             // Iterate over the lists metadata.
             while (it3.hasNext()) {
-                Person ps = (Person) it3.next();
+                Person person = (Person) it3.next();
                 Element liElement = domdoc.createElement("RDF:Li");
                 seqElement.appendChild(liElement);
 
                 // Get element name for this metadata type, get internal
                 // metadata name.
-                String mdtname = ps.getType().getName();
+                String mdtname = person.getType().getName();
                 MatchingMetadataObject mmo = getMMOByName(mdtname);
                 if (mmo == null) {
                     logger.error("No RDF name available for metadata '"
@@ -1649,16 +1649,16 @@ public class RDFFile implements ugh.dl.Fileformat, RDFFileInterface {
                 mdElement.appendChild(firstnameElement);
                 mdElement.appendChild(displaynameElement);
 
-                if (ps.getFirstName() != null) {
-                    Node value = domdoc.createTextNode(ps.getFirstName());
+                if (person.getFirstName() != null) {
+                    Node value = domdoc.createTextNode(person.getFirstName());
                     firstnameElement.appendChild(value);
                 }
-                if (ps.getLastName() != null) {
-                    Node value = domdoc.createTextNode(ps.getLastName());
+                if (person.getLastName() != null) {
+                    Node value = domdoc.createTextNode(person.getLastName());
                     lastnameElement.appendChild(value);
                 }
-                if (ps.getDisplayName() != null) {
-                    Node value = domdoc.createTextNode(ps.getDisplayName());
+                if (person.getDisplayName() != null) {
+                    Node value = domdoc.createTextNode(person.getDisplayName());
                     displaynameElement.appendChild(value);
                 }
             }

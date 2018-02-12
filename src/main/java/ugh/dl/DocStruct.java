@@ -517,15 +517,16 @@ public class DocStruct implements DocStructInterface, Serializable {
         // Copy metadata and persons.
         if (cpmetadata) {
             if (this.getAllMetadata() != null) {
-                for (MetadataInterface md : this.getAllMetadata()) {
+                for (MetadataInterface metadataInterface : this.getAllMetadata()) {
                     try {
-                        Metadata mdnew = new Metadata(((Metadata) md).getType());
+                        Metadata md = (Metadata) metadataInterface;
+                        Metadata mdnew = new Metadata(md.getType());
                         mdnew.setValue(md.getValue());
-                        if (((Metadata) md).getValueQualifier() != null && ((Metadata) md).getValueQualifierType() != null) {
-                            mdnew.setValueQualifier(((Metadata) md).getValueQualifier(), ((Metadata) md).getValueQualifierType());
+                        if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
+                            mdnew.setValueQualifier(md.getValueQualifier(), md.getValueQualifierType());
                         }
-                        if (((Metadata) md).getAuthorityID() != null && ((Metadata) md).getAuthorityValue() != null && ((Metadata) md).getAuthorityURI() != null) {
-                            mdnew.setAutorityFile(((Metadata) md).getAuthorityID(), ((Metadata) md).getAuthorityURI(), ((Metadata) md).getAuthorityValue());
+                        if (md.getAuthorityID() != null && md.getAuthorityValue() != null && md.getAuthorityURI() != null) {
+                            mdnew.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
                         }
                         newStruct.addMetadata(mdnew);
                     } catch (DocStructHasNoTypeException e) {
@@ -549,37 +550,39 @@ public class DocStruct implements DocStructInterface, Serializable {
                         mdnew.setDocStruct(newStruct);
                         List<MetadataInterface> newmdlist = new LinkedList<MetadataInterface>();
                         Collection<PersonInterface> newPersonList = new LinkedList<PersonInterface>();
-                        for (MetadataInterface meta : md.getMetadataList()) {
-                            Metadata newMeta = new Metadata(((Metadata) meta).getType());
+                        for (MetadataInterface metadataInterface : md.getMetadataList()) {
+                            Metadata meta = (Metadata) metadataInterface;
+                            Metadata newMeta = new Metadata(meta.getType());
                             newMeta.setValue(meta.getValue());
-                            if (((Metadata) meta).getValueQualifier() != null && ((Metadata) meta).getValueQualifierType() != null) {
-                                newMeta.setValueQualifier(((Metadata) meta).getValueQualifier(), ((Metadata) meta).getValueQualifierType());
+                            if (meta.getValueQualifier() != null && meta.getValueQualifierType() != null) {
+                                newMeta.setValueQualifier(meta.getValueQualifier(), meta.getValueQualifierType());
                             }
-                            if (((Metadata) meta).getAuthorityID() != null && ((Metadata) meta).getAuthorityValue() != null && ((Metadata) meta).getAuthorityURI() != null) {
-                                newMeta.setAutorityFile(((Metadata) meta).getAuthorityID(), ((Metadata) meta).getAuthorityURI(), ((Metadata) meta).getAuthorityValue());
+                            if (meta.getAuthorityID() != null && meta.getAuthorityValue() != null && meta.getAuthorityURI() != null) {
+                                newMeta.setAutorityFile(meta.getAuthorityID(), meta.getAuthorityURI(), meta.getAuthorityValue());
                             }
                             newmdlist.add(newMeta);
                         }
 
-                        for (PersonInterface ps : md.getPersonList()) {
-                            Person newps = new Person(((Person) ps).getType());
-                            if (ps.getLastName() != null) {
-                                newps.setLastName(ps.getLastName());
+                        for (PersonInterface personInterface : md.getPersonList()) {
+                            Person person = (Person) personInterface;
+                            Person newps = new Person(person.getType());
+                            if (person.getLastName() != null) {
+                                newps.setLastName(person.getLastName());
                             }
-                            if (ps.getFirstName() != null) {
-                                newps.setFirstName(ps.getFirstName());
+                            if (person.getFirstName() != null) {
+                                newps.setFirstName(person.getFirstName());
                             }
-                            if (((Person) ps).getAuthorityID() != null && ps.getAuthorityURI() != null && ps.getAuthorityValue() != null) {
-                                newps.setAutorityFile(((Person) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                            if (person.getAuthorityID() != null && person.getAuthorityURI() != null && person.getAuthorityValue() != null) {
+                                newps.setAutorityFile(person.getAuthorityID(), person.getAuthorityURI(), person.getAuthorityValue());
                             }
-                            if (((Person) ps).getInstitution() != null) {
-                                newps.setInstitution(((Person) ps).getInstitution());
+                            if (person.getInstitution() != null) {
+                                newps.setInstitution(person.getInstitution());
                             }
-                            if (((Person) ps).getAffiliation() != null) {
-                                newps.setAffiliation(((Person) ps).getAffiliation());
+                            if (person.getAffiliation() != null) {
+                                newps.setAffiliation(person.getAffiliation());
                             }
-                            if (ps.getRole() != null) {
-                                newps.setRole(ps.getRole());
+                            if (person.getRole() != null) {
+                                newps.setRole(person.getRole());
                             }
                             newPersonList.add(newps);
                         }
@@ -606,28 +609,29 @@ public class DocStruct implements DocStructInterface, Serializable {
 
             // Copy the persons.
             if (this.getAllPersons() != null) {
-                for (PersonInterface ps : this.getAllPersons()) {
+                for (PersonInterface personInterface : this.getAllPersons()) {
+                    Person person = (Person) personInterface;
                     try {
-                        Person newps = new Person(((Person) ps).getType());
-                        if (ps.getLastName() != null) {
-                            newps.setLastName(ps.getLastName());
+                        Person newps = new Person(person.getType());
+                        if (person.getLastName() != null) {
+                            newps.setLastName(person.getLastName());
                         }
-                        if (ps.getFirstName() != null) {
-                            newps.setFirstName(ps.getFirstName());
-                        }
-
-                        if (((Metadata) ps).getAuthorityID() != null && ps.getAuthorityURI() != null && ps.getAuthorityValue() != null) {
-                            newps.setAutorityFile(((Metadata) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                        if (person.getFirstName() != null) {
+                            newps.setFirstName(person.getFirstName());
                         }
 
-                        if (((Person) ps).getInstitution() != null) {
-                            newps.setInstitution(((Person) ps).getInstitution());
+                        if (person.getAuthorityID() != null && person.getAuthorityURI() != null && person.getAuthorityValue() != null) {
+                            newps.setAutorityFile(person.getAuthorityID(), person.getAuthorityURI(), person.getAuthorityValue());
                         }
-                        if (((Person) ps).getAffiliation() != null) {
-                            newps.setAffiliation(((Person) ps).getAffiliation());
+
+                        if (person.getInstitution() != null) {
+                            newps.setInstitution(person.getInstitution());
                         }
-                        if (ps.getRole() != null) {
-                            newps.setRole(ps.getRole());
+                        if (person.getAffiliation() != null) {
+                            newps.setAffiliation(person.getAffiliation());
+                        }
+                        if (person.getRole() != null) {
+                            newps.setRole(person.getRole());
                         }
                         newStruct.addPerson(newps);
                     } catch (IncompletePersonObjectException e) {
@@ -699,18 +703,19 @@ public class DocStruct implements DocStructInterface, Serializable {
 
             if (anchorClass == null ? type.getAnchorClass() == null : anchorClass.equals(type.getAnchorClass())) {
                 if (allMetadata != null) {
-                    for (MetadataInterface md : allMetadata) {
-                        if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(((Metadata) md).getType().getName())) {
+                    for (MetadataInterface metadataInterface : allMetadata) {
+                        Metadata md = (Metadata) metadataInterface;
+                        if (MetsModsImportExport.CREATE_MPTR_ELEMENT_TYPE.equals(md.getType().getName())) {
                             continue;
                         }
-                        Metadata mdnew = new Metadata(((Metadata) md).getType());
+                        Metadata mdnew = new Metadata(md.getType());
                         mdnew.setValue(md.getValue());
-                        if (((Metadata) md).getValueQualifier() != null && ((Metadata) md).getValueQualifierType() != null) {
-                            mdnew.setValueQualifier(((Metadata) md).getValueQualifier(), ((Metadata) md).getValueQualifierType());
+                        if (md.getValueQualifier() != null && md.getValueQualifierType() != null) {
+                            mdnew.setValueQualifier(md.getValueQualifier(), md.getValueQualifierType());
                         }
-                        if (((Metadata) md).getAuthorityID() != null && ((Metadata) md).getAuthorityValue() != null
-                                && ((Metadata) md).getAuthorityURI() != null) {
-                            mdnew.setAutorityFile(((Metadata) md).getAuthorityID(), ((Metadata) md).getAuthorityURI(), ((Metadata) md).getAuthorityValue());
+                        if (md.getAuthorityID() != null && md.getAuthorityValue() != null
+                                && md.getAuthorityURI() != null) {
+                            mdnew.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
                         }
                         newStruct.addMetadata(mdnew);
                     }
@@ -722,40 +727,42 @@ public class DocStruct implements DocStructInterface, Serializable {
                         mdnew.setDocStruct(newStruct);
                         List<MetadataInterface> newmdlist = new LinkedList<MetadataInterface>();
                         Collection<PersonInterface> newPersonList = new LinkedList<PersonInterface>();
-                        for (MetadataInterface meta : md.getMetadataList()) {
-                            Metadata newMeta = new Metadata(((Metadata) meta).getType());
+                        for (MetadataInterface metadataInterface : md.getMetadataList()) {
+                            Metadata meta = (Metadata) metadataInterface;
+                            Metadata newMeta = new Metadata(meta.getType());
                             newMeta.setValue(meta.getValue());
-                            if (((Metadata) meta).getValueQualifier() != null && ((Metadata) meta).getValueQualifierType() != null) {
-                                newMeta.setValueQualifier(((Metadata) meta).getValueQualifier(), ((Metadata) meta).getValueQualifierType());
+                            if (meta.getValueQualifier() != null && meta.getValueQualifierType() != null) {
+                                newMeta.setValueQualifier(meta.getValueQualifier(), meta.getValueQualifierType());
                             }
-                            if (((Metadata) meta).getAuthorityID() != null && ((Metadata) meta).getAuthorityValue() != null
-                                    && ((Metadata) meta).getAuthorityURI() != null) {
-                                newMeta.setAutorityFile(((Metadata) meta).getAuthorityID(), ((Metadata) meta).getAuthorityURI(),
-                                        ((Metadata) meta).getAuthorityValue());
+                            if (meta.getAuthorityID() != null && meta.getAuthorityValue() != null
+                                    && meta.getAuthorityURI() != null) {
+                                newMeta.setAutorityFile(meta.getAuthorityID(), meta.getAuthorityURI(),
+                                        meta.getAuthorityValue());
                             }
                             newmdlist.add(newMeta);
                         }
 
-                        for (PersonInterface ps : md.getPersonList()) {
-                            Person newps = new Person(((Person) ps).getType());
-                            if (ps.getLastName() != null) {
-                                newps.setLastName(ps.getLastName());
+                        for (PersonInterface personInterface : md.getPersonList()) {
+                            Person person = (Person) personInterface;
+                            Person newps = new Person(person.getType());
+                            if (person.getLastName() != null) {
+                                newps.setLastName(person.getLastName());
                             }
-                            if (ps.getFirstName() != null) {
-                                newps.setFirstName(ps.getFirstName());
+                            if (person.getFirstName() != null) {
+                                newps.setFirstName(person.getFirstName());
                             }
-                            if (((Metadata) ps).getAuthorityID() != null && ps.getAuthorityURI() != null
-                                    && ps.getAuthorityValue() != null) {
-                                newps.setAutorityFile(((Metadata) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                            if (person.getAuthorityID() != null && person.getAuthorityURI() != null
+                                    && person.getAuthorityValue() != null) {
+                                newps.setAutorityFile(person.getAuthorityID(), person.getAuthorityURI(), person.getAuthorityValue());
                             }
-                            if (((Person) ps).getInstitution() != null) {
-                                newps.setInstitution(((Person) ps).getInstitution());
+                            if (person.getInstitution() != null) {
+                                newps.setInstitution(person.getInstitution());
                             }
-                            if (((Person) ps).getAffiliation() != null) {
-                                newps.setAffiliation(((Person) ps).getAffiliation());
+                            if (person.getAffiliation() != null) {
+                                newps.setAffiliation(person.getAffiliation());
                             }
-                            if (ps.getRole() != null) {
-                                newps.setRole(ps.getRole());
+                            if (person.getRole() != null) {
+                                newps.setRole(person.getRole());
                             }
                             newPersonList.add(newps);
                         }
@@ -771,29 +778,29 @@ public class DocStruct implements DocStructInterface, Serializable {
 
                 // Copy the persons.
                 if (this.getAllPersons() != null) {
-                    for (PersonInterface ps : this.getAllPersons()) {
-
-                        Person newps = new Person(((Person) ps).getType());
-                        if (ps.getLastName() != null) {
-                            newps.setLastName(ps.getLastName());
+                    for (PersonInterface personInterface : this.getAllPersons()) {
+                        Person person = (Person) personInterface;
+                        Person newps = new Person(person.getType());
+                        if (person.getLastName() != null) {
+                            newps.setLastName(person.getLastName());
                         }
-                        if (ps.getFirstName() != null) {
-                            newps.setFirstName(ps.getFirstName());
-                        }
-
-                        if (((Person) ps).getAuthorityID() != null && ps.getAuthorityURI() != null
-                                && ps.getAuthorityValue() != null) {
-                            newps.setAutorityFile(((Person) ps).getAuthorityID(), ps.getAuthorityURI(), ps.getAuthorityValue());
+                        if (person.getFirstName() != null) {
+                            newps.setFirstName(person.getFirstName());
                         }
 
-                        if (((Person) ps).getInstitution() != null) {
-                            newps.setInstitution(((Person) ps).getInstitution());
+                        if (person.getAuthorityID() != null && person.getAuthorityURI() != null
+                                && person.getAuthorityValue() != null) {
+                            newps.setAutorityFile(person.getAuthorityID(), person.getAuthorityURI(), person.getAuthorityValue());
                         }
-                        if (((Person) ps).getAffiliation() != null) {
-                            newps.setAffiliation(((Person) ps).getAffiliation());
+
+                        if (person.getInstitution() != null) {
+                            newps.setInstitution(person.getInstitution());
                         }
-                        if (ps.getRole() != null) {
-                            newps.setRole(ps.getRole());
+                        if (person.getAffiliation() != null) {
+                            newps.setAffiliation(person.getAffiliation());
+                        }
+                        if (person.getRole() != null) {
+                            newps.setRole(person.getRole());
                         }
                         newStruct.addPerson(newps);
 

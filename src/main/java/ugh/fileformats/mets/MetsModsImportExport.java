@@ -773,15 +773,15 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 
                     // Handle Persons.
                     if (mdt.isPerson()) {
-                        Person ps = null;
+                        Person person = null;
                         try {
-                            ps = new Person(mdt);
+                            person = new Person(mdt);
                         } catch (MetadataTypeNotAllowedException e) {
                             // mdt is NOT null, we ensure this above!
                             e.printStackTrace();
                         }
 
-                        ps.setRole(mdt.getName());
+                        person.setRole(mdt.getName());
 
                         // It is supposed that the <name> element is selected,
                         // the following queries are just subqueries to the name
@@ -832,33 +832,33 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods implemen
 
 
                         if (lastnamevalue != null) {
-                            ps.setLastName(lastnamevalue[0]);
+                            person.setLastName(lastnamevalue[0]);
                         }
                         if (firstnamevalue != null) {
-                            ps.setFirstName(firstnamevalue[0]);
+                            person.setFirstName(firstnamevalue[0]);
                         }
                         if (affiliationvalue != null) {
-                            ps.setAffiliation(affiliationvalue[0]);
+                            person.setAffiliation(affiliationvalue[0]);
                         }
                         if (authorityfileidvalue != null && authorityuri != null && authorityvalue != null) {
-                            ps.setAutorityFile(authorityfileidvalue[0], authorityuri[0], authorityvalue[0]);
+                            person.setAutorityFile(authorityfileidvalue[0], authorityuri[0], authorityvalue[0]);
                         }
                         if (displaynamevalue != null) {
-                            ps.setDisplayName(displaynamevalue[0]);
+                            person.setDisplayName(displaynamevalue[0]);
                         }
                         if (persontypevalue != null) {
-                            ps.setPersontype(persontypevalue[0]);
+                            person.setPersontype(persontypevalue[0]);
                         }
 
                         try {
-                            inStruct.addPerson(ps);
+                            inStruct.addPerson(person);
                         } catch (DocStructHasNoTypeException e) {
                             String message = "DocumentStructure for which metadata should be added has no type!";
                             LOGGER.error(message, e);
                             throw new ImportException(message, e);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message =
-                                    "Person '" + mdt.getName() + "' (" + ps.getDisplayName() + ") is not allowed as a child for '"
+                                    "Person '" + mdt.getName() + "' (" + person.getDisplayName() + ") is not allowed as a child for '"
                                             + inStruct.getType().getName() + "' during MODS import!";
                             LOGGER.error(message, e);
                             // throw new ImportException(message, e);
