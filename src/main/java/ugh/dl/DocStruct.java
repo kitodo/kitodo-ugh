@@ -2467,8 +2467,13 @@ public class DocStruct implements DocStructInterface, Serializable {
         // get next position of index
         int next = where.indexOf(44) + 1;
 
-        if( next != 0 ){ ((DocStruct) children.get(Integer.parseInt(where.substring(0, next - 1)))).addChild(where.substring(next),
-                inchild) ;}else{ addChild(Integer.valueOf(where), inchild); }
+        if (next != 0) {
+            int first = Integer.parseInt(where.substring(0, next - 1));
+            String rest = where.substring(next);
+            ((DocStruct) children.get(first)).addChild(rest, inchild);
+        } else {
+            addChild(Integer.valueOf(where), inchild);
+        }
     }
 
     /**
