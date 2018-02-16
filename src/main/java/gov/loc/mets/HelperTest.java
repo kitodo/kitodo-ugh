@@ -20,14 +20,14 @@
  ******************************************************************************/
 package gov.loc.mets;
 
+import gov.loc.mets.MetsType.MetsHdr;
+import gov.loc.mets.MetsType.MetsHdr.Agent;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
 import org.apache.xmlbeans.XmlOptions;
-
-import gov.loc.mets.MetsType.MetsHdr;
-import gov.loc.mets.MetsType.MetsHdr.Agent;
 
 /***************************************************************************
  * @author Markus Enders
