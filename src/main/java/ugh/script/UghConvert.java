@@ -457,7 +457,7 @@ public class UghConvert {
         if (!commandLine.hasOption('q')) {
             System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' written");
         }
-        
+
         return 0;
     }
 
