@@ -94,30 +94,30 @@ public class StarterMetaDataConversion {
                 try {
                     rdfInput.read(procFile.getAbsolutePath());
 
-                        metsOutput = new MetsMods(pref);
-                        ((FileformatInterface) metsOutput).setDigitalDocument(rdfInput.getDigitalDocument());
+                    metsOutput = new MetsMods(pref);
+                    ((FileformatInterface) metsOutput).setDigitalDocument(rdfInput.getDigitalDocument());
 
-                        // Sort first so equals method returns equals
-                        metsOutput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
-                        metsOutput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
+                    // Sort first so equals method returns equals
+                    metsOutput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
+                    metsOutput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
 
-                        rdfInput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
-                        rdfInput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
+                    rdfInput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
+                    rdfInput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
 
-                        DigitalDocument digDoc1 = metsOutput.getDigitalDocument();
-                        DigitalDocument digDoc2 = rdfInput.getDigitalDocument();
-                        new Validator().validate(metsOutput, pref, newFile.getAbsolutePath());
-                        /*######## Begin of 1. Equals Validation  #########*/
+                    DigitalDocument digDoc1 = metsOutput.getDigitalDocument();
+                    DigitalDocument digDoc2 = rdfInput.getDigitalDocument();
+                    new Validator().validate(metsOutput, pref, newFile.getAbsolutePath());
+                    /*######## Begin of 1. Equals Validation  #########*/
+                    // if conversion doesn't generates equal digDoc
+                    if (!myValidators.getEqualsValidation(digDoc1, digDoc2)) {
+                        logger.info("File " + procFile.getAbsolutePath() + " is not equals to the original file, will not be written");
+                        rollbackLog.info(newFile.getAbsolutePath() + " - mets digDoc is different - processing cancelled");
+                        flagError = true;
                         // if conversion doesn't generates equal digDoc
-                        if (!myValidators.getEqualsValidation(digDoc1, digDoc2)) {
-                            logger.info("File " + procFile.getAbsolutePath() + " is not equals to the original file, will not be written");
-                            rollbackLog.info(newFile.getAbsolutePath() + " - mets digDoc is different - processing cancelled");
-                            flagError = true;
-                            // if conversion doesn't generates equal digDoc
-                        } else {
-                            logger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
-                        }
-                        /*######## End of 1. Equals Validator  #########*/
+                    } else {
+                        logger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
+                    }
+                    /*######## End of 1. Equals Validator  #########*/
 
                 } catch (Exception e) {
                     logger.debug("read error for file " + procFile.getAbsolutePath(), e);
@@ -131,9 +131,9 @@ public class StarterMetaDataConversion {
                     try {
                         ((FileformatInterface) metsOutput).write(procFile.getAbsolutePath());
 
-                            logger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
+                        logger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
 
-                            saveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
+                        saveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
 
                     } catch (Exception e) {
 
