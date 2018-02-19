@@ -23,6 +23,8 @@ package ugh.dl;
 
 import java.io.Serializable;
 
+import org.kitodo.api.ugh.ReferenceInterface;
+
 /*******************************************************************************
  * <p>
  * A Reference object represents a single reference. A reference links two
@@ -52,7 +54,7 @@ import java.io.Serializable;
  * @see DocStruct#addReferenceTo
  ******************************************************************************/
 
-public class Reference implements Serializable {
+public class Reference implements ReferenceInterface, Serializable {
 
     private static final long    serialVersionUID    = 8042513549869050025L;
 
@@ -78,6 +80,7 @@ public class Reference implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public DocStruct getSource() {
         return this.source;
     }
@@ -92,6 +95,7 @@ public class Reference implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public DocStruct getTarget() {
         return this.target;
     }
@@ -142,6 +146,7 @@ public class Reference implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public String getType() {
         return this.type;
     }

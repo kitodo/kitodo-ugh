@@ -29,6 +29,14 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.ReferenceInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedAsChildException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedForParentException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -38,11 +46,6 @@ import ugh.dl.DocStructType;
 import ugh.dl.FileSet;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
-import ugh.dl.Reference;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
 
 /*******************************************************************************
  * <p>
@@ -139,14 +142,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         DocStructType dst = this.myPreferences
                 .getDocStrctTypeByName("BoundBook");
         DocStruct boundBook = null;
-        try {
-            boundBook = this.mydoc.createDocStruct(dst);
-        } catch (TypeNotAllowedForParentException tnafpe) {
-            System.err
-                    .println("ERROR: Excelfile: BoundBook as physical type is not available or not allowed as root.");
-            System.err.println("Check config-file...");
-            return;
-        }
+        boundBook = this.mydoc.createDocStruct(dst);
 
         this.mydoc.setPhysicalDocStruct(boundBook);
         FileSet fs = new FileSet();
@@ -248,11 +244,11 @@ public class Excelfile implements ugh.dl.Fileformat {
             System.out.println("updating in Sheet \"Bibliographie\"!");
         }
         if (currentsheet.equals("Gliederung")) {
-            List<Metadata> allMD = inStruct.getAllMetadata();
+            List<MetadataInterface> allMD = inStruct.getAllMetadata();
             // Count the row in the excel spreadsheet.
             rowCounter++;
             for (int i = 0; i < allMD.size(); i++) {
-                Metadata md = allMD.get(i);
+                Metadata md = (Metadata) allMD.get(i);
                 MetadataType mdt = md.getType();
                 if (mdt == null) {
                     return false;
@@ -347,13 +343,13 @@ public class Excelfile implements ugh.dl.Fileformat {
         }
         if (reverse) {
             // All children.
-            List<DocStruct> allChildren = inStruct.getAllChildren();
+            List<DocStructInterface> allChildren = inStruct.getAllChildren();
             if (allChildren == null) {
                 // No children, so we can get out.
                 return true;
             }
             for (int i = 0; i < allChildren.size(); i++) {
-                DocStruct child = allChildren.get(i);
+                DocStruct child = (DocStruct) allChildren.get(i);
                 if (!UpdateAllMetadata(child, true, rowCounter)) {
                     return false;
                 }
@@ -369,8 +365,7 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#write(java.lang.String)
      */
     @Override
-    public boolean write(String inFile) {
-        return false;
+    public void write(String inFile) {
     }
 
     /*
@@ -389,9 +384,8 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.mydoc = inDoc;
-        return true;
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.mydoc = (DigitalDocument) inDoc;
     }
 
     /*
@@ -400,7 +394,7 @@ public class Excelfile implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String filename) {
+    public void read(String filename) {
         // Excelsheet for bibliographic information.
         org.apache.poi.hssf.usermodel.HSSFSheet bibSheet;
         // Excelsheet for bibliographic information.
@@ -409,7 +403,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         org.apache.poi.hssf.usermodel.HSSFSheet logSheet;
 
         if (filename == null) {
-            return false;
+            return;
         }
 
         // Get output stream.
@@ -419,7 +413,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         } catch (Exception e) {
             System.err.println("ERROR: Can't write file " + filename);
             System.err.println(e);
-            return false;
+            return;
         }
         int numberofsheets = this.excelworkbook.getNumberOfSheets();
         bibSheet = this.excelworkbook.getSheet("Bibliographie");
@@ -433,7 +427,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
         if (bibSheet == null) {
             System.err.println("ERROR: Can't find table \"Bibliographie\"");
-            return false;
+            return;
         }
 
         for (int x = 0; x < bibSheet.getPhysicalNumberOfRows(); x++) {
@@ -452,7 +446,7 @@ public class Excelfile implements ugh.dl.Fileformat {
                 } else {
                     System.err
                             .println("ERROR: Can't read version information; wrong cell type");
-                    return false;
+                    return;
                 }
             }
             if (this.excel_version != null) {
@@ -461,7 +455,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         }
         if (this.excel_version == null) {
             System.err.println("ERROR: Can't read version of excel-sheet");
-            return false;
+            return;
         }
         System.out.println("DEBUG: found Excel-version " + this.excel_version);
 
@@ -472,12 +466,12 @@ public class Excelfile implements ugh.dl.Fileformat {
             System.err.println("ERROR: while reading bibliographiy table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
+            return;
         } catch (MetadataTypeNotAllowedException e) {
             System.err.println("ERROR: while reading bibliographiy table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
+            return;
         }
 
         // Read pagination sequences.
@@ -485,20 +479,20 @@ public class Excelfile implements ugh.dl.Fileformat {
         if (pagSheet == null) {
             System.err
                     .println("ERROR: Can't find table \"Sequenzen_Paginierung\"");
-            return false;
+            return;
         }
         try {
             ReadPaginationSequences(pagSheet, "test");
         } catch (MetadataTypeNotAllowedException e1) {
             System.err.println("ERROR: Error reading pagination sequence");
-            return false;
+            return;
         }
 
         // Read logical struture.
         logSheet = this.excelworkbook.getSheet("Gliederung");
         if (logSheet == null) {
             System.err.println("ERROR: Can't find table \"Gliederung\"");
-            return false;
+            return;
         }
 
         try {
@@ -507,15 +501,11 @@ public class Excelfile implements ugh.dl.Fileformat {
             System.err.println("ERROR: Can't read Gliederung table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
         } catch (MetadataTypeNotAllowedException e) {
             System.err.println("ERROR: Can't read Gliederung table");
             System.err.println(e.getMessage());
             e.printStackTrace();
-            return false;
         }
-
-        return true;
     }
 
     /***************************************************************************
@@ -1212,19 +1202,19 @@ public class Excelfile implements ugh.dl.Fileformat {
             // It's an anchor (e.g. a periodical...) so we cannot add any
             // children to this but we must get the next structure entity
             // (child) - e.g. the volume.
-            List<DocStruct> children = parent.getAllChildren();
+            List<DocStructInterface> children = parent.getAllChildren();
             if (children == null) {
                 System.out
                         .println("ERROR: ReadPaginationSequences: Parent is anchor but has no child");
                 return false;
             }
             // Get first child as new parent.
-            parent = children.get(0);
+            parent = (DocStruct) children.get(0);
         }
-        List<DocStruct> allpages = boundbook.getAllChildren();
+        List<DocStructInterface> allpages = boundbook.getAllChildren();
         for (int i = 0; i < allpages.size(); i++) {
             // Get single node.
-            DocStruct currentPage = allpages.get(i);
+            DocStruct currentPage = (DocStruct) allpages.get(i);
             parent.addReferenceTo(currentPage, "logical_physical");
             currentPage.addReferenceFrom(parent, "physical_physical");
         }
@@ -1270,7 +1260,7 @@ public class Excelfile implements ugh.dl.Fileformat {
         //
         // Create File objects for images.
         for (int i = 0; i < allpages.size(); i++) {
-            DocStruct currentPage = allpages.get(i);
+            DocStruct currentPage = (DocStruct) allpages.get(i);
 
             // Create new Image object and add it to myImageSet.
             ugh.dl.ContentFile newimage = new ugh.dl.ContentFile();
@@ -1630,11 +1620,7 @@ public class Excelfile implements ugh.dl.Fileformat {
                             partOfMdvalue.wasUpdated(false);
                             try {
                                 // Addit to new DocStruct instance.
-                                if (!newStruct.addMetadata(partOfMdvalue)) {
-                                    System.err
-                                            .println("ERROR: Can't add metadata to new document structure - line "
-                                                    + x + ".");
-                                }
+                                newStruct.addMetadata(partOfMdvalue);
                             } catch (MetadataTypeNotAllowedException mtnaae) {
                                 System.err
                                         .println("ERROR: ReadGliederung: can't add metadata - line"
@@ -1657,11 +1643,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
                         try {
                             // Add it to new DocStruct instance.
-                            if (!newStruct.addMetadata(md)) {
-                                System.err
-                                        .println("ERROR: Can't add metadata to new document structure - line "
-                                                + x + ".");
-                            }
+                            newStruct.addMetadata(md);
                         } catch (MetadataTypeNotAllowedException mtnae) {
                             System.err
                                     .println("ERROR: ReadPaginationSequences: Can't add metadata - line "
@@ -1754,27 +1736,19 @@ public class Excelfile implements ugh.dl.Fileformat {
                     // It's an anchor (e.g. a periodical...) so we cannot add
                     // any children to this but we must get the next structure
                     // entity (child) - e.g. the volume.
-                    List<DocStruct> children = parent.getAllChildren();
+                    List<DocStructInterface> children = parent.getAllChildren();
                     if (children == null) {
                         System.out
                                 .println("ERROR: Parent is anchor but has no child");
                         return false;
                     }
                     // Get first child as new parent.
-                    parent = children.get(0);
+                    parent = (DocStruct) children.get(0);
                 }
 
                 // Aadd this new DocStruct object to the parent.
                 try {
-                    if (!parent.addChild(newStruct)) {
-                        System.err
-                                .println("ERROR: Can't read Gliederung; can't add child");
-                        System.err.println("       "
-                                + newStruct.getType().getName()
-                                + " can't be added to "
-                                + parent.getType().getName());
-                        return false;
-                    }
+                    parent.addChild(newStruct);
                 } catch (TypeNotAllowedAsChildException tnaace) {
                     // Type is not allowed to be added; wrong configuration.
                     System.err
@@ -1837,13 +1811,13 @@ public class Excelfile implements ugh.dl.Fileformat {
             // It's an anchor (e.g. a periodical...) so we cannot add any
             // children to this but we must get the next structure entity
             // (child) - e.g. the volume.
-            List<DocStruct> children = parent.getAllChildren();
+            List<DocStructInterface> children = parent.getAllChildren();
             if (children == null) {
                 System.out.println("ERROR: Parent is anchor but has no child");
                 return false;
             }
             // Get first child as new parent.
-            parent = children.get(0);
+            parent = (DocStruct) children.get(0);
         }
 
         // Calculates the endpages of the children - NOT of the parent we know
@@ -1869,7 +1843,7 @@ public class Excelfile implements ugh.dl.Fileformat {
     public boolean CalculateEndPage(DocStruct inStruct)
             throws MetadataTypeNotAllowedException {
 
-        List<DocStruct> allchildren = inStruct.getAllChildren();
+        List<DocStructInterface> allchildren = inStruct.getAllChildren();
         if (allchildren == null) {
             return true;
         }
@@ -1880,7 +1854,7 @@ public class Excelfile implements ugh.dl.Fileformat {
             int physendpage = 0;
             int physstartpage = 0;
 
-            DocStruct currentchild = allchildren.get(i);
+            DocStruct currentchild = (DocStruct) allchildren.get(i);
 
             MetadataType pagenumberstartPhys = this.myPreferences
                     .getMetadataTypeByName("_pagephysstart");
@@ -1929,7 +1903,7 @@ public class Excelfile implements ugh.dl.Fileformat {
             } else {
                 // It's not the lastone; so the endpage is the startpage of the
                 // next one or one page before (depends on overlapping).
-                DocStruct nextstruct = allchildren.get(i + 1);
+                DocStruct nextstruct = (DocStruct) allchildren.get(i + 1);
                 mdlist = nextstruct.getAllMetadataByType(pagenumberstartPhys);
                 if (mdlist == null) {
                     System.out
@@ -1988,11 +1962,11 @@ public class Excelfile implements ugh.dl.Fileformat {
             // Create references from startpage to physendpage get uppermost
             // physical structure.
             DocStruct boundbook = this.mydoc.getPhysicalDocStruct();
-            List<DocStruct> allpages = boundbook.getAllChildren();
+            List<DocStructInterface> allpages = boundbook.getAllChildren();
             for (int x = physstartpage; x < physendpage + 1; x++) {
                 // x is physical pagenumber.
                 for (int y = 0; y < allpages.size(); y++) {
-                    DocStruct page = allpages.get(y);
+                    DocStruct page = (DocStruct) allpages.get(y);
                     MetadataType physpagetype = this.myPreferences
                             .getMetadataTypeByName("physPageNumber");
                     List<? extends Metadata> allmds = page
@@ -2019,7 +1993,7 @@ public class Excelfile implements ugh.dl.Fileformat {
                             } else {
                                 // Set a single reference to the boundbook
                                 // (physical struct).
-                                List<Reference> refs = currentchild
+                                List<ReferenceInterface> refs = currentchild
                                         .getAllReferences("to");
                                 if (refs == null || refs.size() == 0) {
                                     // No references set, so set one to the
@@ -2041,7 +2015,7 @@ public class Excelfile implements ugh.dl.Fileformat {
 
         // New for loop; call CalculateEndPage for every child.
         for (int i = 0; i < allchildren.size(); i++) {
-            DocStruct currentdoc = allchildren.get(i);
+            DocStruct currentdoc = (DocStruct) allchildren.get(i);
             if (!CalculateEndPage(currentdoc)) {
                 // Error occurred.
                 return false;

@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.kitodo.api.ugh.ContentFileInterface;
+
 /*******************************************************************************
  * <p>
  * A ContentFile represents a file which must be accessible via the file system
@@ -47,7 +49,7 @@ import java.util.List;
  *
  ******************************************************************************/
 
-public class ContentFile implements Serializable {
+public class ContentFile implements ContentFileInterface, Serializable {
 
     private static final long    serialVersionUID    = 367830986928498143L;
 
@@ -118,11 +120,10 @@ public class ContentFile implements Serializable {
      * TODO Check, if file is really available!
      *
      * @param in
-     * @return always true
      **************************************************************************/
-    public boolean setLocation(String in) {
+    @Override
+    public void setLocation(String in) {
         this.Location = in;
-        return true;
     }
 
     /***************************************************************************
@@ -133,6 +134,7 @@ public class ContentFile implements Serializable {
      *
      * @return filename
      **************************************************************************/
+    @Override
     public String getLocation() {
         return this.Location;
     }
@@ -233,6 +235,7 @@ public class ContentFile implements Serializable {
      *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return "ContentFile (ID: " + this.getIdentifier() + "): '"
                 + this.getLocation() + "' (" + this.getMimetype() + ")" + "\n";

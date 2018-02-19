@@ -1,5 +1,7 @@
 package ugh.fileformats.mets;
 
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+
 /*******************************************************************************
  * ugh.fileformats.mets / MatchingDocStructObject.java
  *
@@ -23,7 +25,6 @@ package ugh.fileformats.mets;
 
 import ugh.dl.DocStructType;
 import ugh.dl.Prefs;
-import ugh.exceptions.PreferencesException;
 
 /*******************************************************************************
  * <p>

@@ -31,6 +31,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 
 import ugh.UghCliVersion;
 import ugh.dl.DigitalDocument;
@@ -39,9 +44,6 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.dl.VirtualFileGroup;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
@@ -287,12 +289,11 @@ public class UghConvert {
         //
         // Read the file and get the DigitalDocument.
         //
-        boolean readOutcome = false;
         try {
             if (!commandLine.hasOption('q')) {
                 System.out.println("Reading source file '" + inputFile.getAbsolutePath() + "'");
             }
-            readOutcome = fileFrom.read(inputFile.getAbsolutePath());
+            fileFrom.read(inputFile.getAbsolutePath());
             document = fileFrom.getDigitalDocument();
         } catch (ReadException e) {
             System.out.println("?READ  ERROR\nREADY.");
@@ -304,14 +305,8 @@ public class UghConvert {
             return 11;
         }
 
-        if (readOutcome) {
-            if (!commandLine.hasOption('q')) {
-                System.out.println(convertFrom + " file '" + inputFile.getAbsolutePath() + "' read");
-            }
-        } else {
-            System.out.println("?READ  ERROR\nREADY.");
-            System.out.println(convertFrom + " file '" + inputFile.getAbsolutePath() + "' could not be read");
-            return 12;
+        if (!commandLine.hasOption('q')) {
+            System.out.println(convertFrom + " file '" + inputFile.getAbsolutePath() + "' read");
         }
 
         // Give some verbose output.
@@ -436,7 +431,6 @@ public class UghConvert {
         //
         // Set the DigitalDocument and write the file.
         //
-        boolean writeOutcome = false;
         try {
             // Set the digital document.
             fileTo.setDigitalDocument(document);
@@ -447,7 +441,7 @@ public class UghConvert {
                 }
             }
 
-            writeOutcome = fileTo.write(outputFile.getAbsolutePath());
+            fileTo.write(outputFile.getAbsolutePath());
         } catch (PreferencesException e) {
             e.printStackTrace();
             System.out.println("?READ  ERROR\nREADY.");
@@ -460,14 +454,8 @@ public class UghConvert {
             return 15;
         }
 
-        if (writeOutcome) {
-            if (!commandLine.hasOption('q')) {
-                System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' written");
-            }
-        } else {
-            System.out.println("?WRITE  ERROR\nREADY.");
-            System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' could not be written");
-            return 16;
+        if (!commandLine.hasOption('q')) {
+            System.out.println(convertTo + " file '" + outputFile.getAbsolutePath() + "' written");
         }
 
         return 0;
@@ -484,19 +472,19 @@ public class UghConvert {
      **************************************************************************/
     private static boolean changeMetadataValue(DocStruct theDocstruct, String theMetadataName, String theValue) {
 
-        List<Metadata> mdlist = theDocstruct.getAllMetadata();
-        for (Metadata md : mdlist) {
-            if (md.getType().getName().equals(theMetadataName)) {
-                md.setValue(theValue);
+        List<MetadataInterface> mdlist = theDocstruct.getAllMetadata();
+        for (MetadataInterface md : mdlist) {
+            if (((Metadata) md).getType().getName().equals(theMetadataName)) {
+                ((Metadata) md).setValue(theValue);
                 foundMetadata = true;
                 break;
             }
         }
         if (!foundMetadata) {
-            List<DocStruct> children = theDocstruct.getAllChildren();
+            List<DocStructInterface> children = theDocstruct.getAllChildren();
             if (children != null && children.size() != 0) {
-                for (DocStruct ds : children) {
-                    foundMetadata = changeMetadataValue(ds, theMetadataName, theValue);
+                for (DocStructInterface ds : children) {
+                    foundMetadata = changeMetadataValue((DocStruct) ds, theMetadataName, theValue);
                 }
             }
         }

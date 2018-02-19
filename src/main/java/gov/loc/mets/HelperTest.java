@@ -1,5 +1,3 @@
-package gov.loc.mets;
-
 /*******************************************************************************
  * gov.loc.mets / HelperTest.java
  *
@@ -20,6 +18,7 @@ package gov.loc.mets;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package gov.loc.mets;
 
 import gov.loc.mets.MetsType.MetsHdr;
 import gov.loc.mets.MetsType.MetsHdr.Agent;

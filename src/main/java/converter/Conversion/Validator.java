@@ -5,18 +5,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.MetadataTypeInterface;
+import org.kitodo.api.ugh.ReferenceInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
-import ugh.dl.Reference;
-import ugh.exceptions.PreferencesException;
 
 public class Validator {
 
@@ -106,8 +108,8 @@ public class Validator {
             docStructsOhneSeiten.add(inStruct);
         /* alle Kinder des aktuellen DocStructs durchlaufen */
         if (inStruct.getAllChildren() != null) {
-            for (Iterator<DocStruct> iter = inStruct.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct child = iter.next();
+            for (Iterator<DocStructInterface> iter = inStruct.getAllChildren().iterator(); iter.hasNext();) {
+                DocStruct child = (DocStruct) iter.next();
                 checkDocStructsOhneSeiten(child);
             }
         }
@@ -121,16 +123,16 @@ public class Validator {
             return rueckgabe;
 
         /* alle Seiten durchlaufen und pruefen ob References existieren */
-        for (Iterator<DocStruct> iter = boundbook.getAllChildren().iterator(); iter.hasNext();) {
-            DocStruct ds = iter.next();
-            List<Reference> refs = ds.getAllFromReferences();
+        for (Iterator<DocStructInterface> iter = boundbook.getAllChildren().iterator(); iter.hasNext();) {
+            DocStruct ds = (DocStruct) iter.next();
+            List<ReferenceInterface> refs = ds.getAllFromReferences();
             String physical = "";
             String logical = "";
             if (refs.size() == 0) {
                 // System.out.println("   >>> Keine Seiten: "
                 // + ((Metadata) ds.getAllMetadata().getFirst()).getValue());
-                for (Iterator<Metadata> iter2 = ds.getAllMetadata().iterator(); iter2.hasNext();) {
-                    Metadata md = iter2.next();
+                for (Iterator<MetadataInterface> iter2 = ds.getAllMetadata().iterator(); iter2.hasNext();) {
+                    Metadata md = (Metadata) iter2.next();
                     if (md.getType().getName().equals("logicalPageNumber"))
                         logical = " (" + md.getValue() + ")";
                     if (md.getType().getName().equals("physPageNumber"))
@@ -145,8 +147,8 @@ public class Validator {
     private List<String> checkMandatoryValues(DocStruct inStruct, ArrayList<String> inList) {
         DocStructType dst = inStruct.getType();
         // System.out.println("----------------------- " + dst.getName());
-        List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
-        for (MetadataType mdt : allMDTypes) {
+        List<MetadataTypeInterface> allMDTypes = dst.getAllMetadataTypes();
+        for (MetadataTypeInterface mdt : allMDTypes) {
             String number = dst.getNumberOfMetadataType(mdt);
             // System.out.println(mdt.getName());
             List<? extends ugh.dl.Metadata> ll = inStruct.getAllMetadataByType(mdt);
@@ -169,8 +171,8 @@ public class Validator {
 
         /* alle Kinder des aktuellen DocStructs durchlaufen */
         if (inStruct.getAllChildren() != null) {
-            for (DocStruct child : inStruct.getAllChildren())
-                checkMandatoryValues(child, inList);
+            for (DocStructInterface child : inStruct.getAllChildren())
+                checkMandatoryValues((DocStruct) child, inList);
         }
         return inList;
     }

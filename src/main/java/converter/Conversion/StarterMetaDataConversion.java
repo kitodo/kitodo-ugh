@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.FileformatInterface;
+import org.kitodo.api.ugh.exceptions.ReadException;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
-import ugh.exceptions.ReadException;
 import ugh.fileformats.excel.RDFFile;
 import ugh.fileformats.mets.MetsMods;
 
@@ -91,39 +92,32 @@ public class StarterMetaDataConversion {
                 logger.debug("loading:'" + newFile.getAbsolutePath() + "' as RDF in ugh");
 
                 try {
-                    if (rdfInput.read(procFile.getAbsolutePath())) {
+                    rdfInput.read(procFile.getAbsolutePath());
 
-                        metsOutput = new MetsMods(pref);
-                        metsOutput.setDigitalDocument(rdfInput.getDigitalDocument());
+                    metsOutput = new MetsMods(pref);
+                    ((FileformatInterface) metsOutput).setDigitalDocument(rdfInput.getDigitalDocument());
 
-                        // Sort first so equals method returns equals
-                        metsOutput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
-                        metsOutput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
+                    // Sort first so equals method returns equals
+                    metsOutput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
+                    metsOutput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
 
-                        rdfInput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
-                        rdfInput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
+                    rdfInput.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
+                    rdfInput.getDigitalDocument().getPhysicalDocStruct().sortMetadata(pref);
 
-                        DigitalDocument digDoc1 = metsOutput.getDigitalDocument();
-                        DigitalDocument digDoc2 = rdfInput.getDigitalDocument();
-                        new Validator().validate(metsOutput, pref, newFile.getAbsolutePath());
-                        /*######## Begin of 1. Equals Validation  #########*/
-                        // if conversion doesn't generates equal digDoc
-                        if (!myValidators.getEqualsValidation(digDoc1, digDoc2)) {
-                            logger.info("File " + procFile.getAbsolutePath() + " is not equals to the original file, will not be written");
-                            rollbackLog.info(newFile.getAbsolutePath() + " - mets digDoc is different - processing cancelled");
-                            flagError = true;
-                            // if conversion doesn't generates equal digDoc
-                        } else {
-                            logger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
-                        }
-                        /*######## End of 1. Equals Validator  #########*/
-
-
-                    } else {
-                        logger.info("File " + procFile.getAbsolutePath() + " could not be read, will not be written");
-                        rollbackLog.info(newFile.getAbsolutePath() + " - RDF couldn't be read - processing cancelled");
+                    DigitalDocument digDoc1 = metsOutput.getDigitalDocument();
+                    DigitalDocument digDoc2 = rdfInput.getDigitalDocument();
+                    new Validator().validate(metsOutput, pref, newFile.getAbsolutePath());
+                    /*######## Begin of 1. Equals Validation  #########*/
+                    // if conversion doesn't generates equal digDoc
+                    if (!myValidators.getEqualsValidation(digDoc1, digDoc2)) {
+                        logger.info("File " + procFile.getAbsolutePath() + " is not equals to the original file, will not be written");
+                        rollbackLog.info(newFile.getAbsolutePath() + " - mets digDoc is different - processing cancelled");
                         flagError = true;
+                        // if conversion doesn't generates equal digDoc
+                    } else {
+                        logger.info("File " + procFile.getAbsolutePath() + " digital document is equal");
                     }
+                    /*######## End of 1. Equals Validator  #########*/
 
                 } catch (Exception e) {
                     logger.debug("read error for file " + procFile.getAbsolutePath(), e);
@@ -135,18 +129,11 @@ public class StarterMetaDataConversion {
 
                 if (!flagError) {
                     try {
-                        if (!metsOutput.write(procFile.getAbsolutePath())) {
+                        ((FileformatInterface) metsOutput).write(procFile.getAbsolutePath());
 
-                            logger.error("File " + procFile.getAbsolutePath() + " couldn't be written in mets format");
+                        logger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
 
-                            rollbackLog.info(newFile.getAbsolutePath() + " - Mets couldn't be saved - processing cancelled");
-                            flagError = true;
-                        } else {
-
-                            logger.debug("File " + procFile.getAbsolutePath() + " was written in Mets format");
-
-                            saveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
-                        }
+                        saveLog.info(procFile.getAbsolutePath() + " was written in Mets format");
 
                     } catch (Exception e) {
 
@@ -167,10 +154,10 @@ public class StarterMetaDataConversion {
                         // method
                         metsOutput = new MetsMods(pref);
                         try {
-                            metsOutput.read(procFile.getAbsolutePath());
+                            ((FileformatInterface) metsOutput).read(procFile.getAbsolutePath());
                             Fileformat rdfCompare = new RDFFile(pref);
 
-                            rdfCompare.setDigitalDocument(metsOutput.getDigitalDocument());
+                            ((FileformatInterface) rdfCompare).setDigitalDocument(metsOutput.getDigitalDocument());
 
                             // Sort first so equals method returns equals
                             rdfCompare.getDigitalDocument().getLogicalDocStruct().sortMetadata(pref);
@@ -209,7 +196,7 @@ public class StarterMetaDataConversion {
                             File fileA = new File(procFile.getAbsolutePath().replace(".xml", ".fromMets.rdf.xml"));
                             File fileB = new File(procFile.getAbsolutePath().replace(".xml", ".orig.rdf.xml"));
 
-                            rdfCompare.write(fileA.getAbsolutePath());
+                            ((FileformatInterface) rdfCompare).write(fileA.getAbsolutePath());
                             rdfInput.write(fileB.getAbsolutePath());
 
 

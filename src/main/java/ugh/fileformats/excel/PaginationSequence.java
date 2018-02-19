@@ -25,14 +25,13 @@ import java.util.LinkedList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.dl.RomanNumeral;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.TypeNotAllowedForParentException;
 
 /*******************************************************************************
  * <p>
@@ -124,12 +123,6 @@ public class PaginationSequence {
 
                 logpagenumber = new Metadata(logpagenumbertype);
                 physpagenumber = new Metadata(physpagenumbertype);
-            } catch (TypeNotAllowedForParentException e) {
-                logger
-                        .error(
-                                "PaginationSequence.ConvertToPhysicalStructure: Type not allowed as child!",
-                                e);
-                return null;
             } catch (MetadataTypeNotAllowedException e) {
                 logger
                         .error(

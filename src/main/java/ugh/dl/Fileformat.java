@@ -1,5 +1,3 @@
-package ugh.dl;
-
 /*******************************************************************************
  * ugh.dl / FileFormat.java
  *
@@ -20,10 +18,13 @@ package ugh.dl;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package ugh.dl;
 
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.FileformatInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * <p>
@@ -66,7 +67,7 @@ import ugh.exceptions.WriteException;
  * @see DigitalDocument
  ******************************************************************************/
 
-public interface Fileformat {
+public interface Fileformat extends FileformatInterface {
 
     /***************************************************************************
      * <p>
@@ -77,6 +78,7 @@ public interface Fileformat {
      * @return DigitalDocument the DigitalDocument instance
      * @throws PreferencesException
      **************************************************************************/
+    @Override
     public DigitalDocument getDigitalDocument() throws PreferencesException;
 
     /***************************************************************************
@@ -86,12 +88,10 @@ public interface Fileformat {
      *
      * @param filename
      *            full path to file, which should be read
-     * @return a boolean value, true if everything was okay; false, if there
-     *         there was an error (IO Error etc...).
-     *
      * @throws ReadException
      **************************************************************************/
-    public boolean read(String filename) throws ReadException;
+    @Override
+    public void read(String filename) throws ReadException;
 
     /***************************************************************************
      * <p>
@@ -101,12 +101,11 @@ public interface Fileformat {
      *
      * @param filename
      *            full path to the file
-     * @return true, if everything is okay. Otherwise false, if an error occurred
-     *         (IO-Error etc...)
      * @throws WriteException
      * @throws PreferencesException
      **************************************************************************/
-    public boolean write(String filename) throws WriteException,
+    @Override
+    public void write(String filename) throws WriteException,
             PreferencesException;
 
     /***************************************************************************
@@ -131,8 +130,8 @@ public interface Fileformat {
      * </p>
      *
      * @param inDoc
-     * @return true; only if a problem occurred, false is returned.
      **************************************************************************/
-    public boolean setDigitalDocument(DigitalDocument inDoc);
+    @Override
+    public void setDigitalDocument(DigitalDocumentInterface inDoc);
 
 }

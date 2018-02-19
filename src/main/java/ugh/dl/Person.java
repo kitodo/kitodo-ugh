@@ -1,5 +1,3 @@
-package ugh.dl;
-
 /*******************************************************************************
  * ugh.dl / Person.java
  *
@@ -20,8 +18,10 @@ package ugh.dl;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package ugh.dl;
 
-import ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 
 /*******************************************************************************
  * <p>
@@ -57,7 +57,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  *
  ******************************************************************************/
 
-public class Person extends Metadata {
+public class Person extends Metadata implements PersonInterface {
 
     private static final long    serialVersionUID    = -3667880952431707982L;
 
@@ -111,11 +111,10 @@ public class Person extends Metadata {
      * </p>
      *
      * @param in
-     * @return true is always returned
      **************************************************************************/
-    public boolean setFirstname(String in) {
+    @Override
+    public void setFirstName(String in) {
         this.firstname = in;
-        return true;
     }
 
     /***************************************************************************
@@ -125,23 +124,24 @@ public class Person extends Metadata {
      *
      * @return firstname of this person
      **************************************************************************/
-    public String getFirstname() {
+    @Override
+    public String getFirstName() {
         return this.firstname;
     }
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
-    public boolean setLastname(String in) {
+    @Override
+    public void setLastName(String in) {
         this.lastname = in;
-        return true;
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
-    public String getLastname() {
+    @Override
+    public String getLastName() {
         return this.lastname;
     }
 
@@ -211,16 +211,16 @@ public class Person extends Metadata {
 
     /***************************************************************************
      * @param in
-     * @return
      **************************************************************************/
-    public boolean setRole(String in) {
+    @Override
+    public void setRole(String in) {
         this.role = in;
-        return true;
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public String getRole() {
         if (role == null) {
             role = MDType.getName();
@@ -263,7 +263,8 @@ public class Person extends Metadata {
      *
      * @return the displayname
      **************************************************************************/
-    public String getDisplayname() {
+    @Override
+    public String getDisplayName() {
         return this.displayname;
     }
 
@@ -275,7 +276,8 @@ public class Person extends Metadata {
      * @param displayname
      *            the displayname to set
      **************************************************************************/
-    public void setDisplayname(String displayname) {
+    @Override
+    public void setDisplayName(String displayname) {
         this.displayname = displayname;
     }
 
@@ -299,28 +301,29 @@ public class Person extends Metadata {
      *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         String result = "";
 
-        if (this.getType() != null && this.getLastname() != null
-                && !this.getLastname().equals("")) {
+        if (this.getType() != null && this.getLastName() != null
+                && !this.getLastName().equals("")) {
             // Get person type and value.
             result += "Person ("
                     + this.getType().getName()
                     + "): "
-                    + (this.getLastname() == null ? "NULL" : "\""
-                            + this.getLastname() + "\"")
+                    + (this.getLastName() == null ? "NULL" : "\""
+                            + this.getLastName() + "\"")
                     + ", "
-                    + (this.getFirstname() == null ? "NULL" : "\""
-                            + this.getFirstname() + "\"") + "\n";
+                    + (this.getFirstName() == null ? "NULL" : "\""
+                            + this.getFirstName() + "\"") + "\n";
         } else if (this.getType() == null) {
             result += "Person (WITHOUT TYPE!!): "
-                    + (this.getLastname() == null ? "NULL" : "\""
-                            + this.getLastname() + "\"")
+                    + (this.getLastName() == null ? "NULL" : "\""
+                            + this.getLastName() + "\"")
                     + ", "
-                    + (this.getFirstname() == null ? "NULL" : "\""
-                            + this.getFirstname() + "\"") + "\n";
+                    + (this.getFirstName() == null ? "NULL" : "\""
+                            + this.getFirstName() + "\"") + "\n";
         }
 
         return result;
@@ -346,13 +349,13 @@ public class Person extends Metadata {
         // while respective attribute of person is not null a nullpointer
         // exception is thrown indicating that compared objects are different.
         try {
-            if (!((this.getFirstname() == null && person.getFirstname() == null) || this
-                    .getFirstname().equals(person.getFirstname()))) {
+            if (!((this.getFirstName() == null && person.getFirstName() == null) || this
+                    .getFirstName().equals(person.getFirstName()))) {
                 return false;
             }
 
-            if (!((this.getLastname() == null && person.getLastname() == null) || this
-                    .getLastname().equals(person.getLastname()))) {
+            if (!((this.getLastName() == null && person.getLastName() == null) || this
+                    .getLastName().equals(person.getLastName()))) {
                 return false;
             }
 
@@ -361,8 +364,8 @@ public class Person extends Metadata {
                 return false;
             }
 
-            if (!((this.getDisplayname() == null && person.getDisplayname() == null) || this
-                    .getDisplayname().equals(person.getDisplayname()))) {
+            if (!((this.getDisplayName() == null && person.getDisplayName() == null) || this
+                    .getDisplayName().equals(person.getDisplayName()))) {
                 return false;
             }
 

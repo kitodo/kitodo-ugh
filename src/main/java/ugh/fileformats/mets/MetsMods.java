@@ -1,5 +1,3 @@
-package ugh.fileformats.mets;
-
 /*******************************************************************************
  * ugh.fileformats.mets / MetsMods.java
  *
@@ -20,6 +18,7 @@ package ugh.fileformats.mets;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package ugh.fileformats.mets;
 
 import gov.loc.mets.AmdSecType;
 import gov.loc.mets.DivType;
@@ -85,6 +84,21 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptionCharEscapeMap;
 import org.apache.xmlbeans.XmlOptions;
+import org.kitodo.api.ugh.ContentFileInterface;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataGroupInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.MetsModsInterface;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.ReferenceInterface;
+import org.kitodo.api.ugh.exceptions.DocStructHasNoTypeException;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedAsChildException;
+import org.kitodo.api.ugh.exceptions.UGHException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -112,18 +126,9 @@ import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
-import ugh.dl.Reference;
 import ugh.dl.VirtualFileGroup;
-import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.ImportException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.MissingModsMappingException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.UGHException;
-import ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * @author Stefan Funk
@@ -146,7 +151,7 @@ import ugh.exceptions.WriteException;
  *
  ******************************************************************************/
 
-public class MetsMods implements ugh.dl.Fileformat {
+public class MetsMods implements ugh.dl.Fileformat, MetsModsInterface {
 
     /***************************************************************************
      * VERSION STRING
@@ -370,7 +375,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     // List to store all identifiers of the anchor (Metadata objects are
     // contained in here).
     @SuppressWarnings("unused")
-    private List<Metadata> anchorIdentifiers = null;
+    private List<MetadataInterface> anchorIdentifiers = null;
     // Contains the xpath to reference the anchor.
     protected String xPathAnchorReference = null;
     // Contains the valueRegExp for the reference the anchor.
@@ -494,9 +499,8 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#SetDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.digdoc = inDoc;
-        return true;
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.digdoc = (DigitalDocument) inDoc;
     }
 
     /*
@@ -505,7 +509,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#read(java.lang.String)
      */
     @Override
-    public boolean read(String theFilename) throws ReadException {
+    public void read(String theFilename) throws ReadException {
 
         LOGGER.info("Reading METS file...");
 
@@ -572,8 +576,6 @@ public class MetsMods implements ugh.dl.Fileformat {
         mapLogAndPhysDocStruct(metsElement);
 
         this.digdoc.sortMetadataRecursively(this.myPreferences);
-
-        return true;
     }
 
     private void readAmdSec(Mets metsElement) {
@@ -636,7 +638,7 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @see ugh.fileformats.mets.MetsModsGdz#write(java.lang.String)
      */
     @Override
-    public boolean write(String filename) throws WriteException, PreferencesException {
+    public void write(String filename) throws WriteException, PreferencesException {
 
         LOGGER.info("Writing METS ....");
 
@@ -728,8 +730,6 @@ public class MetsMods implements ugh.dl.Fileformat {
         this.digdoc = myDigDoc;
 
         LOGGER.info("Writing METS complete");
-
-        return success;
     }
 
     /***************************************************************************
@@ -865,10 +865,10 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         // Iterate over all children.
-        List<DocStruct> children = inStruct.getAllChildren();
+        List<DocStructInterface> children = inStruct.getAllChildren();
         if (children != null) {
-            for (DocStruct child : children) {
-                DocStruct foundStruct = getDocStructByDivID(id, child);
+            for (DocStructInterface child : children) {
+                DocStruct foundStruct = getDocStructByDivID(id, (DocStruct) child);
                 if (foundStruct != null) {
                     return foundStruct;
                 }
@@ -1047,13 +1047,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             // Create DocStruct.
             DocStruct newDocStruct = null;
-            try {
-                newDocStruct = this.getDigitalDocument().createDocStruct(myType);
-            } catch (TypeNotAllowedForParentException e) {
-                String message = "Can't create this DocStruct of type '" + type + "' at the current position in tree";
-                LOGGER.error(message, e);
-                throw new ReadException(message, e);
-            }
+            newDocStruct = this.getDigitalDocument().createDocStruct(myType);
 
             // get the corresponding amdSec
             List admList = dt.getADMID();
@@ -1202,27 +1196,20 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             // (B) Create DocStruct for the topmost <div>.
             DocStruct newDocStruct = null;
-            try {
-                newDocStruct = this.getDigitalDocument().createDocStruct(myType);
-                newDocStruct.setIdentifier(id);
-                newDocStruct.setOrigObject(topmostdiv);
+            newDocStruct = this.getDigitalDocument().createDocStruct(myType);
+            newDocStruct.setIdentifier(id);
+            newDocStruct.setOrigObject(topmostdiv);
 
-                // get the corresponding amdSec
-                List admList = topmostdiv.getADMID();
-                if (admList != null) {
-                    for (Object object : admList) {
-                        String admid = (String) object;
-                        AmdSec amdSec = digdoc.getAmdSec(admid);
-                        if (amdSec != null) {
-                            newDocStruct.setAmdSec(amdSec);
-                        }
+            // get the corresponding amdSec
+            List admList = topmostdiv.getADMID();
+            if (admList != null) {
+                for (Object object : admList) {
+                    String admid = (String) object;
+                    AmdSec amdSec = digdoc.getAmdSec(admid);
+                    if (amdSec != null) {
+                        newDocStruct.setAmdSec(amdSec);
                     }
                 }
-
-            } catch (TypeNotAllowedForParentException e) {
-                String message = "Can't create this DocStruct of type '" + type + "' at the current position in tree (logical tree)";
-                LOGGER.error(message, e);
-                throw new ReadException(message, e);
             }
 
             LOGGER.info("DocStruct of type '" + type + "' created");
@@ -1262,7 +1249,7 @@ public class MetsMods implements ugh.dl.Fileformat {
             if (newDocStruct.getType().getAnchorClass() != null && newDocStruct.getAllChildren() != null &&
                     newDocStruct.getAllChildren().get(0).getAnchorClass() == null) {
 
-                String modsdata = getMODSSection(newDocStruct.getAllChildren().get(0));
+                String modsdata = getMODSSection((DocStruct) newDocStruct.getAllChildren().get(0));
 
                 // If a MODS section is existing, look for anchor references. A
                 // reference to an anchor is done via the <XPathAnchorQuery>
@@ -1284,7 +1271,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                             throw new ReadException(message);
                         }
                         try {
-                            newDocStruct = newDocStruct.getAllChildren().get(0);
+                            newDocStruct = (DocStruct) newDocStruct.getAllChildren().get(0);
                             newanchor.addChild(newDocStruct);
                         } catch (TypeNotAllowedAsChildException e) {
                             String message =
@@ -1306,7 +1293,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                         String message =
                                 "DocStruct '" + newDocStruct.getType().getName()
                                         + "' is an anchor DocStruct, but NO anchor identifier is existing for child DocStruct '"
-                                        + newDocStruct.getAllChildren().get(0).getType().getName() + "' in file '" + theFilename + "'!";
+                                        + ((DocStruct) newDocStruct.getAllChildren().get(0)).getType().getName() + "' in file '" + theFilename + "'!";
                         LOGGER.error(message);
                         throw new ReadException(message);
                     }
@@ -1326,18 +1313,18 @@ public class MetsMods implements ugh.dl.Fileformat {
                             while (elements.hasNext()) {
                                 String child = newDocStruct.indexOf(elements.next());
                                 DocStruct copier = metsMods.getDigitalDocument().getLogicalDocStruct().getChild(child);
-                                origen.addChild(child, copier.copy(true, null));
+                                origen.addChild(child, (DocStruct) copier.copy(true, null));
                                 docStructList = newDocStruct.getChild(child).getAllRealSuccessors();
                             }
                         } else {
-                            origen = metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
+                            origen = (DocStruct) metsMods.getDigitalDocument().getLogicalDocStruct().copy(true, null);
                             docStructList = newDocStruct.getAllRealSuccessors();
                         }
                     }
                     String child = null;
                     for (DocStruct firstStruct : docStructList) {
                         child = newDocStruct.indexOf(firstStruct, child);
-                        origen.addChild(child, newDocStruct.getChild(child).copy(true, true));
+                        origen.addChild(child, (DocStruct) newDocStruct.getChild(child).copy(true, true));
                     }
 
                     // when done, write the origen document back
@@ -1471,19 +1458,19 @@ public class MetsMods implements ugh.dl.Fileformat {
                     // should be the only one).
                     DigitalDocument anchorDocument = anchorMets.getDigitalDocument();
                     DocStruct anchorStruct = anchorDocument.getLogicalDocStruct();
-                    List<Metadata> allMetadata = anchorStruct.getAllMetadata();
+                    List<MetadataInterface> allMetadata = anchorStruct.getAllMetadata();
                     // Iterate over all metadata and find an identifier with the
                     // value of identifierOfAnchor.
                     if (allMetadata != null) {
-                        for (Metadata md : allMetadata) {
+                        for (MetadataInterface md : allMetadata) {
                             if (md.getValue() != null && md.getValue().equals(identifierOfAnchor)) {
-                                if (md.getType().isIdentifier()) {
+                                if (((Metadata) md).getType().isIdentifier()) {
                                     // That's the anchor!
                                     anchorDocStruct = anchorStruct;
                                 } else {
                                     // Log an error, maybe only the metadata is
                                     // not set as identifier.
-                                    LOGGER.warn("Identifier '" + md.getType().getName()
+                                    LOGGER.warn("Identifier '" + ((Metadata) md).getType().getName()
                                             + "' found, but its type is NOT set to 'identifier' in the prefs!");
                                 }
                             }
@@ -1512,7 +1499,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
         // Copy the anchor DocStruct, so it can be added as a parent: copy all
         // metadata, and all children that belong to the same anchor class.
-        DocStruct newanchor = anchorDocStruct.copy(true, null);
+        DocStruct newanchor = (DocStruct) anchorDocStruct.copy(true, null);
 
         return newanchor;
     }
@@ -1653,10 +1640,10 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         // If recursive is set to TRUE, parse the child's metadata, too.
-        List<DocStruct> children = inStruct.getAllChildren();
+        List<DocStructInterface> children = inStruct.getAllChildren();
         if (recursive && children != null) {
-            for (DocStruct child : children) {
-                parseMetadataForLogicalDocStruct(child, recursive);
+            for (DocStructInterface child : children) {
+                parseMetadataForLogicalDocStruct((DocStruct) child, recursive);
             }
         }
     }
@@ -2004,17 +1991,17 @@ public class MetsMods implements ugh.dl.Fileformat {
                                     valueURI = metadata.getAttributes().getNamedItem("valueURI").getNodeValue();
                                 }
 
-                                List<Metadata> metadataList = new ArrayList<Metadata>(metadataGroup.getMetadataList());
-                                for (Metadata meta : metadataList) {
-                                    if (meta.getType().getName().equals(metadataName)) {
+                                List<MetadataInterface> metadataList = new ArrayList<MetadataInterface>(metadataGroup.getMetadataList());
+                                for (MetadataInterface meta : metadataList) {
+                                    if (((Metadata) meta).getType().getName().equals(metadataName)) {
                                         if (meta.getValue() == null || meta.getValue().isEmpty()) {
-                                            meta.setValue(value);
+                                            ((Metadata) meta).setValue(value);
                                             if (authority != null && authorityURI != null && valueURI != null) {
-                                                meta.setAutorityFile(authority, authorityURI, valueURI);
+                                                ((Metadata) meta).setAutorityFile(authority, authorityURI, valueURI);
                                             }
                                             break;
                                         } else {
-                                            Metadata mdnew = new Metadata(meta.getType());
+                                            Metadata mdnew = new Metadata(((Metadata) meta).getType());
                                             mdnew.setValue(value);
                                             if (authority != null && authorityURI != null && valueURI != null) {
                                                 mdnew.setAutorityFile(authority, authorityURI, valueURI);
@@ -2039,20 +2026,20 @@ public class MetsMods implements ugh.dl.Fileformat {
                                 }
 
                                 // Create and add person.
-                                if (mdt.getIsPerson()) {
-                                    List<Person> metadataList = new ArrayList<Person>(metadataGroup.getPersonList());
-                                    for (Person ps : metadataList) {
+                                if (mdt.isPerson()) {
+                                    List<PersonInterface> metadataList = new ArrayList<PersonInterface>(metadataGroup.getPersonList());
+                                    for (PersonInterface person : metadataList) {
 
-                                        if (ps.getType().getName().equals(mdt.getName())) {
-                                            if ((ps.getLastname() == null || ps.getLastname().isEmpty())
-                                                    && (ps.getFirstname() == null || ps.getFirstname().isEmpty())) {
+                                        if (((Person) person).getType().getName().equals(mdt.getName())) {
+                                            if ((person.getLastName() == null || person.getLastName().isEmpty())
+                                                    && (person.getFirstName() == null || person.getFirstName().isEmpty())) {
 
-                                                ps.setRole(mdt.getName());
+                                                person.setRole(mdt.getName());
 
                                             } else {
-                                                ps = new Person(mdt);
-                                                ps.setRole(mdt.getName());
-                                                metadataGroup.addPerson(ps);
+                                                person = new Person(mdt);
+                                                person.setRole(mdt.getName());
+                                                metadataGroup.addPerson(person);
                                             }
                                             // Iterate over every person's data.
                                             NodeList personNodelist = metadata.getChildNodes();
@@ -2069,13 +2056,13 @@ public class MetsMods implements ugh.dl.Fileformat {
 
                                                     // Get and set values.
                                                     if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
-                                                        ps.setFirstname(value);
+                                                        person.setFirstName(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_LASTNAME_STRING)) {
-                                                        ps.setLastname(value);
+                                                        person.setLastName(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_AFFILIATION_STRING)) {
-                                                        ps.setAffiliation(value);
+                                                        ((Person) person).setAffiliation(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_AUTHORITYID_STRING)) {
                                                         authorityID =value;
@@ -2088,16 +2075,16 @@ public class MetsMods implements ugh.dl.Fileformat {
                                                     }
 
                                                     if (name.equals(GOOBI_PERSON_PERSONTYPE_STRING)) {
-                                                        ps.setPersontype(value);
+                                                        ((Person) person).setPersontype(value);
                                                     }
                                                     if (name.equals(GOOBI_PERSON_DISPLAYNAME_STRING)) {
-                                                        ps.setDisplayname(value);
+                                                        person.setDisplayName(value);
                                                     }
                                                 }
 
                                             }
                                             if (authorityID != null && authorityURI != null && authortityValue != null) {
-                                                ps.setAutorityFile(authorityID, authorityURI, authortityValue);
+                                                person.setAutorityFile(authorityID, authorityURI, authortityValue);
                                             }
                                         }
                                     }
@@ -2140,16 +2127,16 @@ public class MetsMods implements ugh.dl.Fileformat {
                     }
 
                     // Create and add person.
-                    if (mdt.getIsPerson()) {
-                        Person ps;
+                    if (mdt.isPerson()) {
+                        Person person;
                         try {
-                            ps = new Person(mdt);
+                            person = new Person(mdt);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message = "Can't add person! MetadataType must not be null!";
                             LOGGER.error(message, e);
                             throw new ReadException(message, e);
                         }
-                        ps.setRole(mdt.getName());
+                        person.setRole(mdt.getName());
 
                         // Iterate over every person's data.
                         NodeList personNodelist = metabagu.getChildNodes();
@@ -2165,13 +2152,13 @@ public class MetsMods implements ugh.dl.Fileformat {
 
                                 // Get and set values.
                                 if (name.equals(GOOBI_PERSON_FIRSTNAME_STRING)) {
-                                    ps.setFirstname(value);
+                                    person.setFirstName(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_LASTNAME_STRING)) {
-                                    ps.setLastname(value);
+                                    person.setLastName(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_AFFILIATION_STRING)) {
-                                    ps.setAffiliation(value);
+                                    person.setAffiliation(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_AUTHORITYID_STRING)) {
                                     authorityFileID =value;
@@ -2184,18 +2171,18 @@ public class MetsMods implements ugh.dl.Fileformat {
                                 }
 
                                 if (name.equals(GOOBI_PERSON_PERSONTYPE_STRING)) {
-                                    ps.setPersontype(value);
+                                    person.setPersontype(value);
                                 }
                                 if (name.equals(GOOBI_PERSON_DISPLAYNAME_STRING)) {
-                                    ps.setDisplayname(value);
+                                    person.setDisplayName(value);
                                 }
                             }
                         }
                         if (authorityFileID != null && authorityURI != null && authortityValue != null) {
-                            ps.setAutorityFile(authorityFileID, authorityURI, authortityValue);
+                            person.setAutorityFile(authorityFileID, authorityURI, authortityValue);
                         }
                         try {
-                            inStruct.addPerson(ps);
+                            inStruct.addPerson(person);
 
                             LOGGER.debug("Added person '" + mdt.getName() + "' to DocStruct '" + inStruct.getType().getName() + "'");
                         } catch (DocStructHasNoTypeException e) {
@@ -2204,7 +2191,7 @@ public class MetsMods implements ugh.dl.Fileformat {
                             throw new ImportException(message, e);
                         } catch (MetadataTypeNotAllowedException e) {
                             String message =
-                                    "Person '" + mdt.getName() + "' " + ps.getDisplayname() + ") is not allowed as a child for '"
+                                    "Person '" + mdt.getName() + "' " + person.getDisplayName() + ") is not allowed as a child for '"
                                             + inStruct.getType().getName() + "' during MODS import!";
                             LOGGER.error(message, e);
                             throw new ImportException(message);
@@ -2279,15 +2266,9 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             // Create DocStruct for the topmost <div>.
             DocStruct newDocStruct = null;
-            try {
-                newDocStruct = this.getDigitalDocument().createDocStruct(myType);
-                newDocStruct.setIdentifier(id);
-                newDocStruct.setOrigObject(topmostdiv);
-            } catch (TypeNotAllowedForParentException e) {
-                String message = "Can't create this DocStruct of type '" + type + "' at the current tree position (physical structMap)!";
-                LOGGER.error(message);
-                throw new ReadException(message);
-            }
+            newDocStruct = this.getDigitalDocument().createDocStruct(myType);
+            newDocStruct.setIdentifier(id);
+            newDocStruct.setOrigObject(topmostdiv);
 
             // Handle children for the topmost <div>. Parse the child divs and
             // create appropriate DocStruct elements for them.
@@ -2365,11 +2346,11 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             // If the fileSet is still empty, iterate over all DocStructs "page"
             // with metadata "physPageNumber" and add a content file each.
-            List<DocStruct> pages = newDocStruct.getAllChildrenByTypeAndMetadataType(METADATA_PHYSICAL_PAGE_STRING, METADATA_PHYSICAL_PAGE_NUMBER);
+            List<DocStructInterface> pages = newDocStruct.getAllChildrenByTypeAndMetadataType(METADATA_PHYSICAL_PAGE_STRING, METADATA_PHYSICAL_PAGE_NUMBER);
             if (this.digdoc.getFileSet().getAllFiles().isEmpty() && pages != null) {
-                for (DocStruct ds : pages) {
+                for (DocStructInterface ds : pages) {
                     // Get the content file and add it to the DocStruct.
-                    this.digdoc.addContentFileFromPhysicalPage(ds);
+                    this.digdoc.addContentFileFromPhysicalPage((DocStruct) ds);
                 }
             }
         }
@@ -2543,11 +2524,11 @@ public class MetsMods implements ugh.dl.Fileformat {
         // }
 
         // If recursive = true.
-        List<DocStruct> children = inStruct.getAllChildren();
+        List<DocStructInterface> children = inStruct.getAllChildren();
 
         if (recursive && children != null) {
-            for (DocStruct child : children) {
-                parseMetadataForPhysicalDocStruct(child, recursive);
+            for (DocStructInterface child : children) {
+                parseMetadataForPhysicalDocStruct((DocStruct) child, recursive);
             }
         }
     }
@@ -2935,12 +2916,12 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         if (fs.getAllFiles() != null) {
-            for (ContentFile file : fs.getAllFiles()) {
-                if (file.getReferencedDocStructs() != null) {
-                    for (DocStruct ds : file.getReferencedDocStructs()) {
+            for (ContentFileInterface file : fs.getAllFiles()) {
+                if (((ContentFile) file).getReferencedDocStructs() != null) {
+                    for (DocStruct ds : ((ContentFile) file).getReferencedDocStructs()) {
                         if (ds.getTechMds() != null) {
                             //                  System.out.println("Setting " + ds.getTechMds().size() + " techMds for file " + file.getIdentifier());
-                            file.setTechMds(ds.getTechMds());
+                            ((ContentFile) file).setTechMds(ds.getTechMds());
                         }
                     }
                 }
@@ -2965,13 +2946,13 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         // Iterate over all the content files.
-        List<ContentFile> contentFiles = fs.getAllFiles();
-        for (ContentFile cf : contentFiles) {
+        Collection<ContentFileInterface> contentFiles = fs.getAllFiles();
+        for (ContentFileInterface cf : contentFiles) {
             Element file = createDomElementNS(domDoc, this.metsNamespacePrefix, "file");
 
             // We use the mimetype from Goobi if configured, the local one if
             // not.
-            String mt = cf.getMimetype();
+            String mt = ((ContentFile) cf).getMimetype();
             if (theFilegroup.getMimetype().equals("")) {
                 file.setAttribute(METS_MIMETYPE_STRING, mt);
             } else {
@@ -2987,10 +2968,10 @@ public class MetsMods implements ugh.dl.Fileformat {
             }
 
             // Set content file's identifier (if not existing yet).
-            String id = cf.getIdentifier();
+            String id = ((ContentFile) cf).getIdentifier();
             if (id == null || id.equals("")) {
                 id = FILE_PREFIX + new DecimalFormat(DECIMAL_FORMAT).format(++fileidMax);
-                cf.setIdentifier(id);
+                ((ContentFile) cf).setIdentifier(id);
             } else {
                 if (id.contains(FILE_PREFIX)) {
                     String numberPart = id.replace(FILE_PREFIX, "");
@@ -3005,7 +2986,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             }
 
-            if(!theFilegroup.isOrdinary() && !cf.isRepresentative()) {
+            if(!theFilegroup.isOrdinary() && !((ContentFile) cf).isRepresentative()) {
                 continue;
             }
 
@@ -3016,12 +2997,12 @@ public class MetsMods implements ugh.dl.Fileformat {
             }
             file.setAttribute(METS_ID_STRING, id);
 
-            if (cf.isRepresentative()) {
+            if (((ContentFile) cf).isRepresentative()) {
                 file.setAttribute("USE", "banner");
             }
 
             // write admid attribute is necessary
-            List<Md> mdList = cf.getTechMds();
+            List<Md> mdList = ((ContentFile) cf).getTechMds();
             if (mdList != null) {
                 String admid = "";
                 for (Md md : mdList) {
@@ -3196,10 +3177,10 @@ public class MetsMods implements ugh.dl.Fileformat {
         // Write links to ContentFiles (FPTRs).
         writeFptrs(inStruct, domDoc, div);
         // Get all children and write their divs recursive.
-        List<DocStruct> allChildren = inStruct.getAllChildren();
+        List<DocStructInterface> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
-            for (DocStruct child : allChildren) {
-                if (writePhysDivs(div, child) == null) {
+            for (DocStructInterface child : allChildren) {
+                if (writePhysDivs(div, (DocStruct) child) == null) {
                     // Error occurred while writing div for child.
                     return null;
                 }
@@ -3222,7 +3203,7 @@ public class MetsMods implements ugh.dl.Fileformat {
     protected void writeFptrs(DocStruct theStruct, Document theDocument, Element theDiv) {
 
         // Get a list of referenced ContentFiles.
-        List<ContentFile> contentFiles = theStruct.getAllContentFiles();
+        List<ContentFileInterface> contentFiles = theStruct.getAllContentFiles();
 
         if (contentFiles == null) {
             // No content files for this physical structure.
@@ -3230,13 +3211,13 @@ public class MetsMods implements ugh.dl.Fileformat {
             return;
         }
 
-        for (ContentFile cf : contentFiles) {
+        for (ContentFileInterface cf : contentFiles) {
             // Pass each file group.
             for (VirtualFileGroup vFileGroup : this.digdoc.getFileSet().getVirtualFileGroups()) {
                 if(vFileGroup.isOrdinary()){
                 // Write XML elements (METS:fptr).
                 Element fptr = createDomElementNS(theDocument, this.metsNamespacePrefix, METS_FPTR_STRING);
-                String id = cf.getIdentifier();
+                String id = ((ContentFile) cf).getIdentifier();
                 if (!vFileGroup.getName().equals(METS_FILEGROUP_LOCAL_STRING)) {
                     id += "_" + vFileGroup.getName();
                 }
@@ -3336,10 +3317,10 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         // Get all children and write their divs.
-        List<DocStruct> allChildren = inStruct.getAllChildren();
+        List<DocStructInterface> allChildren = inStruct.getAllChildren();
         if (allChildren != null) {
-            for (DocStruct child : allChildren) {
-                if (writeLogDivs(div, child, anchorClass) == null) {
+            for (DocStructInterface child : allChildren) {
+                if (writeLogDivs(div, (DocStruct) child, anchorClass) == null) {
                     // Error occurred while writing div for child.
                     return null;
                 }
@@ -4110,21 +4091,21 @@ public class MetsMods implements ugh.dl.Fileformat {
         // <mods:extension><goobi:goobi><goobi:metadata>.
 
         if (inStruct.getAllMetadata() != null) {
-            for (Metadata m : inStruct.getAllMetadata()) {
+            for (MetadataInterface m : inStruct.getAllMetadata()) {
 
                 // Always write non-anchorIdentifier metadata!
                 if (m.getValue() != null && !m.getValue().equals("")) {
                     String xquery =
                             "./" + this.modsNamespacePrefix + ":mods/" + this.modsNamespacePrefix + ":extension/" + this.goobiNamespacePrefix
-                                    + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@name='" + m.getType().getName() + "']";
-                    writeSingleModsMetadata(xquery, m, dommodsnode, domDoc);
+                                    + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@name='" + ((Metadata) m).getType().getName() + "']";
+                    writeSingleModsMetadata(xquery, (Metadata) m, dommodsnode, domDoc);
                 }
 
                 // Create a reference only, if parentStruct exists, and
                 // parentStruct is an anchor DocStruct, and the MMO's internal
                 // name is mentioned in the prefs.
                 if (parentStruct != null && parentStruct.getType().getAnchorClass() != null
-                        && m.getType().getName().equalsIgnoreCase(this.anchorIdentifierMetadataType)) {
+                        && ((Metadata) m).getType().getName().equalsIgnoreCase(this.anchorIdentifierMetadataType)) {
 
                     // Check if anchor identifier type is existing in the prefs.
                     MetadataType identifierType = this.myPreferences.getMetadataTypeByName(this.anchorIdentifierMetadataType);
@@ -4182,10 +4163,10 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
         if (inStruct.getAllMetadataGroups() != null) {
-            for (MetadataGroup m : inStruct.getAllMetadataGroups()) {
+            for (MetadataGroupInterface m : inStruct.getAllMetadataGroups()) {
                 // check if group has values
                 boolean isEmpty = true;
-                for (Metadata md : m.getMetadataList()) {
+                for (MetadataInterface md : m.getMetadataList()) {
                     if (md.getValue() != null && md.getValue().length() > 0) {
                         isEmpty = false;
                         break;
@@ -4196,8 +4177,8 @@ public class MetsMods implements ugh.dl.Fileformat {
                 if (!isEmpty) {
                     String xquery =
                             "./" + this.modsNamespacePrefix + ":mods/" + this.modsNamespacePrefix + ":extension/" + this.goobiNamespacePrefix
-                                    + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@type='group'][@name='" + m.getType().getName() + "']";
-                    writeSingleModsGroup(xquery, m, dommodsnode, domDoc);
+                                    + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@type='group'][@name='" + ((MetadataGroup) m).getType().getName() + "']";
+                    writeSingleModsGroup(xquery, (MetadataGroup) m, dommodsnode, domDoc);
                 }
 
             }
@@ -4267,30 +4248,30 @@ public class MetsMods implements ugh.dl.Fileformat {
         // Set the displayname of the current person, use
         // "lastname, name" as we were told in the MODS
         // profile, only if the displayName is not yet set.
-        if ((thePerson.getLastname() != null && !thePerson.getLastname().equals(""))
-                || (thePerson.getFirstname() != null && !thePerson.getFirstname().equals(""))) {
-            if (thePerson.getLastname() != null && !thePerson.getLastname().equals("") && thePerson.getFirstname() != null
-                    && !thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname() + ", " + thePerson.getFirstname());
-            } else if (thePerson.getFirstname() == null || thePerson.getFirstname().equals("")) {
-                thePerson.setDisplayname(thePerson.getLastname());
+        if ((thePerson.getLastName() != null && !thePerson.getLastName().equals(""))
+                || (thePerson.getFirstName() != null && !thePerson.getFirstName().equals(""))) {
+            if (thePerson.getLastName() != null && !thePerson.getLastName().equals("") && thePerson.getFirstName() != null
+                    && !thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName() + ", " + thePerson.getFirstName());
+            } else if (thePerson.getFirstName() == null || thePerson.getFirstName().equals("")) {
+                thePerson.setDisplayName(thePerson.getLastName());
             } else {
-                thePerson.setDisplayname(thePerson.getFirstname());
+                thePerson.setDisplayName(thePerson.getFirstName());
             }
         }
 
         // Create the subnodes.
-        if (thePerson.getLastname() != null && !thePerson.getLastname().equals("")) {
+        if (thePerson.getLastName() != null && !thePerson.getLastName().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_LASTNAME_STRING;
             Node lastnameNode = createNode(theXQuery, createdNode, theDocument);
-            Node lastnamevalueNode = theDocument.createTextNode(thePerson.getLastname());
+            Node lastnamevalueNode = theDocument.createTextNode(thePerson.getLastName());
             lastnameNode.appendChild(lastnamevalueNode);
             createdNode.appendChild(lastnameNode);
         }
-        if (thePerson.getFirstname() != null && !thePerson.getFirstname().equals("")) {
+        if (thePerson.getFirstName() != null && !thePerson.getFirstName().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_FIRSTNAME_STRING;
             Node firstnameNode = createNode(theXQuery, createdNode, theDocument);
-            Node firstnamevalueNode = theDocument.createTextNode(thePerson.getFirstname());
+            Node firstnamevalueNode = theDocument.createTextNode(thePerson.getFirstName());
             firstnameNode.appendChild(firstnamevalueNode);
             createdNode.appendChild(firstnameNode);
         }
@@ -4325,10 +4306,10 @@ public class MetsMods implements ugh.dl.Fileformat {
         }
 
 
-        if (thePerson.getDisplayname() != null && !thePerson.getDisplayname().equals("")) {
+        if (thePerson.getDisplayName() != null && !thePerson.getDisplayName().equals("")) {
             theXQuery = "./" + this.goobiNamespacePrefix + ":" + GOOBI_PERSON_DISPLAYNAME_STRING;
             Node displaynameNode = createNode(theXQuery, createdNode, theDocument);
-            Node displaynamevalueNode = theDocument.createTextNode(thePerson.getDisplayname());
+            Node displaynamevalueNode = theDocument.createTextNode(thePerson.getDisplayName());
             displaynameNode.appendChild(displaynamevalueNode);
             createdNode.appendChild(displaynameNode);
         }
@@ -4346,18 +4327,18 @@ public class MetsMods implements ugh.dl.Fileformat {
 
         Node createdNode = createNode(theXQuery, theStartingNode, theDocument);
 
-        for (Metadata md : theGroup.getMetadataList()) {
-            if (!md.getType().getIsPerson()) {
-                String xquery = "./#" + this.goobiNamespacePrefix + ":metadata[@name='" + md.getType().getName() + "']";
-                writeSingleModsMetadata(xquery, md, createdNode, theDocument);
+        for (MetadataInterface md : theGroup.getMetadataList()) {
+            if (!((Metadata) md).getType().isPerson()) {
+                String xquery = "./#" + this.goobiNamespacePrefix + ":metadata[@name='" + ((Metadata) md).getType().getName() + "']";
+                writeSingleModsMetadata(xquery, (Metadata) md, createdNode, theDocument);
 
             }
         }
-        for (Person p : theGroup.getPersonList()) {
+        for (PersonInterface p : theGroup.getPersonList()) {
             if (p != null && p.getRole() != null && !p.getRole().equals("")
-                    && (p.getFirstname() != null || p.getLastname() != null || p.getDisplayname() != null)) {
+                    && (p.getFirstName() != null || p.getLastName() != null || p.getDisplayName() != null)) {
                 String xquery = "./#" + this.goobiNamespacePrefix + ":metadata[@type='person'][@name='" + p.getRole() + "']";
-                writeSingleModsPerson(xquery, p, createdNode, theDocument);
+                writeSingleModsPerson(xquery, (Person) p, createdNode, theDocument);
             }
         }
     }
@@ -4380,13 +4361,13 @@ public class MetsMods implements ugh.dl.Fileformat {
         Document domDoc = parentNode.getOwnerDocument();
 
         // Get all references from currentStruct to other Structs.
-        List<Reference> refs = currentLogStruct.getAllReferences(METS_TO_STRING);
+        List<ReferenceInterface> refs = currentLogStruct.getAllReferences(METS_TO_STRING);
 
         // Get all children and write their divs.
-        List<DocStruct> allChildren = currentLogStruct.getAllChildren();
+        List<DocStructInterface> allChildren = currentLogStruct.getAllChildren();
 
         // Iterate over all references and set to- and from- links.
-        for (Reference ref : refs) {
+        for (ReferenceInterface ref : refs) {
             Element smlink = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_SMLINK_STRING);
             parentNode.appendChild(smlink);
 
@@ -4402,7 +4383,7 @@ public class MetsMods implements ugh.dl.Fileformat {
 
             if (refType.equals(LOGICAL_PHYSICAL_MAPPING_TYPE_STRING)) {
                 // It's a reference to a physical structure entity.
-                DocStruct dsphys = ref.getTarget();
+                DocStruct dsphys = (DocStruct) ref.getTarget();
                 if (dsphys.getIdentifier() == null) {
                     // No identifier available, we have to create one.
                     idphys = "phys" + Integer.toString(this.divphysidMax);
@@ -4421,8 +4402,8 @@ public class MetsMods implements ugh.dl.Fileformat {
         // Handle all children of this logical docStruct.
         //
         if (allChildren != null) {
-            for (DocStruct child : allChildren) {
-                if (!writeSingleSMLink(parentNode, child)) {
+            for (DocStructInterface child : allChildren) {
+                if (!writeSingleSMLink(parentNode, (DocStruct) child)) {
                     // Error occurred while writing div for child.
                     return false;
                 }
@@ -4460,8 +4441,8 @@ public class MetsMods implements ugh.dl.Fileformat {
 
         // Write a single smLink element, if no links and no children are
         // existing, just to get a valid METS document.
-        List<Reference> refs = logStruct.getAllReferences(METS_TO_STRING);
-        List<DocStruct> allChildren = logStruct.getAllChildren();
+        List<ReferenceInterface> refs = logStruct.getAllReferences(METS_TO_STRING);
+        List<DocStructInterface> allChildren = logStruct.getAllChildren();
         if ((refs == null || refs.size() == 0) && (allChildren == null || allChildren.size() == 0)) {
             Element smlink = createDomElementNS(domDoc, this.metsNamespacePrefix, METS_SMLINK_STRING);
             structLink.appendChild(smlink);
@@ -4493,7 +4474,7 @@ public class MetsMods implements ugh.dl.Fileformat {
         Document domDoc = parentNode.getOwnerDocument();
 
         // Check, if there is something to write.
-        List<Metadata> allMDs = inStruct.getAllMetadata();
+        List<MetadataInterface> allMDs = inStruct.getAllMetadata();
         if ((allMDs == null) || (allMDs.size() == 0)) {
             // Nothing to write.
             return -1;
@@ -4536,33 +4517,33 @@ public class MetsMods implements ugh.dl.Fileformat {
         // Go through all the current metadata and write them to
         // <mods:extension><goobi:goobi><goobi:metadata>.
         if (inStruct.getAllMetadata() != null) {
-            for (Metadata m : inStruct.getAllMetadata()) {
+            for (MetadataInterface m : inStruct.getAllMetadata()) {
                 if (m.getValue() != null && !m.getValue().equals("")) {
 
                     // Write physical page number into div.
-                    if (m.getType().getName().equals(METADATA_PHYSICAL_PAGE_NUMBER)) {
+                    if (((Metadata) m).getType().getName().equals(METADATA_PHYSICAL_PAGE_NUMBER)) {
                         divElement.setAttribute(METS_ORDER_STRING, m.getValue());
                     }
                     // Write logical page number into div.
-                    else if (m.getType().getName().equals(METADATA_LOGICAL_PAGE_NUMBER)) {
+                    else if (((Metadata) m).getType().getName().equals(METADATA_LOGICAL_PAGE_NUMBER)) {
                         divElement.setAttribute(METS_ORDERLABEL_STRING, m.getValue());
                     }
                     // Write other metadata into MODS the section.
                     else {
                         String xquery =
                                 "./" + this.modsNamespacePrefix + ":mods/" + this.modsNamespacePrefix + ":extension/" + this.goobiNamespacePrefix
-                                        + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@name='" + m.getType().getName() + "']";
-                        writeSingleModsMetadata(xquery, m, dommodsnode, domDoc);
+                                        + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@name='" + ((Metadata) m).getType().getName() + "']";
+                        writeSingleModsMetadata(xquery, (Metadata) m, dommodsnode, domDoc);
                     }
                 }
             }
         }
 
         if (inStruct.getAllMetadataGroups() != null) {
-            for (MetadataGroup m : inStruct.getAllMetadataGroups()) {
+            for (MetadataGroupInterface m : inStruct.getAllMetadataGroups()) {
                 // check if group has values
                 boolean isEmpty = true;
-                for (Metadata md : m.getMetadataList()) {
+                for (MetadataInterface md : m.getMetadataList()) {
                     if (md.getValue() != null && md.getValue().length() > 0) {
                         isEmpty = false;
                         break;
@@ -4573,8 +4554,8 @@ public class MetsMods implements ugh.dl.Fileformat {
                 if (!isEmpty) {
                     String xquery =
                             "./" + this.modsNamespacePrefix + ":mods/" + this.modsNamespacePrefix + ":extension/" + this.goobiNamespacePrefix
-                                    + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@type='group'][@name='" + m.getType().getName() + "']";
-                    writeSingleModsGroup(xquery, m, dommodsnode, domDoc);
+                                    + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@type='group'][@name='" + ((MetadataGroup) m).getType().getName() + "']";
+                    writeSingleModsGroup(xquery, (MetadataGroup) m, dommodsnode, domDoc);
                 }
 
             }
@@ -4599,13 +4580,13 @@ public class MetsMods implements ugh.dl.Fileformat {
     private void writeDmdPersons(DocStruct inStruct, Node domModsNode, Document domDoc) throws PreferencesException {
 
         if (inStruct.getAllPersons() != null) {
-            for (Person p : inStruct.getAllPersons()) {
+            for (PersonInterface p : inStruct.getAllPersons()) {
                 if (p != null && p.getRole() != null && !p.getRole().equals("")
-                        && (p.getFirstname() != null || p.getLastname() != null || p.getDisplayname() != null)) {
+                        && (p.getFirstName() != null || p.getLastName() != null || p.getDisplayName() != null)) {
                     String xquery =
                             "./" + this.modsNamespacePrefix + ":mods/" + this.modsNamespacePrefix + ":extension/" + this.goobiNamespacePrefix
                                     + ":goobi/#" + this.goobiNamespacePrefix + ":metadata[@type='person'][@name='" + p.getRole() + "']";
-                    writeSingleModsPerson(xquery, p, domModsNode, domDoc);
+                    writeSingleModsPerson(xquery, (Person) p, domModsNode, domDoc);
                 }
             }
         }

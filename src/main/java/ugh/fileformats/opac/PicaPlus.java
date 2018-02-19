@@ -39,6 +39,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.PicaPlusInterface;
+import org.kitodo.api.ugh.exceptions.DocStructHasNoTypeException;
+import org.kitodo.api.ugh.exceptions.IncompletePersonObjectException;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.ReadException;
+import org.kitodo.api.ugh.exceptions.TypeNotAllowedAsChildException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -54,14 +63,6 @@ import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.IncompletePersonObjectException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
 
 /*******************************************************************************
  * <p>
@@ -86,7 +87,7 @@ import ugh.exceptions.WriteException;
  *
  ******************************************************************************/
 
-public class PicaPlus implements ugh.dl.Fileformat {
+public class PicaPlus implements ugh.dl.Fileformat, PicaPlusInterface {
 
     /***************************************************************************
      * VERSION STRING
@@ -511,9 +512,8 @@ public class PicaPlus implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#setDigitalDocument(ugh.dl.DigitalDocument)
      */
     @Override
-    public boolean setDigitalDocument(DigitalDocument inDoc) {
-        this.mydoc = inDoc;
-        return false;
+    public void setDigitalDocument(DigitalDocumentInterface inDoc) {
+        this.mydoc = (DigitalDocument) inDoc;
     }
 
     /***************************************************************************
@@ -521,7 +521,8 @@ public class PicaPlus implements ugh.dl.Fileformat {
      * Read from Node of the DOM tree.
      * </p>
      **************************************************************************/
-    public boolean read(Node inNode) throws ReadException {
+    @Override
+    public void read(Node inNode) throws ReadException {
 
         DocStruct ds = null;
         DocStruct dsOld = null;
@@ -588,8 +589,6 @@ public class PicaPlus implements ugh.dl.Fileformat {
         }
 
         logger.info("Parsing picaplus record complete");
-
-        return true;
     }
 
     /***************************************************************************
@@ -598,7 +597,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
      * </p>
      **************************************************************************/
     @Override
-    public boolean read(String filename) throws ReadException {
+    public void read(String filename) throws ReadException {
 
         // DOM Document.
         Document document;
@@ -708,8 +707,6 @@ public class PicaPlus implements ugh.dl.Fileformat {
             logger.error(message, e);
             throw new ReadException(message, e);
         }
-
-        return true;
     }
 
     /***************************************************************************
@@ -1035,13 +1032,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
                                 + mmo.getInternalName() + "'");
                     }
 
-                    try {
-                        ds = this.mydoc.createDocStruct(dst);
-                    } catch (TypeNotAllowedForParentException e) {
-                        logger.warn("DocStructType '" + dst.getName()
-                                + "' is not allowed for parent DocStruct", e);
-                        return null;
-                    }
+                    ds = this.mydoc.createDocStruct(dst);
                     this.mydoc.setLogicalDocStruct(ds);
                     result.add(ds);
 
@@ -1132,10 +1123,10 @@ public class PicaPlus implements ugh.dl.Fileformat {
 
                     // Check if mmo is lastname, firstname.
                     if (mmo.isFirstname()) {
-                        per.setFirstname(content);
+                        per.setFirstName(content);
                     }
                     if (mmo.isLastname()) {
-                        per.setLastname(content);
+                        per.setLastName(content);
                     }
 //                    if (mmo.isPersonIdentifier()) {
 //                        per.setIdentifier(content);
@@ -1183,11 +1174,11 @@ public class PicaPlus implements ugh.dl.Fileformat {
                                 firstname = firstname.replace("/", "");
                                 firstname = firstname.replaceAll("\\s+", " ");
                             }
-                            if (per.getLastname() == null) {
-                                per.setLastname(lastname);
+                            if (per.getLastName() == null) {
+                                per.setLastName(lastname);
                             }
-                            if (per.getFirstname() == null) {
-                                per.setFirstname(firstname);
+                            if (per.getFirstName() == null) {
+                                per.setFirstName(firstname);
                             }
                         }
                     }
@@ -1327,9 +1318,7 @@ public class PicaPlus implements ugh.dl.Fileformat {
      * @see ugh.dl.Fileformat#write(java.lang.String)
      */
     @Override
-    public boolean write(String theFilename) throws WriteException {
-        return false;
-    }
+    public void write(String theFilename) throws WriteException { }
 
     /***************************************************************************
      *

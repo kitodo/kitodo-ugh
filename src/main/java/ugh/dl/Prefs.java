@@ -37,14 +37,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.DocStructTypeInterface;
+import org.kitodo.api.ugh.PrefsInterface;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import ugh.exceptions.PreferencesException;
 
 /*******************************************************************************
  * <b>Title:</b> Preferences
@@ -65,7 +66,7 @@ import ugh.exceptions.PreferencesException;
  *
  ******************************************************************************/
 
-public class Prefs implements Serializable {
+public class Prefs implements PrefsInterface, Serializable {
 
     private final static String VERSION = "1.1-20091117";
 
@@ -73,7 +74,7 @@ public class Prefs implements Serializable {
     private static final Logger logger = LogManager.getLogger(Prefs.class);
     private static final String HIDDEN_METADATA_CHAR = "_";
 
-    private List<DocStructType> allDocStrctTypes;
+    private List<DocStructTypeInterface> allDocStrctTypes;
     private List<MetadataType> allMetadataTypes;
     private final List<MetadataGroupType> allMetadataGroupTypes;
     private final Hashtable<String, Node> allFormats;
@@ -86,7 +87,7 @@ public class Prefs implements Serializable {
      * </p>
      **************************************************************************/
     public Prefs() {
-        this.allDocStrctTypes = new LinkedList<DocStructType>();
+        this.allDocStrctTypes = new LinkedList<DocStructTypeInterface>();
         this.allMetadataTypes = new LinkedList<MetadataType>();
         this.allMetadataGroupTypes = new LinkedList<MetadataGroupType>();
         this.allFormats = new Hashtable<String, Node>();
@@ -105,10 +106,10 @@ public class Prefs implements Serializable {
      * </p>
      *
      * @param filename
-     * @return
      * @throws PreferencesException
      **************************************************************************/
-    public boolean loadPrefs(String filename) throws PreferencesException {
+    @Override
+    public void loadPrefs(String filename) throws PreferencesException {
 
         Document document;
         NodeList childlist;
@@ -244,8 +245,6 @@ public class Prefs implements Serializable {
         mdt = new MetadataType();
         mdt.setName(HIDDEN_METADATA_CHAR + "PaginationNo");
         this.allMetadataTypes.add(mdt);
-
-        return true;
     }
 
     /***************************************************************************
@@ -571,7 +570,7 @@ public class Prefs implements Serializable {
         if (node != null) {
             String nodevalue = node.getNodeValue();
             if (nodevalue != null && nodevalue.equals("person")) {
-                currenMdType.setIsPerson(true);
+                currenMdType.setPerson(true);
             }
             if (nodevalue != null && nodevalue.equals("identifier")) {
                 currenMdType.setIdentifier(true);
@@ -763,11 +762,12 @@ public class Prefs implements Serializable {
      * @param theName
      * @return
      **************************************************************************/
+    @Override
     public DocStructType getDocStrctTypeByName(String theName) {
 
-        for (DocStructType currentDocStructType : this.allDocStrctTypes) {
+        for (DocStructTypeInterface currentDocStructType : this.allDocStrctTypes) {
             if (currentDocStructType.getName().equals(theName)) {
-                return currentDocStructType;
+                return (DocStructType) currentDocStructType;
             }
         }
 
@@ -786,13 +786,13 @@ public class Prefs implements Serializable {
         List<DocStructType> result = new LinkedList<DocStructType>();
 
         // Get all DocStructTypes.
-        List<DocStructType> allTypes = this.getAllDocStructTypes();
+        List<DocStructTypeInterface> allTypes = this.getAllDocStructTypes();
         if (allTypes != null) {
             // Iterate...
-            for (DocStructType dst : allTypes) {
+            for (DocStructTypeInterface dst : allTypes) {
                 // ...and add to result list if anchor DocStruct.
                 if (dst.getAnchorClass() != null) {
-                    result.add(dst);
+                    result.add((DocStructType) dst);
                 }
             }
         }
@@ -813,9 +813,9 @@ public class Prefs implements Serializable {
         String checklanguagevalue = "";
 
         // Get dstype first.
-        Iterator<DocStructType> it = this.allDocStrctTypes.iterator();
+        Iterator<DocStructTypeInterface> it = this.allDocStrctTypes.iterator();
         while (it.hasNext()) {
-            currentDocStrctType = it.next();
+            currentDocStrctType = (DocStructType) it.next();
             // Get all languages.
             allLanguages = currentDocStrctType.getAllLanguages();
 
@@ -872,7 +872,8 @@ public class Prefs implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
-    public List<DocStructType> getAllDocStructTypes() {
+    @Override
+    public List<DocStructTypeInterface> getAllDocStructTypes() {
         return this.allDocStrctTypes;
     }
 
@@ -902,7 +903,7 @@ public class Prefs implements Serializable {
      * @return
      **************************************************************************/
     @Deprecated
-    public boolean SetAllDocStructTypes(List<DocStructType> inList) {
+    public boolean SetAllDocStructTypes(List<DocStructTypeInterface> inList) {
         return setAllDocStructTypes(inList);
     }
 
@@ -910,7 +911,7 @@ public class Prefs implements Serializable {
      * @param inList
      * @return
      **************************************************************************/
-    public boolean setAllDocStructTypes(List<DocStructType> inList) {
+    public boolean setAllDocStructTypes(List<DocStructTypeInterface> inList) {
         this.allDocStrctTypes = inList;
 
         return true;
@@ -967,7 +968,7 @@ public class Prefs implements Serializable {
         Iterator<MetadataType> it = this.allMetadataTypes.iterator();
         while (it.hasNext()) {
             currentMdType = it.next();
-            if (currentMdType.getIsPerson()) {
+            if (currentMdType.isPerson()) {
                 allPersons.add(currentMdType);
             }
         }
@@ -983,6 +984,7 @@ public class Prefs implements Serializable {
      * @param name
      * @return
      **************************************************************************/
+    @Override
     public MetadataType getMetadataTypeByName(String name) {
 
         MetadataType currentMdType;

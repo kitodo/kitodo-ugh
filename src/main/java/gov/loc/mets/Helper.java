@@ -1,5 +1,3 @@
-package gov.loc.mets;
-
 /*******************************************************************************
  * gov.loc.mets / Helper.java
  *
@@ -20,14 +18,15 @@ package gov.loc.mets;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package gov.loc.mets;
 
 import gov.loc.mets.DivType.Fptr;
 import gov.loc.mets.FileType.FLocat;
 import gov.loc.mets.MdSecType.MdWrap;
 import gov.loc.mets.MdSecType.MdWrap.XmlData;
 import gov.loc.mets.MetsType.FileSec;
-import gov.loc.mets.MetsType.StructLink;
 import gov.loc.mets.MetsType.FileSec.FileGrp;
+import gov.loc.mets.MetsType.StructLink;
 import gov.loc.mets.StructLinkType.SmLink;
 
 import java.io.DataInputStream;

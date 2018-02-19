@@ -23,6 +23,8 @@ package ugh.exceptions;
 
 import java.util.List;
 
+import org.kitodo.api.ugh.exceptions.UGHException;
+
 import ugh.dl.DocStructType;
 import ugh.dl.Metadata;
 

@@ -25,8 +25,10 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import ugh.exceptions.MetadataTypeNotAllowedException;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.MetadataTypeInterface;
+import org.kitodo.api.ugh.exceptions.MetadataTypeNotAllowedException;
 
 /*******************************************************************************
  * <p>
@@ -47,7 +49,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  *
  ******************************************************************************/
 
-public class Metadata implements Serializable {
+public class Metadata implements MetadataInterface, Serializable {
 
     private static final long serialVersionUID = -2535548431060378914L;
 
@@ -100,8 +102,9 @@ public class Metadata implements Serializable {
      *
      * @param inDoc
      **************************************************************************/
-    public void setDocStruct(DocStruct inDoc) {
-        this.myDocStruct = inDoc;
+    @Override
+    public void setDocStruct(DocStructInterface inDoc) {
+        this.myDocStruct = (DocStruct) inDoc;
     }
 
     /***************************************************************************
@@ -112,6 +115,7 @@ public class Metadata implements Serializable {
      *
      * @return DocStruct instance.
      **************************************************************************/
+    @Override
     public DocStruct getDocStruct() {
         return this.myDocStruct;
     }
@@ -128,6 +132,18 @@ public class Metadata implements Serializable {
         return this.MDType;
     }
 
+    /**
+     * Returns the type of the metadata instance; The MetadataType object which
+     * is returned, may have the same name, but be a different object than the
+     * MetadataType object from another MetadataType.
+     *
+     * @return MetadataType instance
+     */
+    @Override
+    public MetadataType getMetadataType() {
+        return this.MDType;
+    }
+
     /***************************************************************************
      * <p>
      * Sets the MetadataType for this instance; only a MetadataType instance is used as the only parameter. The method returns true if MDType was set;
@@ -135,11 +151,10 @@ public class Metadata implements Serializable {
      * </p>
      *
      * @param inType
-     * @return
      **************************************************************************/
-    public boolean setType(MetadataType inType) {
-        this.MDType = inType;
-        return true;
+    @Override
+    public void setType(MetadataTypeInterface inType) {
+        this.MDType = (MetadataType) inType;
     }
 
     /***************************************************************************
@@ -149,6 +164,7 @@ public class Metadata implements Serializable {
      *
      * @return String containing the value.
      **************************************************************************/
+    @Override
     public String getValue() {
         return this.metadataValue;
     }
@@ -169,6 +185,20 @@ public class Metadata implements Serializable {
         return true;
     }
 
+    /**
+     * Sets the Metadata value. The only parameter is the value of the type
+     * String, all other types (integer, long etc.) must be converted to a
+     * string before.
+     * 
+     * @param inValue
+     *            The value as String.
+     **/
+    @Override
+    public void setStringValue(String inValue) {
+        this.metadataValue = inValue;
+        this.updated = true;
+    }
+
     /***************************************************************************
      * <p>
      * If a metadata element should be linked to any record in an authority file (e.g. authority file for locations or persons), it can be done,
@@ -181,11 +211,10 @@ public class Metadata implements Serializable {
      * @param value value of the record in the authority file
      *
      **************************************************************************/
-    public boolean setAutorityFile(String authorityID, String authorityURI, String authorityValue) {
+    public void setAutorityFile(String authorityID, String authorityURI, String authorityValue) {
         this.authorityID = authorityID;
         this.authorityURI = authorityURI;
         this.authorityValue = authorityValue;
-        return true;
     }
 
     /***************************************************************************
@@ -337,6 +366,7 @@ public class Metadata implements Serializable {
      *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         String result = "";

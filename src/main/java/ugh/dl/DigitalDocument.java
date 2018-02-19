@@ -1,5 +1,3 @@
-package ugh.dl;
-
 /*******************************************************************************
  * ugh.dl / DigitalDocument.java
  *
@@ -20,6 +18,11 @@ package ugh.dl;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package ugh.dl;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,16 +47,16 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kitodo.api.ugh.ContentFileInterface;
+import org.kitodo.api.ugh.DigitalDocumentInterface;
+import org.kitodo.api.ugh.DocStructInterface;
+import org.kitodo.api.ugh.DocStructTypeInterface;
+import org.kitodo.api.ugh.MetadataInterface;
+import org.kitodo.api.ugh.PersonInterface;
+import org.kitodo.api.ugh.exceptions.ContentFileNotLinkedException;
+import org.kitodo.api.ugh.exceptions.PreferencesException;
+import org.kitodo.api.ugh.exceptions.WriteException;
 import org.w3c.dom.Node;
-
-import ugh.exceptions.ContentFileNotLinkedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 /*******************************************************************************
  * <p>
@@ -110,7 +113,7 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  *
  ******************************************************************************/
 
-public class DigitalDocument implements Serializable {
+public class DigitalDocument implements DigitalDocumentInterface, Serializable {
 
     private static final long serialVersionUID = 3806816628185949759L;
 
@@ -152,11 +155,11 @@ public class DigitalDocument implements Serializable {
      * </p>
      *
      * @param dsType Is a DocStructType object.
-     * @throws TypeNotAllowedForParentException Is thrown, if this docstruct is not allowed for a parent.
      **************************************************************************/
-    public DocStruct createDocStruct(DocStructType dsType) throws TypeNotAllowedForParentException {
+    @Override
+    public DocStruct createDocStruct(DocStructTypeInterface dsType) {
 
-        DocStruct ds = new DocStruct(dsType);
+        DocStruct ds = new DocStruct((DocStructType) dsType);
         ds.setDigitalDocument(this);
 
         return ds;
@@ -168,43 +171,40 @@ public class DigitalDocument implements Serializable {
 
     /***************************************************************************
      * @param inStruct
-     * @return
      **************************************************************************/
-    public boolean setLogicalDocStruct(DocStruct inStruct) {
+    @Override
+    public void setLogicalDocStruct(DocStructInterface inStruct) {
 
         if (this.topLogicalStruct != null) {
             this.topLogicalStruct.setLogical(false);
         }
 
-        this.topLogicalStruct = inStruct;
+        this.topLogicalStruct = (DocStruct) inStruct;
         // Set DocStruct and all children to logical.
-        inStruct.setLogical(true);
-
-        return true;
+        ((DocStruct) inStruct).setLogical(true);
     }
 
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public DocStruct getLogicalDocStruct() {
         return this.topLogicalStruct;
     }
 
     /***************************************************************************
      * @param inStruct
-     * @return
      **************************************************************************/
-    public boolean setPhysicalDocStruct(DocStruct inStruct) {
+    @Override
+    public void setPhysicalDocStruct(DocStructInterface inStruct) {
 
         if (this.topPhysicalStruct != null) {
             this.topPhysicalStruct.setPhysical(false);
         }
 
-        this.topPhysicalStruct = inStruct;
+        this.topPhysicalStruct = (DocStruct) inStruct;
         // Set DocStruct and all children to physical.
-        inStruct.setPhysical(true);
-
-        return true;
+        ((DocStruct) inStruct).setPhysical(true);
     }
 
     /***************************************************************************
@@ -212,6 +212,7 @@ public class DigitalDocument implements Serializable {
      *
      * @return
      **************************************************************************/
+    @Override
     public DocStruct getPhysicalDocStruct() {
         return this.topPhysicalStruct;
     }
@@ -295,34 +296,34 @@ public class DigitalDocument implements Serializable {
         }
 
         // Get and print metadata.
-        List<Metadata> allMD = inDocStruct.getAllMetadata();
+        List<MetadataInterface> allMD = inDocStruct.getAllMetadata();
         if (allMD != null) {
-            for (Metadata currentMD : allMD) {
+            for (MetadataInterface currentMD : allMD) {
                 result += hierarchyBuffer + currentMD.toString();
             }
         }
 
         // Get and print persons.
-        List<Person> allPS = inDocStruct.getAllPersons();
+        List<PersonInterface> allPS = inDocStruct.getAllPersons();
         if (allPS != null) {
-            for (Person currentPS : allPS) {
+            for (PersonInterface currentPS : allPS) {
                 result += hierarchyBuffer + currentPS.toString();
             }
         }
 
         // Get and print contentFiles.
-        List<ContentFile> allCF = inDocStruct.getAllContentFiles();
+        List<ContentFileInterface> allCF = inDocStruct.getAllContentFiles();
         if (allCF != null) {
-            for (ContentFile currentCF : allCF) {
+            for (ContentFileInterface currentCF : allCF) {
                 result += hierarchyBuffer + currentCF.toString();
             }
         }
 
         // Get children.
-        List<DocStruct> allChildren = inDocStruct.getAllChildren();
+        List<DocStructInterface> allChildren = inDocStruct.getAllChildren();
         if (allChildren != null) {
-            for (DocStruct testChild : allChildren) {
-                result += printChildDocStruct(testChild, hierarchy + 1);
+            for (DocStructInterface testChild : allChildren) {
+                result += printChildDocStruct((DocStruct) testChild, hierarchy + 1);
             }
         }
 
@@ -373,16 +374,16 @@ public class DigitalDocument implements Serializable {
     private List<DocStruct> getAllDocStructsByTypePrivate(DocStruct inStruct, String inTypeName) {
 
         List<DocStruct> selectedChildren = new LinkedList<DocStruct>();
-        List<DocStruct> children = inStruct.getAllChildren();
+        List<DocStructInterface> children = inStruct.getAllChildren();
 
         if (children == null) {
             return null;
         }
 
-        Iterator<DocStruct> it = children.iterator();
+        Iterator<DocStructInterface> it = children.iterator();
 
         while (it.hasNext()) {
-            DocStruct child = it.next();
+            DocStruct child = (DocStruct) it.next();
 
             if (child.getType().getName().equals(inTypeName)) {
                 selectedChildren.add(child);
@@ -410,6 +411,7 @@ public class DigitalDocument implements Serializable {
     /***************************************************************************
      * @return
      **************************************************************************/
+    @Override
     public FileSet getFileSet() {
         return this.allImages;
     }
@@ -576,14 +578,14 @@ public class DigitalDocument implements Serializable {
 
             // Update MetadataTypes from Prefs.
             structTypeFromPrefs.getAllMetadataTypes();
-            List<Metadata> mList = theStruct.getAllMetadata();
+            List<MetadataInterface> mList = theStruct.getAllMetadata();
             if (mList != null) {
-                for (Metadata m : mList) {
+                for (MetadataInterface m : mList) {
                     // Get MetadataType from prefs.
-                    MetadataType mtypeFromPrefs = thePrefs.getMetadataTypeByName(m.getType().getName());
+                    MetadataType mtypeFromPrefs = thePrefs.getMetadataTypeByName(((DocStruct) m).getType().getName());
                     if (mtypeFromPrefs != null) {
                         m.setType(mtypeFromPrefs);
-                        logger.trace("Updated MetadataType '" + m.getType().getName() + "' from prefs");
+                        logger.trace("Updated MetadataType '" + ((DocStruct) m).getType().getName() + "' from prefs");
                     }
                 }
             }
@@ -598,8 +600,8 @@ public class DigitalDocument implements Serializable {
 
         // Recursively call all DocStructs.
         if (theStruct.getAllChildren() != null) {
-            for (DocStruct ds : theStruct.getAllChildren()) {
-                updateDocStruct(ds, thePrefs);
+            for (DocStructInterface ds : theStruct.getAllChildren()) {
+                updateDocStruct((DocStruct) ds, thePrefs);
             }
         }
 
@@ -618,8 +620,8 @@ public class DigitalDocument implements Serializable {
         }
 
         if (theStruct.getAllChildren() != null) {
-            for (DocStruct d : theStruct.getAllChildren()) {
-                sortMetadataRecursivelyAbcdefg(d);
+            for (DocStructInterface d : theStruct.getAllChildren()) {
+                sortMetadataRecursivelyAbcdefg((DocStruct) d);
             }
         }
 
@@ -643,8 +645,8 @@ public class DigitalDocument implements Serializable {
         }
 
         if (theSruct.getAllChildren() != null) {
-            for (DocStruct d : theSruct.getAllChildren()) {
-                sortMetadataRecursively(d, thePrefs);
+            for (DocStructInterface d : theSruct.getAllChildren()) {
+                sortMetadataRecursively((DocStruct) d, thePrefs);
             }
         }
 
@@ -689,10 +691,10 @@ public class DigitalDocument implements Serializable {
 
             // Iterate over all DocStructs "page" with metadata "physPageNumber"
             // and add a content file each, if none is existing.
-            for (DocStruct ds : physicalDocStruct.getAllChildren()) {
-                for (Metadata m : ds.getAllMetadata()) {
-                    if (m.getType().getName().equals("physPageNumber")) {
-                        createContentFile(ds, m.getValue());
+            for (DocStructInterface ds : physicalDocStruct.getAllChildren()) {
+                for (MetadataInterface m : ds.getAllMetadata()) {
+                    if (((DocStruct) m).getType().getName().equals("physPageNumber")) {
+                        createContentFile((DocStruct) ds, m.getValue());
                         newFileSet.addFile(ds.getAllContentFiles().get(0));
                     }
                 }
@@ -722,10 +724,10 @@ public class DigitalDocument implements Serializable {
         }
 
         // Iterate over all metadata with type name "physpagenumber".
-        List<Metadata> metadataList = theStruct.getAllMetadata();
+        List<MetadataInterface> metadataList = theStruct.getAllMetadata();
         if (metadataList != null) {
-            for (Metadata md : metadataList) {
-                if (md.getType().getName().equals("physPageNumber")) {
+            for (MetadataInterface md : metadataList) {
+                if (((DocStruct) md).getType().getName().equals("physPageNumber")) {
                     // Create new content file.
                     createContentFile(theStruct, md.getValue());
                 }
@@ -741,6 +743,7 @@ public class DigitalDocument implements Serializable {
      *
      **************************************************************************/
 
+    @Override
     public void addAllContentFiles() {
 
         // Get the physical DocStruct.
@@ -761,23 +764,23 @@ public class DigitalDocument implements Serializable {
 
             // Set the path to the images.
             String pif = "";
-            for (Metadata md : tp.getAllMetadata()) {
-                if (md.getType().getName().equals("pathimagefiles")) {
+            for (MetadataInterface md : tp.getAllMetadata()) {
+                if (((DocStruct) md).getType().getName().equals("pathimagefiles")) {
                     pif = md.getValue();
-                } else if (md.getType().getName().equals("_representative")) {
+                } else if (((DocStruct) md).getType().getName().equals("_representative")) {
                     representative = md.getValue();
                 }
             }
 
             // Iterate over all pages and add all the content files.
             if (tp.getAllChildren() != null) {
-                for (DocStruct ds : tp.getAllChildren()) {
+                for (DocStructInterface ds : tp.getAllChildren()) {
                     ContentFile cf = new ContentFile();
 
-                    if (ds.getType().getName().equals("page")) {
+                    if (((DocStruct) ds).getType().getName().equals("page")) {
                         // Iterate over all metadata.
-                        for (Metadata md : ds.getAllMetadata()) {
-                            if (md.getType().getName().equals("physPageNumber")) {
+                        for (MetadataInterface md : ds.getAllMetadata()) {
+                            if (((DocStruct) md).getType().getName().equals("physPageNumber")) {
                                 cf.setLocation(pif + "/" + new DecimalFormat("00000000").format(Integer.parseInt(md.getValue())) + ".tif");
                                 cf.setMimetype("image/tiff");
                                 if (!representative.isEmpty() && representative.equals(md.getValue())) {
@@ -786,7 +789,7 @@ public class DigitalDocument implements Serializable {
                                 // Remove all content files from the page, if
                                 // existing.
                                 if (ds.getAllContentFiles() != null) {
-                                    for (ContentFile oldCf : ds.getAllContentFiles()) {
+                                    for (ContentFileInterface oldCf : ds.getAllContentFiles()) {
                                         try {
                                             ds.removeContentFile(oldCf);
                                             cf.setLocation(oldCf.getLocation());
@@ -800,7 +803,7 @@ public class DigitalDocument implements Serializable {
                                 // Add the current content file to page.
                                 ds.addContentFile(cf);
 
-                                logger.trace("Added file '" + cf.getLocation() + "' to DocStruct '" + ds.getType().getName() + "'");
+                                logger.trace("Added file '" + cf.getLocation() + "' to DocStruct '" + ((DocStruct) ds).getType().getName() + "'");
                             }
                         }
                     }
@@ -834,6 +837,7 @@ public class DigitalDocument implements Serializable {
      *
      **************************************************************************/
 
+    @Override
     public void overrideContentFiles(List<String> images) {
 
         // Get the physical DocStruct.
@@ -850,23 +854,23 @@ public class DigitalDocument implements Serializable {
 
             // Set the path to the images.
             String pif = "";
-            for (Metadata md : tp.getAllMetadata()) {
-                if (md.getType().getName().equals("pathimagefiles")) {
+            for (MetadataInterface md : tp.getAllMetadata()) {
+                if (((DocStruct) md).getType().getName().equals("pathimagefiles")) {
                     pif = md.getValue();
-                } else if (md.getType().getName().equals("_representative")) {
+                } else if (((DocStruct) md).getType().getName().equals("_representative")) {
                     representative = md.getValue();
                 }
             }
 
             // Iterate over all pages and add all the content files.
             if (tp.getAllChildren() != null) {
-                for (DocStruct ds : tp.getAllChildren()) {
+                for (DocStructInterface ds : tp.getAllChildren()) {
                     ContentFile cf = new ContentFile();
 
-                    if (ds.getType().getName().equals("page")) {
+                    if (((DocStruct) ds).getType().getName().equals("page")) {
                         // Iterate over all metadata.
-                        for (Metadata md : ds.getAllMetadata()) {
-                            if (md.getType().getName().equals("physPageNumber")) {
+                        for (MetadataInterface md : ds.getAllMetadata()) {
+                            if (((DocStruct) md).getType().getName().equals("physPageNumber")) {
 
                                 if (!representative.isEmpty() && representative.equals(md.getValue())) {
                                     cf.setRepresentative(true);
@@ -877,8 +881,8 @@ public class DigitalDocument implements Serializable {
                                 // Remove all content files from the page, if
                                 // existing.
                                 if (ds.getAllContentFiles() != null) {
-                                    for (ContentFile oldCf : ds.getAllContentFiles()) {
-                                        cf.setMimetype(oldCf.getMimetype());
+                                    for (ContentFileInterface oldCf : ds.getAllContentFiles()) {
+                                        cf.setMimetype(((ContentFile) oldCf).getMimetype());
                                         cf.setLocation(oldCf.getLocation());
                                         try {
                                             ds.removeContentFile(oldCf);
@@ -912,8 +916,8 @@ public class DigitalDocument implements Serializable {
 
         String pathToImageFiles = "";
         if (this.getPhysicalDocStruct() != null && this.getPhysicalDocStruct().getAllMetadata() != null) {
-            for (Metadata md : this.getPhysicalDocStruct().getAllMetadata()) {
-                if (md.getType().getName().equals("pathimagefiles")) {
+            for (MetadataInterface md : this.getPhysicalDocStruct().getAllMetadata()) {
+                if (((DocStruct) md).getType().getName().equals("pathimagefiles")) {
                     pathToImageFiles = md.getValue();
                     break;
                 }
@@ -941,7 +945,7 @@ public class DigitalDocument implements Serializable {
 
         // Remove all content files from the page, if existing.
         if (theStruct.getAllContentFiles() != null) {
-            for (ContentFile oldCf : theStruct.getAllContentFiles()) {
+            for (ContentFileInterface oldCf : theStruct.getAllContentFiles()) {
                 try {
                     theStruct.removeContentFile(oldCf);
                 } catch (ContentFileNotLinkedException e) {
