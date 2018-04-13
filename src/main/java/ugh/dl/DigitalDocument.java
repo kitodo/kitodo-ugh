@@ -582,10 +582,10 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
             if (mList != null) {
                 for (MetadataInterface m : mList) {
                     // Get MetadataType from prefs.
-                    MetadataType mtypeFromPrefs = thePrefs.getMetadataTypeByName(((DocStruct) m).getType().getName());
+                    MetadataType mtypeFromPrefs = thePrefs.getMetadataTypeByName(((Metadata) m).getType().getName());
                     if (mtypeFromPrefs != null) {
                         m.setType(mtypeFromPrefs);
-                        logger.trace("Updated MetadataType '" + ((DocStruct) m).getType().getName() + "' from prefs");
+                        logger.trace("Updated MetadataType '" + ((Metadata) m).getType().getName() + "' from prefs");
                     }
                 }
             }
@@ -693,7 +693,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
             // and add a content file each, if none is existing.
             for (DocStructInterface ds : physicalDocStruct.getAllChildren()) {
                 for (MetadataInterface m : ds.getAllMetadata()) {
-                    if (((DocStruct) m).getType().getName().equals("physPageNumber")) {
+                    if (((Metadata) m).getType().getName().equals("physPageNumber")) {
                         createContentFile((DocStruct) ds, m.getValue());
                         newFileSet.addFile(ds.getAllContentFiles().get(0));
                     }
@@ -727,7 +727,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
         List<MetadataInterface> metadataList = theStruct.getAllMetadata();
         if (metadataList != null) {
             for (MetadataInterface md : metadataList) {
-                if (((DocStruct) md).getType().getName().equals("physPageNumber")) {
+                if (((Metadata) md).getType().getName().equals("physPageNumber")) {
                     // Create new content file.
                     createContentFile(theStruct, md.getValue());
                 }
@@ -765,9 +765,9 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
             // Set the path to the images.
             String pif = "";
             for (MetadataInterface md : tp.getAllMetadata()) {
-                if (((DocStruct) md).getType().getName().equals("pathimagefiles")) {
+                if (((Metadata) md).getType().getName().equals("pathimagefiles")) {
                     pif = md.getValue();
-                } else if (((DocStruct) md).getType().getName().equals("_representative")) {
+                } else if (((Metadata) md).getType().getName().equals("_representative")) {
                     representative = md.getValue();
                 }
             }
@@ -780,7 +780,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
                     if (((DocStruct) ds).getType().getName().equals("page")) {
                         // Iterate over all metadata.
                         for (MetadataInterface md : ds.getAllMetadata()) {
-                            if (((DocStruct) md).getType().getName().equals("physPageNumber")) {
+                            if (((Metadata) md).getType().getName().equals("physPageNumber")) {
                                 cf.setLocation(pif + "/" + new DecimalFormat("00000000").format(Integer.parseInt(md.getValue())) + ".tif");
                                 cf.setMimetype("image/tiff");
                                 if (!representative.isEmpty() && representative.equals(md.getValue())) {
@@ -855,9 +855,9 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
             // Set the path to the images.
             String pif = "";
             for (MetadataInterface md : tp.getAllMetadata()) {
-                if (((DocStruct) md).getType().getName().equals("pathimagefiles")) {
+                if (((Metadata) md).getType().getName().equals("pathimagefiles")) {
                     pif = md.getValue();
-                } else if (((DocStruct) md).getType().getName().equals("_representative")) {
+                } else if (((Metadata) md).getType().getName().equals("_representative")) {
                     representative = md.getValue();
                 }
             }
@@ -870,7 +870,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
                     if (((DocStruct) ds).getType().getName().equals("page")) {
                         // Iterate over all metadata.
                         for (MetadataInterface md : ds.getAllMetadata()) {
-                            if (((DocStruct) md).getType().getName().equals("physPageNumber")) {
+                            if (((Metadata) md).getType().getName().equals("physPageNumber")) {
 
                                 if (!representative.isEmpty() && representative.equals(md.getValue())) {
                                     cf.setRepresentative(true);
@@ -917,7 +917,7 @@ public class DigitalDocument implements DigitalDocumentInterface, Serializable {
         String pathToImageFiles = "";
         if (this.getPhysicalDocStruct() != null && this.getPhysicalDocStruct().getAllMetadata() != null) {
             for (MetadataInterface md : this.getPhysicalDocStruct().getAllMetadata()) {
-                if (((DocStruct) md).getType().getName().equals("pathimagefiles")) {
+                if (((Metadata) md).getType().getName().equals("pathimagefiles")) {
                     pathToImageFiles = md.getValue();
                     break;
                 }
