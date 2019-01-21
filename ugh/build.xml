@@ -7,7 +7,7 @@
 
     <!-- Distribution specific settings. -->
     <property name="dist.name" value="kitodo-ugh" />
-    <property name="dist.version" value="2.1.0" />
+    <property name="dist.version" value="2.1.1" />
 
     <!-- Directory settings -->
     <property name="dir.lib" value="./lib" />
