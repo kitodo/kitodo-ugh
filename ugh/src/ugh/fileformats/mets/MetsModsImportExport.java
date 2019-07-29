@@ -1593,7 +1593,7 @@ public class MetsModsImportExport extends ugh.fileformats.mets.MetsMods {
                 if (md.getType().getName().equals(metadataName) && md.getValue() != null && !md.getValue().isEmpty()) {
                     Map<String, String> xqueryMap = xpathMap.get(metadataName);
                     String xquery = xqueryMap.get(metadataName);
-                    writeSingleModsMetadata(xquery, md, createdNode, theDocument);
+                    writeSingleModsMetadata(xquery, md, createdNode, false, theDocument);
                 }
             }
             for (Person p : theGroup.getPersonList()) {

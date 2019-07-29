@@ -3433,6 +3433,22 @@ public class MetsMods implements ugh.dl.Fileformat {
      * @return
      **************************************************************************/
     protected Node createNode(String query, Node startingNode, Document modsDocument) throws PreferencesException {
+        return createNode(query, startingNode, true, modsDocument);
+    }
+
+    /***************************************************************************
+     * <p>
+     * Creates a node according to XPath.
+     * </p>
+     *
+     * @param query The xpath.
+     * @param startingNode The base node for the xquery.
+     * @param useParentNode whether the query is relative to the parent of the startingNode
+     * @param modsDocument
+     * @throws PreferencesException
+     * @return
+     **************************************************************************/
+    protected Node createNode(String query, Node startingNode, boolean useParentNode, Document modsDocument) throws PreferencesException {
 
         Node newNode = null;
         Node parentNode = startingNode;
@@ -3578,10 +3594,10 @@ public class MetsMods implements ugh.dl.Fileformat {
                 // Carry out the query.
                 Object result = null;
                 if (requestingElement) {
-                    result = expr.evaluate(startingNode.getParentNode(), XPathConstants.NODESET);
+                    result = expr.evaluate(useParentNode ? startingNode.getParentNode() : startingNode, XPathConstants.NODESET);
                 } else {
                     // We are requesting an attribute.
-                    result = expr.evaluate(startingNode.getParentNode(), XPathConstants.BOOLEAN);
+                    result = expr.evaluate(useParentNode ? startingNode.getParentNode() : startingNode, XPathConstants.BOOLEAN);
                 }
 
                 // We were requesting an element, now we should have a
@@ -4220,8 +4236,25 @@ public class MetsMods implements ugh.dl.Fileformat {
      **************************************************************************/
     protected void writeSingleModsMetadata(String theXQuery, Metadata theMetadata, Node theStartingNode, Document theDocument)
             throws PreferencesException {
+        writeSingleModsMetadata(theXQuery, theMetadata, theStartingNode, true, theDocument);
+    }
 
-        Node createdNode = createNode(theXQuery, theStartingNode, theDocument);
+    /***************************************************************************
+     * <p>
+     * Creates a single Goobi internal metadata element.
+     * </p>
+     *
+     * @param theXQuery
+     * @param theMetadata
+     * @param theStartingNode
+     * @param useParentNode whether the query is relative to the parent of theStartingNode
+     * @param theDocument
+     * @throws PreferencesException
+     **************************************************************************/
+    protected void writeSingleModsMetadata(String theXQuery, Metadata theMetadata, Node theStartingNode, boolean useParentNode, Document theDocument)
+            throws PreferencesException {
+
+        Node createdNode = createNode(theXQuery, theStartingNode, useParentNode, theDocument);
 
         if (createdNode == null) {
             String message = "DOM Node could not be created for metadata '" + theMetadata.getType().getName() + "'! XQuery was '" + theXQuery + "'";
